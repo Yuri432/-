@@ -25,6 +25,29 @@ h1 {
     font-size: 2em;
 }
 
+/* --- สไตล์ส่วนต่างเวลาที่เพิ่มเข้ามา --- */
+.time-difference-container {
+    background-color: #e8f8f5;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    border-left: 5px solid #1abc9c;
+}
+
+.difference-title {
+    font-size: 1.2em;
+    color: #1abc9c;
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.difference-value {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #2c3e50;
+}
+/* --- สิ้นสุดสไตล์ส่วนต่างเวลา --- */
+
 .clock-display {
     display: flex;
     justify-content: space-around;
@@ -39,7 +62,7 @@ h1 {
     padding: 20px;
     flex: 1;
     min-width: 300px;
-    transition: transform 0.3s ease, background-color 0.5s, color 0.5s; /* เพิ่ม transition */
+    transition: transform 0.3s ease, background-color 0.5s, color 0.5s;
 }
 
 .clock:hover {
@@ -79,16 +102,16 @@ h1 {
 
 /* สไตล์กลางคืน (Night Mode) */
 .clock.night-mode {
-    background-color: #34495e; /* สีพื้นหลังเข้มขึ้น */
-    color: #ecf0f1; /* สีตัวอักษรสว่างขึ้น */
+    background-color: #34495e;
+    color: #ecf0f1;
 }
 
 .clock.night-mode h2 {
-    color: #9b59b6; /* สีม่วงอ่อนสำหรับหัวข้อ */
+    color: #9b59b6;
 }
 
 .clock.night-mode .time {
-    color: #f1c40f; /* สีเหลืองสำหรับเวลา */
+    color: #f1c40f;
 }
 
 .clock.night-mode .timezone,
