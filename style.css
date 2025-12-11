@@ -29,16 +29,17 @@ h1 {
     display: flex;
     justify-content: space-around;
     gap: 20px;
-    flex-wrap: wrap; /* ให้ขึ้นบรรทัดใหม่เมื่อหน้าจอเล็ก */
+    flex-wrap: wrap; 
 }
 
+/* สไตล์กลางวัน (Day Mode) */
 .clock {
     background-color: #ecf0f1;
     border-radius: 8px;
     padding: 20px;
     flex: 1;
     min-width: 300px;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, background-color 0.5s, color 0.5s; /* เพิ่ม transition */
 }
 
 .clock:hover {
@@ -50,6 +51,7 @@ h1 {
     color: #3498db;
     font-size: 1.5em;
     margin-top: 0;
+    transition: color 0.5s;
 }
 
 .time {
@@ -58,12 +60,42 @@ h1 {
     color: #2980b9;
     margin: 10px 0;
     letter-spacing: 2px;
+    transition: color 0.5s;
+}
+
+.date-display {
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 5px;
+    font-weight: 600;
+    transition: color 0.5s;
 }
 
 .timezone {
     font-size: 0.9em;
     color: #7f8c8d;
+    transition: color 0.5s;
 }
+
+/* สไตล์กลางคืน (Night Mode) */
+.clock.night-mode {
+    background-color: #34495e; /* สีพื้นหลังเข้มขึ้น */
+    color: #ecf0f1; /* สีตัวอักษรสว่างขึ้น */
+}
+
+.clock.night-mode h2 {
+    color: #9b59b6; /* สีม่วงอ่อนสำหรับหัวข้อ */
+}
+
+.clock.night-mode .time {
+    color: #f1c40f; /* สีเหลืองสำหรับเวลา */
+}
+
+.clock.night-mode .timezone,
+.clock.night-mode .date-display {
+    color: #bdc3c7;
+}
+
 
 /* ปรับสำหรับหน้าจอขนาดเล็ก */
 @media (max-width: 650px) {
