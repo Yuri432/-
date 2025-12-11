@@ -22,12 +22,6 @@ body {
     width: 90%;
 }
 
-h1 {
-    color: #2c3e50;
-    margin-bottom: 30px;
-    font-size: 2em;
-}
-
 /* ============================================== */
 /* 2. สไตล์ส่วนหัว (Header Info และ Avatar) */
 /* ============================================== */
@@ -255,5 +249,12 @@ h1 {
     }
     .header-text {
         text-align: center;
+    }
+    .input-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .input-form label {
+        margin-bottom: 5px;
     }
 }
