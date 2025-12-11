@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ayunum: ระบบจับเวลา/นาฬิกาปลุก</title>
-    <meta name="description" content="ระบบตั้งเวลาถอยหลังพร้อมเสียงเตือนที่กำหนดเองได้">
+    <title>Ayunum: ระบบจับเวลา/เตือน</title>
+    <meta name="description" content="ระบบจับเวลาถอยหลัง (Timer) พร้อมเสียงเตือน">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -29,28 +29,40 @@
                 </a>
             </div>
         </nav>
-        <div class="card-section">
-            <h2>⏱️ ระบบจับเวลา / นาฬิกาปลุก</h2>
-            <p class="description">+ ตั้งเวลาสำหรับทำกิจกรรม/พักผ่อน เมื่อครบเวลาจะมีเสียงแจ้งเตือน</p>
-            
-            <div id="timer-input-container">
-                <label for="timer-minutes">ตั้งเวลา:</label>
-                <input type="number" id="timer-minutes" min="0" value="5"> นาที
-                <input type="number" id="timer-seconds" min="0" max="59" value="0"> วินาที
+        <header>
+            <h1>ระบบจับเวลา / นาฬิกาปลุก</h1>
+            <p class="description">+ ตั้งเวลาสำหรับทำกิจกรรมพักผ่อน เมื่อหมดเวลาจะมีเสียงแจ้งเตือน</p>
+        </header>
+        
+        <div class="card-section" style="text-align: center;">
+            <div id="timer-input-container" style="margin-bottom: 20px; display: flex; justify-content: center; align-items: center;">
+                <label for="timer-minutes" style="margin-right: 10px;">ตั้งเวลา:</label>
+                <input type="number" id="timer-minutes" min="0" max="60" value="5" style="width: 50px; text-align: center; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+                <span style="margin: 0 5px;">นาที</span>
+                <input type="number" id="timer-seconds" min="0" max="59" value="0" style="width: 50px; text-align: center; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+                <span style="margin-left: 5px;">วินาที</span>
             </div>
             
-            <h1 id="timer-display">05:00</h1>
-            
-            <div class="button-group">
-                <button onclick="startTimer()" id="start-button">▶️ เริ่มจับเวลา</button>
-                <button onclick="pauseTimer()" id="pause-button" style="display:none;">⏸️ หยุดชั่วคราว</button>
-                <button onclick="resetTimer()" id="reset-button">🔄 รีเซ็ต</button>
+            <div id="timer-display" style="font-size: 4em; font-weight: bold; margin-bottom: 20px; color: #e74c3c;">
+                05:00
             </div>
             
-            <audio id="alarm-sound" src="7093e7ef1415.mp3" preload="auto"></audio> 
+            <div>
+                <button id="start-button" onclick="startTimer()" style="padding: 10px 20px; font-size: 1.2em; background-color: #2ecc71; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                    ▶️ เริ่มจับเวลา
+                </button>
+                <button id="pause-button" onclick="pauseTimer()" style="padding: 10px 20px; font-size: 1.2em; background-color: #f39c12; color: white; border: none; border-radius: 6px; cursor: pointer; display: none;">
+                    ⏸️ พัก
+                </button>
+                <button id="reset-button" onclick="resetTimer()" style="padding: 10px 20px; font-size: 1.2em; background-color: #95a5a6; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                    🔄 รีเซ็ต
+                </button>
+            </div>
         </div>
 
     </div>
+    
+    <audio id="alarm-sound" src="7093e7ef1415.mp3" preload="auto"></audio>
 
     <script src="script.js"></script>
 </body>
