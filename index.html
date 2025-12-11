@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ayunum - Thai & Japan</title> 
+    <title>Ayunum - World Clock & Calculator</title> 
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -24,6 +24,20 @@
             <h2 class="difference-title">⏰ ส่วนต่างเวลา Ayunum (ไทย vs ญี่ปุ่น)</h2>
             <div class="difference-value" id="time-difference">
                 </div>
+        </div>
+
+        <div class="calculator-section">
+            <h2>✨ คำนวณข้อมูลส่วนตัว (อายุ, นักษัตร, ราศี)</h2>
+            
+            <div class="input-form">
+                <label for="birthdate-input">ป้อนวันเกิด (ค.ศ.):</label>
+                <input type="date" id="birthdate-input" required>
+                <button onclick="calculatePersonalInfo()">คำนวณ</button>
+            </div>
+
+            <div class="result-display" id="personal-result">
+                <p>กรุณาป้อนวันเกิดของคุณเพื่อคำนวณ...</p>
+            </div>
         </div>
         
         <div class="clock-display" id="clock-display-container">
