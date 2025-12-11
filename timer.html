@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayunum: ระบบจับเวลา</title>
+    <meta name="description" content="ระบบตั้งเวลาถอยหลังพร้อมเสียงเตือนที่กำหนดเองได้">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        
+        <nav style="text-align: center; margin-bottom: 30px; padding: 10px 0; background-color: #ecf0f1; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <a href="index.html" style="margin: 0 15px; text-decoration: none; color: #34495e; font-weight: bold; padding: 8px 15px; border-radius: 6px;">✨ ข้อมูลส่วนตัว</a>
+            <a href="worldclock.html" style="margin: 0 15px; text-decoration: none; color: #34495e; font-weight: bold; padding: 8px 15px; border-radius: 6px;">🌍 นาฬิกาโลก</a>
+            <a href="timer.html" style="margin: 0 15px; text-decoration: none; color: #34495e; font-weight: bold; padding: 8px 15px; border-radius: 6px; background-color: #f1c40f;">⏱️ ตั้งเวลา/เตือน</a>
+        </nav>
+        <div class="card-section">
+            <h2>⏱️ ระบบจับเวลา / นาฬิกาปลุก</h2>
+            <p class="description">+ ตั้งเวลาสำหรับทำกิจกรรม/พักผ่อน เมื่อครบเวลาจะมีเสียงแจ้งเตือน</p>
+            
+            <div id="timer-input-container" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; justify-content: center;">
+                <label for="timer-minutes">ตั้งเวลา:</label>
+                <input type="number" id="timer-minutes" min="0" value="5" style="width: 60px; text-align: center;"> นาที
+                <input type="number" id="timer-seconds" min="0" max="59" value="0" style="width: 60px; text-align: center;"> วินาที
+            </div>
+            
+            <h1 id="timer-display">05:00</h1>
+            
+            <div class="button-group">
+                <button onclick="startTimer()" id="start-button">▶️ เริ่มจับเวลา</button>
+                <button onclick="pauseTimer()" id="pause-button" style="display:none;">⏸️ หยุดชั่วคราว</button>
+                <button onclick="resetTimer()" id="reset-button">🔄 รีเซ็ต</button>
+            </div>
+            
+            <audio id="alarm-sound" src="7093e7ef1415.mp3" preload="auto"></audio> 
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
