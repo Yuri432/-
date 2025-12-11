@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ayunum: คำนวณราศี | World Clock | Timer</title>
-    <meta name="description" content="Ayunum: เครื่องคำนวณอายุ ราศีตะวันตก/ตะวันออก (ปีนักษัตร) นาฬิกาโลก (ไทย & ญี่ปุ่น) และระบบจับเวลา">
+    <title>Ayunum: ข้อมูลส่วนตัว, ทำนายชื่อ</title>
+    <meta name="description" content="Ayunum: เครื่องคำนวณอายุ ราศีตะวันตก/ตะวันออก (ปีนักษัตร) และทำนายชื่อตามหลักเลขศาสตร์">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         
         <nav style="text-align: center; margin-bottom: 30px; padding: 10px 0; background-color: #ecf0f1; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <a href="index.html" style="margin: 0 15px; text-decoration: none; color: #34495e; font-weight: bold; padding: 8px 15px; border-radius: 6px; background-color: #f1c40f;">✨ ข้อมูลส่วนตัว</a>
+            <a href="index.html" style="margin: 0 15px; text-decoration: none; color: #34495e; font-weight: bold; padding: 8px 15px; border-radius: 6px; background-color: #f1c40f;">✨ ข้อมูลส่วนตัว/ทำนายชื่อ</a>
             <a href="worldclock.html" style="margin: 0 15px; text-decoration: none; color: #34495e; font-weight: bold; padding: 8px 15px; border-radius: 6px;">🌍 นาฬิกาโลก</a>
             <a href="timer.html" style="margin: 0 15px; text-decoration: none; color: #34495e; font-weight: bold; padding: 8px 15px; border-radius: 6px;">⏱️ ตั้งเวลา/เตือน</a>
         </nav>
         <header>
             <h1>หน้าโปรไฟล์ Ayunum ต้อนรับ</h1>
-            <p class="description">+ คำสั่งคำนวณปีนักษัตร...</p>
+            <p class="description">+ คำสั่งคำนวณราศี, นักษัตร และทำนายชื่อ</p>
         </header>
         
         <div class="card-section">
@@ -32,6 +32,19 @@
             </div>
         </div>
 
+        <div class="card-section">
+            <h2>🔮 ทำนายชื่อ-นามสกุล ตามหลักเลขศาสตร์ (Numerology)</h2>
+            <p class="description">+ ป้อนชื่อและนามสกุล (ภาษาไทย) เพื่อคำนวณผลรวมเลขศาสตร์</p>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <input type="text" id="name-input" placeholder="ชื่อ (ภาษาไทย)" style="width: 200px; margin-right: 10px; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
+                <input type="text" id="surname-input" placeholder="นามสกุล (ภาษาไทย)" style="width: 200px; margin-right: 10px; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
+                <button onclick="calculateNumerology()">ทำนาย</button>
+            </div>
+            
+            <div id="numerology-result">
+                กรุณาป้อนชื่อและนามสกุลของคุณเพื่อดูคำทำนาย...
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
