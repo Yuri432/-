@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ayunum: ระบบจับเวลา</title>
+    <title>Ayunum: ระบบจับเวลา/นาฬิกาปลุก</title>
     <meta name="description" content="ระบบตั้งเวลาถอยหลังพร้อมเสียงเตือนที่กำหนดเองได้">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -19,10 +19,10 @@
             <h2>⏱️ ระบบจับเวลา / นาฬิกาปลุก</h2>
             <p class="description">+ ตั้งเวลาสำหรับทำกิจกรรม/พักผ่อน เมื่อครบเวลาจะมีเสียงแจ้งเตือน</p>
             
-            <div id="timer-input-container" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; justify-content: center;">
+            <div id="timer-input-container">
                 <label for="timer-minutes">ตั้งเวลา:</label>
-                <input type="number" id="timer-minutes" min="0" value="5" style="width: 60px; text-align: center;"> นาที
-                <input type="number" id="timer-seconds" min="0" max="59" value="0" style="width: 60px; text-align: center;"> วินาที
+                <input type="number" id="timer-minutes" min="0" value="5"> นาที
+                <input type="number" id="timer-seconds" min="0" max="59" value="0"> วินาที
             </div>
             
             <h1 id="timer-display">05:00</h1>
@@ -33,7 +33,7 @@
                 <button onclick="resetTimer()" id="reset-button">🔄 รีเซ็ต</button>
             </div>
             
-            <audio id="alarm-sound" src="7093e7ef1415.mp3" preload="auto"></audio> 
+            <audio id="alarm-sound" src="7093e7ef1415.mp3" preload="auto"></audio>
         </div>
 
     </div>
