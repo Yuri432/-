@@ -1,19 +1,39 @@
-<div class="card-section">
-    <h2>⏱️ ระบบจับเวลา / นาฬิกาปลุก</h2>
-    <p class="description">+ ตั้งเวลาสำหรับทำกิจกรรม/พักผ่อน เมื่อครบเวลาจะมีเสียงแจ้งเตือน</p>
-    
-    <div id="timer-input-container" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; justify-content: center;">
-        <label for="timer-minutes">ตั้งเวลา:</label>
-        <input type="number" id="timer-minutes" min="0" value="5" style="width: 50px; text-align: center;"> นาที
-        <input type="number" id="timer-seconds" min="0" max="59" value="0" style="width: 50px; text-align: center;"> วินาที
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayunum: คำนวณราศี | World Clock | Timer</title>
+    <meta name="description" content="Ayunum: เครื่องคำนวณอายุ ราศีตะวันตก/ตะวันออก (ปีนักษัตร) นาฬิกาโลก (ไทย & ญี่ปุ่น) และระบบจับเวลา">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        
+        <nav style="text-align: center; margin-bottom: 30px; padding: 10px 0; background-color: #ecf0f1; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <a href="index.html" style="margin: 0 15px; text-decoration: none; color: #34495e; font-weight: bold; padding: 8px 15px; border-radius: 6px; background-color: #f1c40f;">✨ ข้อมูลส่วนตัว</a>
+            <a href="worldclock.html" style="margin: 0 15px; text-decoration: none; color: #34495e; font-weight: bold; padding: 8px 15px; border-radius: 6px;">🌍 นาฬิกาโลก</a>
+            <a href="timer.html" style="margin: 0 15px; text-decoration: none; color: #34495e; font-weight: bold; padding: 8px 15px; border-radius: 6px;">⏱️ ตั้งเวลา/เตือน</a>
+        </nav>
+        <header>
+            <h1>หน้าโปรไฟล์ Ayunum ต้อนรับ</h1>
+            <p class="description">+ คำสั่งคำนวณปีนักษัตร...</p>
+        </header>
+        
+        <div class="card-section">
+            <h2>✨ คำนวณข้อมูลส่วนตัว (อายุ, นักษัตร, ราศี)</h2>
+            <p class="description">ป้อนวันเกิด (ค.ศ. หรือ พ.ศ.):</p>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <input type="date" id="birthdate-input" value="2009-02-13">
+                <button onclick="calculatePersonalInfo()">คำนวณ</button>
+            </div>
+            <div id="personal-result">
+                กรุณาป้อนวันเกิดของคุณเพื่อคำนวณ...
+            </div>
+        </div>
+
     </div>
-    
-    <h1 id="timer-display" style="font-size: 3em; margin: 20px 0; color: #34495e;">05:00</h1>
-    
-    <div class="button-group">
-        <button onclick="startTimer()" id="start-button">▶️ เริ่มจับเวลา</button>
-        <button onclick="pauseTimer()" id="pause-button" style="display:none;">⏸️ หยุดชั่วคราว</button>
-        <button onclick="resetTimer()" id="reset-button">🔄 รีเซ็ต</button>
-    </div>
-    
-   <audio id="alarm-sound" src="7093e7ef1415.mp3" preload="auto"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
