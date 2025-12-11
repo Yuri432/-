@@ -86,7 +86,7 @@ function getLunarZodiac(birthDate, system = 'thai') {
     return CHINESE_ZODIACS[index];
 }
 
-// ฟังก์ชันหลักที่เรียกเมื่อกดปุ่ม "คำนวณ"
+// ฟังก์ชันหลักที่เรียกเมื่อกดปุ่ม "คำนวณ" (ปรับปรุงการจัดการปี พ.ศ. / ค.ศ.)
 window.calculatePersonalInfo = function() {
     const inputElement = document.getElementById('birthdate-input');
     const resultDiv = document.getElementById('personal-result');
@@ -110,8 +110,7 @@ window.calculatePersonalInfo = function() {
         // ถ้าปีที่ป้อนมากกว่าปี ค.ศ. ปัจจุบันเกิน 10 ปี สันนิษฐานว่าเป็น พ.ศ.
         year = year - 543; // แปลงเป็น ค.ศ.
     }
-    // ถ้าปีที่ป้อนเป็น ค.ศ. อยู่แล้ว (เช่น 2009) จะใช้ปีนั้นเลย
-
+    
     // สร้าง Date Object ด้วยปี ค.ศ. ที่ปรับแล้ว
     const birthDate = new Date(year, month, day);
 
