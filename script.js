@@ -40,10 +40,12 @@ function getZodiacSign(birthDate) {
     const month = birthDate.getMonth();
     const day = birthDate.getDate();
 
+    // วนลูปเพื่อหาช่วงราศีที่ตรงกับวันเกิด
     for (let i = 0; i < ZODIACS.length; i++) {
         const zodiac = ZODIACS[i];
-        const nextZodiac = ZODIACS[(i + 1) % ZODIACS.length];
+        const nextZodiac = ZODIACS[(i + 1) % ZODIACS.length]; // ราศีถัดไป (ใช้สำหรับจุดตัดสิ้นเดือน)
 
+        // ตรวจสอบ: วันที่อยู่ระหว่าง start-date ของราศีปัจจุบัน จนถึง start-date ของราศีถัดไป
         if (
             (month === zodiac.startMonth && day >= zodiac.startDate) ||
             (month === nextZodiac.startMonth && day < nextZodiac.startDate)
@@ -51,6 +53,7 @@ function getZodiacSign(birthDate) {
             return zodiac.name;
         }
     }
+    // กรณีพิเศษ: ราศีมังกรคาบเกี่ยวระหว่างธันวาคมกับมกราคม (โค้ดด้านบนรองรับอยู่แล้ว)
     return 'ไม่ทราบ';
 }
 
@@ -59,6 +62,7 @@ function calculateAge(birthDate) {
     let age = today.getFullYear() - birthDate.getFullYear();
     const m = today.getMonth() - birthDate.getMonth();
     
+    // ปรับอายุถ้าวันเกิดยังมาไม่ถึงในปีนี้
     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
         age--;
     }
@@ -67,26 +71,27 @@ function calculateAge(birthDate) {
 
 function getLunarZodiac(birthDate, system = 'thai') {
     const birthYearCE = birthDate.getFullYear();
-    const month = birthDate.getMonth();
+    const month = birthDate.getDate() > 0 ? birthDate.getMonth() : -1; // Month index 0-11
     const day = birthDate.getDate();
     
     let yearToCalculate = birthYearCE;
 
     if (system === 'thai') {
         // ไทย: เปลี่ยนปีนักษัตรกลางเดือนเมษายน (ใช้ 13 เม.ย. เป็นจุดตัดโดยประมาณ)
+        // เดือน เม.ย. คือ index 3
         if (month < 3 || (month === 3 && day < 13)) { 
             yearToCalculate--;
         }
     } else if (system === 'japan') {
-        // ญี่ปุ่น: เปลี่ยนปีนักษัตรวันที่ 1 มกราคม 
+        // ญี่ปุ่น: เปลี่ยนปีนักษัตรวันที่ 1 มกราคม (ถ้า month เป็น 0 (ม.ค.) ก็ไม่ต้องทำอะไร)
     }
     
-    // สูตรคำนวณ: (ปี ค.ศ. + 8) % 12
+    // สูตรคำนวณ: (ปี ค.ศ. + 8) % 12 (ใช้ปี ค.ศ. 1900 เป็นปีชวด)
     const index = (yearToCalculate + 8) % 12; 
     return CHINESE_ZODIACS[index];
 }
 
-// ฟังก์ชันหลักที่เรียกเมื่อกดปุ่ม "คำนวณ" (ปรับปรุงการจัดการปี พ.ศ. / ค.ศ.)
+// ฟังก์ชันหลักที่เรียกเมื่อกดปุ่ม "คำนวณ"
 window.calculatePersonalInfo = function() {
     const inputElement = document.getElementById('birthdate-input');
     const resultDiv = document.getElementById('personal-result');
@@ -96,37 +101,38 @@ window.calculatePersonalInfo = function() {
         return;
     }
 
-    // 1. ดึงค่าจาก input ซึ่งเป็นรูปแบบ YYYY-MM-DD
+    // 1. แยกส่วนประกอบวันที่จาก input (ค่าที่ได้จะเป็น YYYY-MM-DD ตามมาตรฐาน HTML)
     const dateValue = inputElement.value;
     const parts = dateValue.split('-'); 
     let year = parseInt(parts[0]);
     const month = parseInt(parts[1]) - 1; // เดือน: 0-11
     const day = parseInt(parts[2]);
 
-    // *** ตรรกะการแปลงปี พ.ศ. / ค.ศ. ***
+    // 2. *** ตรรกะการแปลงปี พ.ศ. / ค.ศ. (แก้ไขปัญหาการป้อน พ.ศ. ในช่อง ค.ศ.) ***
     const currentCEYear = new Date().getFullYear(); 
 
     if (year > currentCEYear + 10) { 
-        // ถ้าปีที่ป้อนมากกว่าปี ค.ศ. ปัจจุบันเกิน 10 ปี สันนิษฐานว่าเป็น พ.ศ.
+        // ถ้าปีที่ป้อนสูงกว่าปี ค.ศ. ปัจจุบันอย่างมีนัยสำคัญ (>10 ปี) ให้สันนิษฐานว่าเป็น พ.ศ.
         year = year - 543; // แปลงเป็น ค.ศ.
     }
     
-    // สร้าง Date Object ด้วยปี ค.ศ. ที่ปรับแล้ว
+    // 3. สร้าง Date Object ด้วยปี ค.ศ. ที่ปรับแล้ว
     const birthDate = new Date(year, month, day);
 
-    if (isNaN(birthDate.getTime())) {
-        resultDiv.innerHTML = '<p style="color:red;">⚠️ รูปแบบวันที่ไม่ถูกต้อง</p>';
+    // ตรวจสอบความถูกต้องของวันที่ (เผื่อผู้ใช้ป้อนวันที่ 30 ก.พ. เป็นต้น)
+    if (isNaN(birthDate.getTime()) || birthDate.getFullYear() !== year || birthDate.getMonth() !== month || birthDate.getDate() !== day) {
+        resultDiv.innerHTML = '<p style="color:red;">⚠️ รูปแบบวันที่ไม่ถูกต้องหรือไม่สามารถสร้าง Date Object ได้</p>';
         return;
     }
 
-    // 2. คำนวณข้อมูลที่เหลือ
+    // 4. คำนวณข้อมูลที่เหลือ
     const age = calculateAge(birthDate);
     const zodiacSign = getZodiacSign(birthDate);
     
     const zodiacThai = getLunarZodiac(birthDate, 'thai');
     const zodiacJapan = getLunarZodiac(birthDate, 'japan');
 
-    // 3. เตรียมการแสดงผล (ใช้ปี พ.ศ. ที่ถูกต้องเสมอ)
+    // 5. เตรียมการแสดงผล (ใช้ปี พ.ศ. ที่ถูกต้องเสมอ)
     const birthYearCE = birthDate.getFullYear();
     const birthYearBE = birthDate.getFullYear() + 543;
     const birthDayText = birthDate.toLocaleDateString('th-TH', { 
@@ -169,6 +175,7 @@ function displayCurrentZodiacYear() {
     const zodiacs = CHINESE_ZODIACS;
     
     // สูตรคำนวณนักษัตรปัจจุบัน: (ปี พ.ศ. + 9) % 12 
+    // เราใช้ปี พ.ศ. ที่นับจาก 1 ม.ค. เป็นหลักสำหรับหัวข้อ (เหมือนระบบญี่ปุ่น)
     const zodiacIndex = (currentBEYear + 9) % 12;
 
     const currentZodiac = zodiacs[zodiacIndex];
