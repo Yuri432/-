@@ -198,7 +198,6 @@ const NUMEROLOGY_MEANINGS = {
     22: { title: "22: จันทร์คู่ (ความอ่อนไหว/ขาดความแน่นอน)", detail: "เป็นเลขที่ไม่ดี มักประสบปัญหาในชีวิตคู่ การเงินไม่มั่นคง มีอุปสรรคเข้ามาบ่อยครั้ง อาจต้องเผชิญกับความผิดหวังซ้ำ ๆ" },
     24: { title: "24: โชคลาภและความอุดมสมบูรณ์", detail: "เป็นเลขดีมาก มักมีชีวิตที่สุขสบาย มีคู่ครองที่ดี มีความมั่งคั่งและสมบูรณ์พูนสุข แต่บางครั้งขาดความกระตือรือร้น" },
     29: { title: "29: ความก้าวหน้าอย่างรวดเร็ว (ความสามารถรอบด้าน)", detail: "เป็นเลขดีมาก มีความสามารถรอบด้าน ฉลาดหลักแหลม มักได้รับการสนับสนุนจากผู้ใหญ่ ทำให้ประสบความสำเร็จในหน้าที่การงานอย่างรวดเร็ว" },
-    // เพิ่มการทำนายเลขอื่นๆ ตามต้องการ (เนื่องจากมีหลายตำรา จะมีเพียงบางส่วน)
     // สำหรับเลขอื่น ๆ จะใช้การทำนายพื้นฐาน
 };
 
@@ -227,14 +226,16 @@ window.calculateNumerology = function() {
     const surname = surnameInput.value;
     const dateValue = birthdateInput.value;
 
-    // *** NEW: 1. ตรวจสอบ CAPTCHA ***
-    const recaptchaResponse = grecaptcha.getResponse();
-
-    if (!recaptchaResponse) {
-        resultDiv.innerHTML = '<p style="color:red; font-weight:bold;">❌ กรุณาทำเครื่องหมายที่ช่อง "ฉันไม่ใช่โปรแกรมอัตโนมัติ" ก่อนทำนาย</p>';
-        return;
+    // *** 1. ตรวจสอบ CAPTCHA ***
+    if (typeof grecaptcha !== 'undefined') {
+        const recaptchaResponse = grecaptcha.getResponse();
+        if (!recaptchaResponse) {
+            resultDiv.innerHTML = '<p style="color:red; font-weight:bold;">❌ กรุณาทำเครื่องหมายที่ช่อง "ฉันไม่ใช่โปรแกรมอัตโนมัติ" ก่อนทำนาย</p>';
+            return;
+        }
+        grecaptcha.reset(); // รีเซ็ต CAPTCHA หลังการตรวจสอบ
     }
-    // *** END NEW CHECK ***
+    // *** สิ้นสุดการตรวจสอบ CAPTCHA ***
 
     if (!name && !surname) {
         resultDiv.innerHTML = '<p style="color:red;">⚠️ กรุณาป้อนชื่อและ/หรือนามสกุล (ภาษาไทย)</p>';
@@ -333,9 +334,6 @@ window.calculateNumerology = function() {
             ${breakdownHtml}
         </div>
     `;
-    
-    // *** NEW: รีเซ็ต CAPTCHA หลังจากใช้งานสำเร็จ (เพื่อบังคับให้ทำใหม่ทุกครั้ง) ***
-    grecaptcha.reset();
 };
 
 
@@ -449,7 +447,6 @@ window.calculatePersonalInfo = function() {
         </div>
     `;
 };
-
 
 
 // ==============================================
