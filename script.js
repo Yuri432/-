@@ -256,6 +256,7 @@ function resetTimerDisplay() {
 }
 
 function initTimer() {
+    // ต้องตรวจสอบว่ามี element นี้อยู่หรือไม่ก่อน
     alarmSound = document.getElementById('alarm-sound');
     resetTimerDisplay();
 }
@@ -290,6 +291,7 @@ window.startTimer = function() {
             isRunning = false;
             
             if(alarmSound) {
+                 // ใส่ try-catch เพื่อป้องกัน browser block
                  alarmSound.play().catch(e => console.error("Error playing sound. Browser blocked it or file not found."));
             }
            
