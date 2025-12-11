@@ -5,24 +5,6 @@ const TIMEZONES = {
     sydney: { id: 'Australia/Sydney', name: '🇦🇺 ซิดนีย์, ออสเตรเลีย', offset: 11, city: 'ซิดนีย์' } 
 };
 
-// ฐานข้อมูลราศีตะวันตก (สากล)
-const ZODIACS = [
-    // กำหนดเพื่อใช้ในฟังก์ชันคำนวณ (ใช้ if-else if)
-    { name: "มังกร (Capricorn)", startMonth: 0, startDate: 20 }, // ม.ค. 20
-    { name: "กุมภ์ (Aquarius)", startMonth: 1, startDate: 19 }, // ก.พ. 19
-    { name: "มีน (Pisces)", startMonth: 2, startDate: 21 }, // มี.ค. 21
-
-    { name: "เมษ (Aries)", startMonth: 3, startDate: 20 },
-    { name: "พฤษภ (Taurus)", startMonth: 4, startDate: 21 },
-    { name: "เมถุน (Gemini)", startMonth: 5, startDate: 21 },
-    { name: "กรกฎ (Cancer)", startMonth: 6, startDate: 23 },
-    { name: "สิงห์ (Leo)", startMonth: 7, startDate: 23 },
-    { name: "กันย์ (Virgo)", startMonth: 8, startDate: 23 },
-    { name: "ตุลย์ (Libra)", startMonth: 9, startDate: 23 },
-    { name: "พิจิก (Scorpio)", startMonth: 10, startDate: 23 },
-    { name: "ธนู (Sagittarius)", startMonth: 11, startDate: 22 }
-];
-
 // ฐานข้อมูลปีนักษัตร (ราศีตะวันออก)
 const CHINESE_ZODIACS = [
     "ชวด (หนู)", "ฉลู (วัว)", "ขาล (เสือ)", "เถาะ (กระต่าย)", 
@@ -33,7 +15,7 @@ const CHINESE_ZODIACS = [
 const isNight = (hour) => hour >= 19 || hour < 6;
 
 // ==============================================
-// ฟังก์ชันคำนวณราศีที่แก้ไขให้ถูกต้องแล้ว
+// ฟังก์ชันคำนวณราศีที่แก้ไขให้ถูกต้องแล้ว (รวมถึง มังกร/กุมภ์)
 // ==============================================
 
 function getZodiacSign(birthDate) {
@@ -108,6 +90,7 @@ function getLunarZodiac(birthDate, system = 'thai') {
     return CHINESE_ZODIACS[index];
 }
 
+// ** แก้ไขเพื่อให้ Browser มองเห็นฟังก์ชันนี้ **
 window.calculatePersonalInfo = function() {
     const inputElement = document.getElementById('birthdate-input');
     const resultDiv = document.getElementById('personal-result');
@@ -172,6 +155,7 @@ window.calculatePersonalInfo = function() {
 
 // ==============================================
 // ฟังก์ชันสำหรับนาฬิกาโลก (WORLD CLOCK FUNCTIONS)
+// (ไม่น่าใช่สาเหตุของ error นี้ แต่ต้องคงไว้)
 // ==============================================
 
 function displayCurrentZodiacYear() {
