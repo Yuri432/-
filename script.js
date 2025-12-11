@@ -1,11 +1,11 @@
-// ข้อมูล Time Zones ที่ต้องการแสดงผล
+// ข้อมูล Time Zones
 const TIMEZONES = {
     thai: { id: 'Asia/Bangkok', name: '🇹🇭 กรุงเทพฯ, ประเทศไทย', offset: 7, city: 'ไทย' },
     japan: { id: 'Asia/Tokyo', name: '🇯🇵 โตเกียว, ญี่ปุ่น', offset: 9, city: 'ญี่ปุ่น' },
     sydney: { id: 'Australia/Sydney', name: '🇦🇺 ซิดนีย์, ออสเตรเลีย', offset: 11, city: 'ซิดนีย์' } 
 };
 
-// ฐานข้อมูลราศีตะวันตก (Western Zodiac, ใช้ปฏิทินตะวันตก)
+// ฐานข้อมูลราศีตะวันตก (สากล)
 const ZODIACS = [
     { name: "มังกร (Capricorn)", startMonth: 0, startDate: 20 },
     { name: "กุมภ์ (Aquarius)", startMonth: 1, startDate: 19 },
@@ -21,7 +21,7 @@ const ZODIACS = [
     { name: "ธนู (Sagittarius)", startMonth: 11, startDate: 22 }
 ];
 
-// ฐานข้อมูลปีนักษัตร (Eastern Zodiac, ใช้ปี ค.ศ.)
+// ฐานข้อมูลปีนักษัตร (ราศีตะวันออก)
 const CHINESE_ZODIACS = [
     "ชวด (หนู)", "ฉลู (วัว)", "ขาล (เสือ)", "เถาะ (กระต่าย)", 
     "มะโรง (งูใหญ่/มังกร)", "มะเส็ง (งูเล็ก)", "มะเมีย (ม้า)", "มะแม (แพะ)", 
@@ -36,16 +36,10 @@ const isNight = (hour) => hour >= 19 || hour < 6;
 // ฟังก์ชันคำนวณข้อมูลส่วนตัว (CALCULATOR FUNCTIONS)
 // ==============================================
 
-/**
- * คำนวณราศีตะวันตกจากวันเกิด
- * @param {Date} birthDate - วันเกิด
- * @returns {string} ชื่อราศี
- */
 function getZodiacSign(birthDate) {
     const month = birthDate.getMonth();
     const day = birthDate.getDate();
 
-    // วนลูปเพื่อหาราศี
     for (let i = 0; i < ZODIACS.length; i++) {
         const zodiac = ZODIACS[i];
         const nextZodiac = ZODIACS[(i + 1) % ZODIACS.length]; 
@@ -60,11 +54,6 @@ function getZodiacSign(birthDate) {
     return 'ไม่ทราบ';
 }
 
-/**
- * คำนวณอายุจากวันเกิด
- * @param {Date} birthDate - วันเกิด
- * @returns {number} อายุ
- */
 function calculateAge(birthDate) {
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
@@ -76,15 +65,9 @@ function calculateAge(birthDate) {
     return age;
 }
 
-/**
- * คำนวณปีนักษัตร (ราศีตะวันออก)
- * @param {Date} birthDate - วันเกิด
- * @param {'thai' | 'japan'} system - ระบบการนับ (ไทย: เปลี่ยนปีหลังสงกรานต์, ญี่ปุ่น: เปลี่ยนปี 1 ม.ค.)
- * @returns {string} ชื่อปีนักษัตร
- */
 function getLunarZodiac(birthDate, system = 'thai') {
     const birthYearCE = birthDate.getFullYear();
-    const month = birthDate.getMonth(); // Month index 0-11
+    const month = birthDate.getMonth(); 
     const day = birthDate.getDate();
     
     let yearToCalculate = birthYearCE;
@@ -95,9 +78,8 @@ function getLunarZodiac(birthDate, system = 'thai') {
             yearToCalculate--;
         }
     } 
-    // สำหรับ 'japan' (และระบบสากลอื่นๆ): เปลี่ยนปีวันที่ 1 ม.ค. ซึ่งตรงกับปี CE โดยตรง
-
-    // สูตรคำนวณ: (ปี ค.ศ. + 8) % 12 (ปี 1900 เป็นปีชวด)
+    
+    // สูตรคำนวณ: (ปี ค.ศ. + 8) % 12 
     const index = (yearToCalculate + 8) % 12; 
     return CHINESE_ZODIACS[index];
 }
@@ -136,10 +118,10 @@ window.calculatePersonalInfo = function() {
 
     // 4. คำนวณข้อมูล
     const age = calculateAge(birthDate);
-    const westernZodiac = getZodiacSign(birthDate); // ราศีตะวันตก
+    const westernZodiac = getZodiacSign(birthDate); // ราศีสากล/ตะวันตก
     
-    const lunarZodiacThai = getLunarZodiac(birthDate, 'thai'); // ปีนักษัตร (ไทย)
-    const lunarZodiacJapan = getLunarZodiac(birthDate, 'japan'); // ปีนักษัตร (ญี่ปุ่น/สากล)
+    const lunarZodiacThai = getLunarZodiac(birthDate, 'thai'); 
+    const lunarZodiacJapan = getLunarZodiac(birthDate, 'japan'); // ราศีตะวันออก (สากล/ญี่ปุ่น)
 
     // 5. เตรียมการแสดงผล
     const birthYearCE = birthDate.getFullYear();
@@ -157,7 +139,7 @@ window.calculatePersonalInfo = function() {
         </div>
         
         <div class="result-box">
-            <h4>🌟 ราศีตะวันตก:</h4>
+            <h4>🌟 ราศีตะวันตก (สากล):</h4>
             <p><strong>ราศีตามเดือนเกิด:</strong> ${westernZodiac}</p>
         </div>
         
@@ -172,7 +154,6 @@ window.calculatePersonalInfo = function() {
 
 // ==============================================
 // ฟังก์ชันสำหรับนาฬิกาโลก (WORLD CLOCK FUNCTIONS)
-// (ไม่มีการเปลี่ยนแปลงจากโค้ดชุดล่าสุด)
 // ==============================================
 
 function displayCurrentZodiacYear() {
