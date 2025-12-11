@@ -1,75 +1,84 @@
+// ข้อมูล Time Zones ที่ใช้งานได้
+const TIMEZONES = {
+    thai: { id: 'Asia/Bangkok', name: '🇹🇭 กรุงเทพฯ, ประเทศไทย', offset: 7 }, // UTC+7
+    japan: { id: 'Asia/Tokyo', name: '🇯🇵 โตเกียว, ญี่ปุ่น', offset: 9 }      // UTC+9
+};
+
+// ฟังก์ชันช่วยในการตรวจสอบว่าเป็นเวลากลางคืนหรือไม่ (19:00 - 05:59 น.)
+const isNight = (hour) => hour >= 19 || hour < 6;
+
 function updateClocks() {
-    // กำหนดรูปแบบการแสดงวันที่ (ชื่อวัน, วันที่, เดือน, ปี)
+    // กำหนดรูปแบบการแสดงวันที่
     const dateOptions = {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
         day: 'numeric'
     };
-
-    // ฟังก์ชันช่วยในการตรวจสอบว่าเป็นเวลากลางคืนหรือไม่ (19:00 - 05:59 น.)
-    const isNight = (hour) => hour >= 19 || hour < 6;
-
-    // --- 1. ประเทศไทย (Asia/Bangkok) ---
-    const thaiTime = new Date().toLocaleTimeString('th-TH', { 
-        timeZone: 'Asia/Bangkok', 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit', 
-        hour12: false 
-    });
-    const thaiDate = new Date().toLocaleDateString('th-TH', {
-        timeZone: 'Asia/Bangkok',
-        ...dateOptions
-    });
-    // ดึงชั่วโมงเพื่อใช้ในการกำหนดธีม
-    const thaiHour = new Date().toLocaleTimeString('en-US', {
-        timeZone: 'Asia/Bangkok',
-        hour: 'numeric',
-        hour12: false
-    });
     
-    // อัปเดต HTML สำหรับไทย
-    document.getElementById('thai-time').textContent = thaiTime;
-    document.getElementById('thai-date').textContent = thaiDate;
-    
-    // จัดการธีมกลางวัน/กลางคืนสำหรับไทย
-    const thaiClockElement = document.getElementById('thai-clock');
-    if (isNight(parseInt(thaiHour))) {
-        thaiClockElement.classList.add('night-mode');
-    } else {
-        thaiClockElement.classList.remove('night-mode');
+    // --- ฟังก์ชันสำหรับอัปเดตนาฬิกาเดียว (ลดโค้ดซ้ำซ้อน) ---
+    function updateClock(zoneKey) {
+        const zone = TIMEZONES[zoneKey];
+        const date = new Date();
+
+        // ดึงเวลาในรูปแบบ Local Time String ตาม TimeZone
+        const timeString = date.toLocaleTimeString('th-TH', { 
+            timeZone: zone.id, 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit', 
+            hour12: false 
+        });
+        
+        // ดึงวันที่ในรูปแบบ Local Date String ตาม TimeZone
+        const dateString = date.toLocaleDateString('th-TH', {
+            timeZone: zone.id,
+            ...dateOptions
+        });
+
+        // ดึงชั่วโมง (เป็นตัวเลข) เพื่อใช้ในการกำหนดธีมกลางวัน/กลางคืน
+        const hourNumeric = parseInt(date.toLocaleTimeString('en-US', {
+            timeZone: zone.id,
+            hour: 'numeric',
+            hour12: false
+        }));
+
+        // อัปเดต HTML
+        document.getElementById(`${zoneKey}-time`).textContent = timeString;
+        document.getElementById(`${zoneKey}-date`).textContent = dateString;
+        
+        // จัดการธีมกลางวัน/กลางคืน
+        const clockElement = document.getElementById(`${zoneKey}-clock`);
+        if (isNight(hourNumeric)) {
+            clockElement.classList.add('night-mode');
+        } else {
+            clockElement.classList.remove('night-mode');
+        }
+        
+        // คืนค่า UTC offset
+        return zone.offset;
     }
 
-    // --- 2. ประเทศญี่ปุ่น (Asia/Tokyo) ---
-    const japanTime = new Date().toLocaleTimeString('ja-JP', { 
-        timeZone: 'Asia/Tokyo', 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit', 
-        hour12: false 
-    });
-    const japanDate = new Date().toLocaleDateString('ja-JP', {
-        timeZone: 'Asia/Tokyo',
-        ...dateOptions
-    });
-    // ดึงชั่วโมงเพื่อใช้ในการกำหนดธีม
-    const japanHour = new Date().toLocaleTimeString('en-US', {
-        timeZone: 'Asia/Tokyo',
-        hour: 'numeric',
-        hour12: false
-    });
+    // --- อัปเดตนาฬิกาทั้งสองและรับ UTC Offset กลับมา ---
+    const thaiOffset = updateClock('thai');
+    const japanOffset = updateClock('japan');
+
+    // --- 3. คำนวณส่วนต่างเวลา (Time Difference) ---
+    const diffHours = japanOffset - thaiOffset; 
+    const diffMinutes = Math.abs(diffHours * 60);
+
+    const diffDisplayElement = document.getElementById('time-difference');
     
-    // อัปเดต HTML สำหรับญี่ปุ่น
-    document.getElementById('japan-time').textContent = japanTime;
-    document.getElementById('japan-date').textContent = japanDate;
-    
-    // จัดการธีมกลางวัน/กลางคืนสำหรับญี่ปุ่น
-    const japanClockElement = document.getElementById('japan-clock');
-    if (isNight(parseInt(japanHour))) {
-        japanClockElement.classList.add('night-mode');
+    // แสดงผลส่วนต่าง
+    if (diffHours > 0) {
+        // ญี่ปุ่นเร็วกว่าไทย (+2 ชั่วโมง)
+        diffDisplayElement.innerHTML = `ญี่ปุ่นเร็วกว่าไทย <span style="color:#e74c3c;">${diffHours} ชั่วโมง</span> (${diffMinutes} นาที)`;
+    } else if (diffHours < 0) {
+        // ไทยเร็วกว่าญี่ปุ่น (ไม่น่าเกิดขึ้นในเคสนี้)
+         diffDisplayElement.innerHTML = `ไทยเร็วกว่าญี่ปุ่น <span style="color:#e74c3c;">${Math.abs(diffHours)} ชั่วโมง</span> (${diffMinutes} นาที)`;
     } else {
-        japanClockElement.classList.remove('night-mode');
+        // เวลาเท่ากัน
+         diffDisplayElement.innerHTML = `เวลาเท่ากัน`;
     }
 }
 
