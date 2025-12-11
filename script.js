@@ -1,14 +1,36 @@
-// ข้อมูล Time Zones ที่ใช้งานได้
+// ข้อมูล Time Zones ที่ต้องการแสดงผล (สามารถเพิ่มประเทศอื่นได้ง่ายๆ ที่นี่)
 const TIMEZONES = {
-    thai: { id: 'Asia/Bangkok', name: '🇹🇭 กรุงเทพฯ, ประเทศไทย', offset: 7 }, // UTC+7
-    japan: { id: 'Asia/Tokyo', name: '🇯🇵 โตเกียว, ญี่ปุ่น', offset: 9 }      // UTC+9
+    thai: { id: 'Asia/Bangkok', name: '🇹🇭 กรุงเทพฯ, ประเทศไทย', offset: 7, city: 'ไทย' },
+    japan: { id: 'Asia/Tokyo', name: '🇯🇵 โตเกียว, ญี่ปุ่น', offset: 9, city: 'ญี่ปุ่น' },
+    sydney: { id: 'Australia/Sydney', name: '🇦🇺 ซิดนีย์, ออสเตรเลีย', offset: 11, city: 'ซิดนีย์' } // ตัวอย่างประเทศที่เพิ่ม
 };
 
 // ฟังก์ชันช่วยในการตรวจสอบว่าเป็นเวลากลางคืนหรือไม่ (19:00 - 05:59 น.)
 const isNight = (hour) => hour >= 19 || hour < 6;
 
+// --- 1. ฟังก์ชันสร้าง HTML สำหรับนาฬิกา (Run เพียงครั้งเดียว) ---
+function createClockElements() {
+    const container = document.getElementById('clock-display-container');
+    container.innerHTML = ''; // ล้างเนื้อหาเดิม
+
+    for (const key in TIMEZONES) {
+        const zone = TIMEZONES[key];
+        
+        // สร้าง HTML string สำหรับนาฬิกาแต่ละอัน
+        const clockHTML = `
+            <div class="clock" id="${key}-clock">
+                <h2>${zone.name}</h2>
+                <div class="date-display" id="${key}-date">---</div>
+                <div class="time" id="${key}-time">--:--:--</div>
+                <div class="timezone">เวลามาตรฐาน: ${zone.id.split('/').pop()} (UTC+${zone.offset})</div>
+            </div>
+        `;
+        container.innerHTML += clockHTML;
+    }
+}
+
+// --- 2. ฟังก์ชันอัปเดตเวลาและธีม (Run ทุกวินาที) ---
 function updateClocks() {
-    // กำหนดรูปแบบการแสดงวันที่
     const dateOptions = {
         weekday: 'long',
         year: 'numeric',
@@ -16,9 +38,11 @@ function updateClocks() {
         day: 'numeric'
     };
     
-    // --- ฟังก์ชันสำหรับอัปเดตนาฬิกาเดียว (ลดโค้ดซ้ำซ้อน) ---
-    function updateClock(zoneKey) {
-        const zone = TIMEZONES[zoneKey];
+    let thaiOffset = 0;
+    let japanOffset = 0; // เก็บ offset เพื่อคำนวณส่วนต่าง
+
+    for (const key in TIMEZONES) {
+        const zone = TIMEZONES[key];
         const date = new Date();
 
         // ดึงเวลาในรูปแบบ Local Time String ตาม TimeZone
@@ -30,13 +54,13 @@ function updateClocks() {
             hour12: false 
         });
         
-        // ดึงวันที่ในรูปแบบ Local Date String ตาม TimeZone
+        // ดึงวันที่
         const dateString = date.toLocaleDateString('th-TH', {
             timeZone: zone.id,
             ...dateOptions
         });
 
-        // ดึงชั่วโมง (เป็นตัวเลข) เพื่อใช้ในการกำหนดธีมกลางวัน/กลางคืน
+        // ดึงชั่วโมงสำหรับธีมกลางวัน/กลางคืน
         const hourNumeric = parseInt(date.toLocaleTimeString('en-US', {
             timeZone: zone.id,
             hour: 'numeric',
@@ -44,44 +68,46 @@ function updateClocks() {
         }));
 
         // อัปเดต HTML
-        document.getElementById(`${zoneKey}-time`).textContent = timeString;
-        document.getElementById(`${zoneKey}-date`).textContent = dateString;
+        document.getElementById(`${key}-time`).textContent = timeString;
+        document.getElementById(`${key}-date`).textContent = dateString;
         
         // จัดการธีมกลางวัน/กลางคืน
-        const clockElement = document.getElementById(`${zoneKey}-clock`);
+        const clockElement = document.getElementById(`${key}-clock`);
         if (isNight(hourNumeric)) {
             clockElement.classList.add('night-mode');
         } else {
             clockElement.classList.remove('night-mode');
         }
-        
-        // คืนค่า UTC offset
-        return zone.offset;
+
+        // เก็บ Offset สำหรับคำนวณส่วนต่างไทย-ญี่ปุ่น
+        if (key === 'thai') thaiOffset = zone.offset;
+        if (key === 'japan') japanOffset = zone.offset;
     }
 
-    // --- อัปเดตนาฬิกาทั้งสองและรับ UTC Offset กลับมา ---
-    const thaiOffset = updateClock('thai');
-    const japanOffset = updateClock('japan');
-
-    // --- 3. คำนวณส่วนต่างเวลา (Time Difference) ---
+    // --- 3. คำนวณส่วนต่างเวลา ไทย vs ญี่ปุ่น ---
     const diffHours = japanOffset - thaiOffset; 
     const diffMinutes = Math.abs(diffHours * 60);
 
     const diffDisplayElement = document.getElementById('time-difference');
     
-    // แสดงผลส่วนต่าง
     if (diffHours > 0) {
-        // ญี่ปุ่นเร็วกว่าไทย (+2 ชั่วโมง)
         diffDisplayElement.innerHTML = `ญี่ปุ่นเร็วกว่าไทย <span style="color:#e74c3c;">${diffHours} ชั่วโมง</span> (${diffMinutes} นาที)`;
     } else if (diffHours < 0) {
-        // ไทยเร็วกว่าญี่ปุ่น (ไม่น่าเกิดขึ้นในเคสนี้)
          diffDisplayElement.innerHTML = `ไทยเร็วกว่าญี่ปุ่น <span style="color:#e74c3c;">${Math.abs(diffHours)} ชั่วโมง</span> (${diffMinutes} นาที)`;
     } else {
-        // เวลาเท่ากัน
          diffDisplayElement.innerHTML = `เวลาเท่ากัน`;
     }
 }
 
-// เรียกใช้ฟังก์ชันทันทีและตั้งเวลาให้ทำงานซ้ำทุก 1 วินาที
+// -----------------------------------------------------
+// --- การเริ่มต้น (Entry Point) ---
+// -----------------------------------------------------
+
+// 1. สร้างโครงสร้างนาฬิกาทั้งหมดตามข้อมูล TIMEZONES
+createClockElements();
+
+// 2. อัปเดตเวลาทันที
 updateClocks();
+
+// 3. ตั้งเวลาให้ทำงานซ้ำทุก 1 วินาที
 setInterval(updateClocks, 1000);
