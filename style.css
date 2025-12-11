@@ -1,257 +1,29 @@
-/* ============================================== */
-/* 1. สไตล์พื้นฐานและโครงสร้างหลัก (BODY & CONTAINER) */
-/* ============================================== */
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f9; 
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-}
-
-.container {
-    background-color: #fff; 
-    padding: 30px 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    max-width: 800px;
-    width: 90%;
-}
-
-/* ============================================== */
-/* 2. สไตล์ส่วนหัว (Header Info และ Avatar - ปรับเป็น Center) */
-/* ============================================== */
-
-.header-info {
-    /* เปลี่ยนจาก display: flex; เป็น block หรือ flex ที่จัดตรงกลาง */
-    display: flex; 
-    flex-direction: column; /* จัดให้อยู่ตรงกลางแทนการจัดข้าง Avatar */
-    align-items: center; 
-    margin-bottom: 30px; /* เพิ่มระยะห่างจากส่วนถัดไป */
-}
-
-/* ลบสไตล์ .ayunum-avatar ออก */
-
-.header-text {
-    text-align: center; /* จัดข้อความให้อยู่ตรงกลาง */
-}
-
-.header-text h1 {
-    margin-bottom: 5px; 
-    font-size: 2.2em;
-    color: #2c3e50;
-}
-
-.additional-info {
-    font-size: 1.1em;
-    color: #555;
-    font-weight: 500;
-}
-
-/* ============================================== */
-/* 3. สไตล์ส่วนต่างเวลา (Time Difference) */
-/* (ไม่มีการเปลี่ยนแปลง) */
-/* ============================================== */
-.time-difference-container {
-    background-color: #e8f8f5;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 25px;
-    border-left: 5px solid #1abc9c;
-}
-
-.difference-title {
-    font-size: 1.2em;
-    color: #1abc9c;
-    margin-top: 0;
-    margin-bottom: 5px;
-}
-
-.difference-value {
-    font-size: 1.5em;
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-
-/* ============================================== */
-/* 4. สไตล์ส่วนคำนวณ (Calculator Section) */
-/* (ไม่มีการเปลี่ยนแปลง) */
-/* ============================================== */
-.calculator-section {
-    background-color: #f7f9fc;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 30px;
-    border: 1px solid #e0e0e0;
-}
-
-.calculator-section h2 {
-    color: #8e44ad; 
-    margin-top: 0;
-}
-
-.input-form {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-}
-
-#birthdate-input {
+/* --- Timer Section Styling --- */
+#timer-input-container {
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1em;
-}
-
-.input-form button {
-    padding: 10px 20px;
-    background-color: #8e44ad;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s;
-}
-
-.input-form button:hover {
-    background-color: #6c3483;
-}
-
-.result-display {
-    text-align: left;
-    background-color: #fff;
-    padding: 15px;
-    border-radius: 6px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.result-display h3 {
-    margin-top: 0;
-    color: #2c3e50;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
-}
-
-.result-box {
-    margin-bottom: 10px;
-    padding: 10px;
-    border-left: 4px solid #f39c12;
-    background-color: #fcfcfc;
-}
-
-.result-box strong {
-    color: #f39c12;
-}
-
-
-/* ============================================== */
-/* 5. สไตล์นาฬิกา (Day Mode / Default) */
-/* (ไม่มีการเปลี่ยนแปลง) */
-/* ============================================== */
-.clock-display {
-    display: flex;
-    justify-content: space-around;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.clock {
-    background-color: #ecf0f1;
     border-radius: 8px;
-    padding: 20px;
-    flex: 1;
-    min-width: 300px;
-    transition: transform 0.3s ease, background-color 0.5s, color 0.5s; 
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 400px;
+    margin: 20px auto;
 }
 
-.clock:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+#timer-minutes, #timer-seconds {
+    padding: 5px;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    font-size: 1em;
 }
 
-.clock h2 {
-    color: #3498db;
-    font-size: 1.5em;
-    margin-top: 0;
-    transition: color 0.5s;
-}
-
-.time {
-    font-size: 3.5em;
+#timer-display {
+    font-family: 'Consolas', monospace; /* ใช้ฟอนต์ตัวอักษรคงที่เพื่อความสวยงาม */
     font-weight: bold;
-    color: #2980b9;
-    margin: 10px 0;
-    letter-spacing: 2px;
-    transition: color 0.5s;
+    text-align: center;
 }
 
-.date-display {
-    font-size: 1.1em;
-    color: #555;
-    margin-bottom: 5px;
-    font-weight: 600;
-    transition: color 0.5s;
-}
-
-.timezone {
-    font-size: 0.9em;
-    color: #7f8c8d;
-    transition: color 0.5s;
-}
-
-
-/* ============================================== */
-/* 6. สไตล์กลางคืน (Night Mode) */
-/* (ไม่มีการเปลี่ยนแปลง) */
-/* ============================================== */
-.clock.night-mode {
-    background-color: #34495e; 
-    color: #ecf0f1; 
-}
-
-.clock.night-mode h2 {
-    color: #9b59b6; 
-}
-
-.clock.night-mode .time {
-    color: #f1c40f; 
-}
-
-.clock.night-mode .timezone,
-.clock.night-mode .date-display {
-    color: #bdc3c7;
-}
-
-
-/* ============================================== */
-/* 7. การปรับสำหรับหน้าจอขนาดเล็ก (Media Query) */
-/* ============================================== */
-@media (max-width: 650px) {
-    .clock-display {
-        flex-direction: column;
-    }
-    .header-info {
-        flex-direction: column;
-        text-align: center;
-    }
-    /* ลบ .ayunum-avatar ออกจาก Media Query */
-    .header-text {
-        text-align: center;
-    }
-    .input-form {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .input-form label {
-        margin-bottom: 5px;
-    }
+.button-group button {
+    margin: 5px;
 }
