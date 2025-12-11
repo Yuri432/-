@@ -1,0 +1,73 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background-color: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 800px;
+    width: 90%;
+}
+
+h1 {
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-size: 2em;
+}
+
+.clock-display {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    flex-wrap: wrap; /* ให้ขึ้นบรรทัดใหม่เมื่อหน้าจอเล็ก */
+}
+
+.clock {
+    background-color: #ecf0f1;
+    border-radius: 8px;
+    padding: 20px;
+    flex: 1;
+    min-width: 300px;
+    transition: transform 0.3s ease;
+}
+
+.clock:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.clock h2 {
+    color: #3498db;
+    font-size: 1.5em;
+    margin-top: 0;
+}
+
+.time {
+    font-size: 3.5em;
+    font-weight: bold;
+    color: #2980b9;
+    margin: 10px 0;
+    letter-spacing: 2px;
+}
+
+.timezone {
+    font-size: 0.9em;
+    color: #7f8c8d;
+}
+
+/* ปรับสำหรับหน้าจอขนาดเล็ก */
+@media (max-width: 650px) {
+    .clock-display {
+        flex-direction: column;
+    }
+}
