@@ -1,7 +1,9 @@
-/* --- 1. สไตล์พื้นฐานและโครงสร้างหลัก --- */
+/* ============================================== */
+/* 1. สไตล์พื้นฐานและโครงสร้างหลัก (BODY & CONTAINER) */
+/* ============================================== */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f4f4f9;
+    background-color: #f4f4f9; /* สีพื้นหลังอ่อน */
     color: #333;
     display: flex;
     justify-content: center;
@@ -11,7 +13,7 @@ body {
 }
 
 .container {
-    background-color: #fff;
+    background-color: #fff; /* สีพื้นหลังกล่องหลัก */
     padding: 30px 40px;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -30,11 +32,13 @@ h1 {
     display: flex;
     justify-content: space-around;
     gap: 20px;
-    flex-wrap: wrap; 
+    flex-wrap: wrap; /* รองรับการแสดงผลบนอุปกรณ์ขนาดเล็ก */
 }
 
 
-/* --- 2. สไตล์ส่วนต่างเวลา (Time Difference) --- */
+/* ============================================== */
+/* 2. สไตล์ส่วนต่างเวลา (Time Difference) */
+/* ============================================== */
 .time-difference-container {
     background-color: #e8f8f5;
     padding: 15px;
@@ -57,14 +61,16 @@ h1 {
 }
 
 
-/* --- 3. สไตล์นาฬิกา (Day Mode / Default) --- */
+/* ============================================== */
+/* 3. สไตล์นาฬิกา (Day Mode / Default) และ Transition */
+/* ============================================== */
 .clock {
     background-color: #ecf0f1;
     border-radius: 8px;
     padding: 20px;
     flex: 1;
     min-width: 300px;
-    /* เพิ่ม transition เพื่อให้การเปลี่ยนธีมกลางวัน/กลางคืนนุ่มนวลขึ้น */
+    /* Transition สำหรับความนุ่มนวลในการเปลี่ยนธีมและ hover effect */
     transition: transform 0.3s ease, background-color 0.5s, color 0.5s; 
 }
 
@@ -104,7 +110,9 @@ h1 {
 }
 
 
-/* --- 4. สไตล์กลางคืน (Night Mode) ที่ถูกเพิ่มโดย JavaScript --- */
+/* ============================================== */
+/* 4. สไตล์กลางคืน (Night Mode) ที่ถูกเพิ่มโดย JavaScript */
+/* ============================================== */
 .clock.night-mode {
     background-color: #34495e; /* สีพื้นหลังเข้มขึ้น */
     color: #ecf0f1; /* สีตัวอักษรสว่างขึ้น */
@@ -124,7 +132,9 @@ h1 {
 }
 
 
-/* --- 5. การปรับสำหรับหน้าจอขนาดเล็ก (Responsive Design) --- */
+/* ============================================== */
+/* 5. การปรับสำหรับหน้าจอขนาดเล็ก (Media Query) */
+/* ============================================== */
 @media (max-width: 650px) {
     .clock-display {
         flex-direction: column;
