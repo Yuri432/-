@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ayunum: นาฬิกาโลก (ไทย, ญี่ปุ่น, ซิดนีย์)</title>
-    <meta name="description" content="นาฬิกาโลกแสดงเวลาปัจจุบันในประเทศไทย ญี่ปุ่น และซิดนีย์ พร้อมส่วนต่างเวลา">
+    <title>Ayunum: นาฬิกาโลก</title>
+    <meta name="description" content="นาฬิกาโลกแสดงเวลาของหลาย Time Zone พร้อมคำนวณส่วนต่าง">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -29,12 +29,17 @@
                 </a>
             </div>
         </nav>
+        <header>
+            <h1>🌍 นาฬิกาโลก (World Clock)</h1>
+            <p id="current-zodiac" class="description">ปีนักษัตรปัจจุบัน: กำลังคำนวณ...</p>
+        </header>
+        
         <div class="card-section">
-            <h2>🌍 นาฬิกาโลก: ไทย, ญี่ปุ่น และซิดนีย์</h2>
-            <p id="current-zodiac" class="description"></p>
-            <p id="time-difference" class="description"></p>
-            <div id="clock-display-container">
+            <h2>เวลา ณ ที่ต่างๆ</h2>
+            <div id="clock-display-container" style="display: flex; flex-wrap: wrap; justify-content: space-around; gap: 20px;">
                 </div>
+            <p id="time-difference" style="text-align: center; margin-top: 20px; font-weight: bold; color: #3498db;">กำลังคำนวณส่วนต่างเวลา...</p>
+            <p class="description" style="text-align: center; font-size: 0.8em;">**Night Mode (พื้นหลังเข้ม) จะทำงานในช่วง 19:00 น. - 05:59 น. ของแต่ละพื้นที่</p>
         </div>
 
     </div>
