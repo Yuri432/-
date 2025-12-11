@@ -15,7 +15,7 @@ const CHINESE_ZODIACS = [
 const isNight = (hour) => hour >= 19 || hour < 6;
 
 // ==============================================
-// ฟังก์ชันคำนวณราศี (แก้ไข มังกร/กุมภ์ ให้ถูกต้องแล้ว)
+// ฟังก์ชันคำนวณข้อมูลส่วนตัว
 // ==============================================
 
 function getZodiacSign(birthDate) {
@@ -90,6 +90,7 @@ function getLunarZodiac(birthDate, system = 'thai') {
     return CHINESE_ZODIACS[index];
 }
 
+// ** คำนวณข้อมูลส่วนตัว (สำหรับ index.html) **
 window.calculatePersonalInfo = function() {
     const inputElement = document.getElementById('birthdate-input');
     const resultDiv = document.getElementById('personal-result');
@@ -153,7 +154,7 @@ window.calculatePersonalInfo = function() {
 
 
 // ==============================================
-// 🌟 NEW: ฟังก์ชันระบบจับเวลา (TIMER FUNCTIONS)
+// ฟังก์ชันระบบจับเวลา (สำหรับ timer.html)
 // ==============================================
 
 let totalSeconds = 0;
@@ -177,7 +178,6 @@ function resetTimerDisplay() {
 }
 
 function initTimer() {
-    // กำหนด Audio Element
     alarmSound = document.getElementById('alarm-sound');
     resetTimerDisplay();
 }
@@ -188,7 +188,6 @@ window.startTimer = function() {
     const inputMinutes = parseInt(document.getElementById('timer-minutes').value) || 0;
     const inputSeconds = parseInt(document.getElementById('timer-seconds').value) || 0;
     
-    // ตั้งเวลาทั้งหมด เมื่อเริ่มต้นใหม่
     if (totalSeconds <= 0) { 
         totalSeconds = inputMinutes * 60 + inputSeconds;
     }
@@ -198,7 +197,6 @@ window.startTimer = function() {
         return;
     }
 
-    // ซ่อนช่องใส่เวลาและแสดงปุ่มหยุด
     document.getElementById('timer-input-container').style.display = 'none';
     document.getElementById('start-button').style.display = 'none';
     document.getElementById('pause-button').style.display = 'inline-block';
@@ -213,15 +211,12 @@ window.startTimer = function() {
             clearInterval(intervalId);
             isRunning = false;
             
-            // หมดเวลา! เล่นเสียงเตือน
             if(alarmSound) {
-                 // ใช้ .catch เพื่อป้องกัน error ถ้าเบราว์เซอร์บล็อกการเล่นเสียง
-                 alarmSound.play().catch(e => console.error("Error playing sound (อาจต้องกด Play ก่อน):", e));
+                 alarmSound.play().catch(e => console.error("Error playing sound (เบราว์เซอร์อาจบล็อก):", e));
             }
            
             document.getElementById('timer-display').textContent = "🚨 หมดเวลา! 🚨";
 
-            // อัปเดต UI ให้พร้อมเริ่มต้นใหม่
             document.getElementById('start-button').textContent = '▶️ เริ่มจับเวลา';
             document.getElementById('start-button').style.display = 'inline-block';
             document.getElementById('pause-button').style.display = 'none';
@@ -246,13 +241,11 @@ window.resetTimer = function() {
     isRunning = false;
     totalSeconds = 0; 
     
-    // หยุดเสียงเตือน
     if(alarmSound) {
         alarmSound.pause();
         alarmSound.currentTime = 0;
     }
     
-    // รีเซ็ต UI
     document.getElementById('timer-input-container').style.display = 'flex';
     document.getElementById('start-button').textContent = '▶️ เริ่มจับเวลา';
     document.getElementById('start-button').style.display = 'inline-block';
@@ -263,8 +256,7 @@ window.resetTimer = function() {
 
 
 // ==============================================
-// ฟังก์ชันสำหรับนาฬิกาโลก (WORLD CLOCK FUNCTIONS)
-// (ใช้โค้ดเดิม)
+// ฟังก์ชันสำหรับนาฬิกาโลก (สำหรับ worldclock.html)
 // ==============================================
 
 function displayCurrentZodiacYear() {
@@ -277,11 +269,14 @@ function displayCurrentZodiacYear() {
 
     const currentZodiac = zodiacs[zodiacIndex];
     
-    document.getElementById('current-zodiac').textContent = `ปีนักษัตรปัจจุบัน: ${currentZodiac}`;
+    const elem = document.getElementById('current-zodiac');
+    if (elem) elem.textContent = `ปีนักษัตรปัจจุบัน: ${currentZodiac}`;
 }
 
 function createClockElements() {
     const container = document.getElementById('clock-display-container');
+    if (!container) return; 
+
     container.innerHTML = ''; 
 
     for (const key in TIMEZONES) {
@@ -300,6 +295,8 @@ function createClockElements() {
 }
 
 function updateClocks() {
+    if (!document.getElementById('clock-display-container')) return; // หยุดถ้าไม่ได้อยู่หน้า Clock
+    
     const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     let thaiOffset = 0;
     let japanOffset = 0; 
@@ -338,12 +335,14 @@ function updateClocks() {
 
     const diffDisplayElement = document.getElementById('time-difference');
     
-    if (diffHours > 0) {
-        diffDisplayElement.innerHTML = `ญี่ปุ่นเร็วกว่าไทย <span style="color:#e74c3c;">${diffHours} ชั่วโมง</span> (${diffMinutes} นาที)`;
-    } else if (diffHours < 0) {
-         diffDisplayElement.innerHTML = `ไทยเร็วกว่าญี่ปุ่น <span style="color:#e74c3c;">${Math.abs(diffHours)} ชั่วโมง</span> (${diffMinutes} นาที)`;
-    } else {
-         diffDisplayElement.innerHTML = `เวลาเท่ากัน`;
+    if (diffDisplayElement) {
+        if (diffHours > 0) {
+            diffDisplayElement.innerHTML = `ญี่ปุ่นเร็วกว่าไทย <span style="color:#e74c3c;">${diffHours} ชั่วโมง</span> (${diffMinutes} นาที)`;
+        } else if (diffHours < 0) {
+            diffDisplayElement.innerHTML = `ไทยเร็วกว่าญี่ปุ่น <span style="color:#e74c3c;">${Math.abs(diffHours)} ชั่วโมง</span> (${diffMinutes} นาที)`;
+        } else {
+            diffDisplayElement.innerHTML = `เวลาเท่ากัน`;
+        }
     }
 }
 
@@ -351,8 +350,21 @@ function updateClocks() {
 // --- การเริ่มต้น (Entry Point) ---
 // -----------------------------------------------------
 
-createClockElements();
-displayCurrentZodiacYear();
-updateClocks();
-initTimer(); // เรียกใช้ฟังก์ชันเริ่มต้นของ Timer
-setInterval(updateClocks, 1000);
+document.addEventListener('DOMContentLoaded', () => {
+    // กำหนดให้โค้ดเริ่มต้นทำงานเฉพาะเมื่อพบ Element ที่เกี่ยวข้องในหน้าปัจจุบัน
+    
+    if (document.getElementById('clock-display-container')) {
+        // สำหรับ worldclock.html
+        createClockElements();
+        displayCurrentZodiacYear();
+        updateClocks();
+        setInterval(updateClocks, 1000); 
+    }
+
+    if (document.getElementById('timer-display')) {
+        // สำหรับ timer.html
+        initTimer(); 
+    }
+    
+    // index.html: ไม่ต้องมีโค้ดเริ่มต้น เพราะฟังก์ชัน calculatePersonalInfo ถูกเรียกด้วยปุ่ม onclick
+});
