@@ -15,7 +15,7 @@ const CHINESE_ZODIACS = [
 const isNight = (hour) => hour >= 19 || hour < 6;
 
 // ==============================================
-// ฟังก์ชันคำนวณราศีที่แก้ไขให้ถูกต้องแล้ว (รวมถึง มังกร/กุมภ์)
+// ฟังก์ชันคำนวณราศี (แก้ไข มังกร/กุมภ์ ให้ถูกต้องแล้ว)
 // ==============================================
 
 function getZodiacSign(birthDate) {
@@ -90,7 +90,6 @@ function getLunarZodiac(birthDate, system = 'thai') {
     return CHINESE_ZODIACS[index];
 }
 
-// ** แก้ไขเพื่อให้ Browser มองเห็นฟังก์ชันนี้ **
 window.calculatePersonalInfo = function() {
     const inputElement = document.getElementById('birthdate-input');
     const resultDiv = document.getElementById('personal-result');
@@ -154,8 +153,118 @@ window.calculatePersonalInfo = function() {
 
 
 // ==============================================
+// 🌟 NEW: ฟังก์ชันระบบจับเวลา (TIMER FUNCTIONS)
+// ==============================================
+
+let totalSeconds = 0;
+let intervalId;
+let isRunning = false;
+let alarmSound; 
+
+function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+}
+
+function resetTimerDisplay() {
+    const display = document.getElementById('timer-display');
+    const minutes = document.getElementById('timer-minutes').value || 5;
+    const seconds = document.getElementById('timer-seconds').value || 0;
+    
+    const initialTime = parseInt(minutes) * 60 + parseInt(seconds);
+    if (display) display.textContent = formatTime(initialTime);
+}
+
+function initTimer() {
+    // กำหนด Audio Element
+    alarmSound = document.getElementById('alarm-sound');
+    resetTimerDisplay();
+}
+
+window.startTimer = function() {
+    if (isRunning) return;
+
+    const inputMinutes = parseInt(document.getElementById('timer-minutes').value) || 0;
+    const inputSeconds = parseInt(document.getElementById('timer-seconds').value) || 0;
+    
+    // ตั้งเวลาทั้งหมด เมื่อเริ่มต้นใหม่
+    if (totalSeconds <= 0) { 
+        totalSeconds = inputMinutes * 60 + inputSeconds;
+    }
+    
+    if (totalSeconds <= 0) {
+        alert("กรุณาตั้งเวลาอย่างน้อย 1 วินาที!");
+        return;
+    }
+
+    // ซ่อนช่องใส่เวลาและแสดงปุ่มหยุด
+    document.getElementById('timer-input-container').style.display = 'none';
+    document.getElementById('start-button').style.display = 'none';
+    document.getElementById('pause-button').style.display = 'inline-block';
+
+    isRunning = true;
+    
+    intervalId = setInterval(() => {
+        totalSeconds--;
+        document.getElementById('timer-display').textContent = formatTime(totalSeconds);
+
+        if (totalSeconds <= 0) {
+            clearInterval(intervalId);
+            isRunning = false;
+            
+            // หมดเวลา! เล่นเสียงเตือน
+            if(alarmSound) {
+                 // ใช้ .catch เพื่อป้องกัน error ถ้าเบราว์เซอร์บล็อกการเล่นเสียง
+                 alarmSound.play().catch(e => console.error("Error playing sound (อาจต้องกด Play ก่อน):", e));
+            }
+           
+            document.getElementById('timer-display').textContent = "🚨 หมดเวลา! 🚨";
+
+            // อัปเดต UI ให้พร้อมเริ่มต้นใหม่
+            document.getElementById('start-button').textContent = '▶️ เริ่มจับเวลา';
+            document.getElementById('start-button').style.display = 'inline-block';
+            document.getElementById('pause-button').style.display = 'none';
+            document.getElementById('timer-input-container').style.display = 'flex';
+        }
+    }, 1000);
+}
+
+window.pauseTimer = function() {
+    if (!isRunning) return;
+    
+    clearInterval(intervalId);
+    isRunning = false;
+    
+    document.getElementById('start-button').textContent = '▶️ ดำเนินการต่อ';
+    document.getElementById('start-button').style.display = 'inline-block';
+    document.getElementById('pause-button').style.display = 'none';
+}
+
+window.resetTimer = function() {
+    clearInterval(intervalId);
+    isRunning = false;
+    totalSeconds = 0; 
+    
+    // หยุดเสียงเตือน
+    if(alarmSound) {
+        alarmSound.pause();
+        alarmSound.currentTime = 0;
+    }
+    
+    // รีเซ็ต UI
+    document.getElementById('timer-input-container').style.display = 'flex';
+    document.getElementById('start-button').textContent = '▶️ เริ่มจับเวลา';
+    document.getElementById('start-button').style.display = 'inline-block';
+    document.getElementById('pause-button').style.display = 'none';
+    
+    resetTimerDisplay();
+}
+
+
+// ==============================================
 // ฟังก์ชันสำหรับนาฬิกาโลก (WORLD CLOCK FUNCTIONS)
-// (ไม่น่าใช่สาเหตุของ error นี้ แต่ต้องคงไว้)
+// (ใช้โค้ดเดิม)
 // ==============================================
 
 function displayCurrentZodiacYear() {
@@ -245,4 +354,5 @@ function updateClocks() {
 createClockElements();
 displayCurrentZodiacYear();
 updateClocks();
+initTimer(); // เรียกใช้ฟังก์ชันเริ่มต้นของ Timer
 setInterval(updateClocks, 1000);
