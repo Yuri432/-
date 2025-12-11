@@ -1,48 +1,20 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ayunum - World Clock & Calculator</title> 
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container">
-        
-        <div class="header-info">
-            
-            <div class="header-text">
-                <h1>หน้าโปรไฟล์ยินดีต้อนรับ</h1> 
-                <div class="additional-info" id="zodiac-info">
-                    + <span id="current-zodiac">กำลังคำนวณปีนักษัตร...</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="time-difference-container">
-            <h2 class="difference-title">⏰ ส่วนต่างเวลา Ayunum (ไทย vs ญี่ปุ่น)</h2>
-            <div class="difference-value" id="time-difference">
-                </div>
-        </div>
-
-        <div class="calculator-section">
-            <h2>✨ คำนวณข้อมูลส่วนตัว (อายุ, นักษัตร, ราศี)</h2>
-            
-            <div class="input-form">
-                <label for="birthdate-input">ป้อนวันเกิด (ค.ศ. หรือ พ.ศ.):</label>
-                <input type="date" id="birthdate-input" required>
-                <button onclick="calculatePersonalInfo()">คำนวณ</button>
-            </div>
-
-            <div class="result-display" id="personal-result">
-                <p>กรุณาป้อนวันเกิดของคุณเพื่อคำนวณ...</p>
-            </div>
-        </div>
-        
-        <div class="clock-display" id="clock-display-container">
-            </div>
+<div class="card-section">
+    <h2>⏱️ ระบบจับเวลา / นาฬิกาปลุก</h2>
+    <p class="description">+ ตั้งเวลาสำหรับทำกิจกรรม/พักผ่อน เมื่อครบเวลาจะมีเสียงแจ้งเตือน</p>
+    
+    <div id="timer-input-container" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; justify-content: center;">
+        <label for="timer-minutes">ตั้งเวลา:</label>
+        <input type="number" id="timer-minutes" min="0" value="5" style="width: 50px; text-align: center;"> นาที
+        <input type="number" id="timer-seconds" min="0" max="59" value="0" style="width: 50px; text-align: center;"> วินาที
     </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
+    
+    <h1 id="timer-display" style="font-size: 3em; margin: 20px 0; color: #34495e;">05:00</h1>
+    
+    <div class="button-group">
+        <button onclick="startTimer()" id="start-button">▶️ เริ่มจับเวลา</button>
+        <button onclick="pauseTimer()" id="pause-button" style="display:none;">⏸️ หยุดชั่วคราว</button>
+        <button onclick="resetTimer()" id="reset-button">🔄 รีเซ็ต</button>
+    </div>
+    
+    <audio id="alarm-sound" src="alarm.mp3" preload="auto"></audio> 
+    </div>
