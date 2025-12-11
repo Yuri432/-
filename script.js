@@ -1,4 +1,4 @@
-// ข้อมูล Time Zones ที่ต้องการแสดงผล (สามารถเพิ่ม/ลบประเทศอื่นได้ง่ายๆ ที่นี่)
+// ข้อมูล Time Zones ที่ต้องการแสดงผล
 const TIMEZONES = {
     thai: { id: 'Asia/Bangkok', name: '🇹🇭 กรุงเทพฯ, ประเทศไทย', offset: 7, city: 'ไทย' },
     japan: { id: 'Asia/Tokyo', name: '🇯🇵 โตเกียว, ญี่ปุ่น', offset: 9, city: 'ญี่ปุ่น' },
@@ -78,7 +78,7 @@ function getLunarZodiac(birthDate, system = 'thai') {
             yearToCalculate--;
         }
     } else if (system === 'japan') {
-        // ญี่ปุ่น: เปลี่ยนปีนักษัตรวันที่ 1 มกราคม (ไม่ต้องปรับปี)
+        // ญี่ปุ่น: เปลี่ยนปีนักษัตรวันที่ 1 มกราคม 
     }
     
     // สูตรคำนวณ: (ปี ค.ศ. + 8) % 12
@@ -92,17 +92,43 @@ window.calculatePersonalInfo = function() {
     const resultDiv = document.getElementById('personal-result');
     
     if (!inputElement.value) {
-        resultDiv.innerHTML = '<p style="color:red;">⚠️ กรุณาป้อนวันเดือนปีเกิด (ค.ศ.)</p>';
+        resultDiv.innerHTML = '<p style="color:red;">⚠️ กรุณาป้อนวันเดือนปีเกิด (ค.ศ. หรือ พ.ศ.)</p>';
         return;
     }
 
-    const birthDate = new Date(inputElement.value);
+    // 1. ดึงค่าจาก input ซึ่งเป็นรูปแบบ YYYY-MM-DD
+    const dateValue = inputElement.value;
+    const parts = dateValue.split('-'); 
+    let year = parseInt(parts[0]);
+    const month = parseInt(parts[1]) - 1; // เดือน: 0-11
+    const day = parseInt(parts[2]);
+
+    // *** ตรรกะการแปลงปี พ.ศ. / ค.ศ. ***
+    const currentCEYear = new Date().getFullYear(); 
+
+    if (year > currentCEYear + 10) { 
+        // ถ้าปีที่ป้อนมากกว่าปี ค.ศ. ปัจจุบันเกิน 10 ปี สันนิษฐานว่าเป็น พ.ศ.
+        year = year - 543; // แปลงเป็น ค.ศ.
+    }
+    // ถ้าปีที่ป้อนเป็น ค.ศ. อยู่แล้ว (เช่น 2009) จะใช้ปีนั้นเลย
+
+    // สร้าง Date Object ด้วยปี ค.ศ. ที่ปรับแล้ว
+    const birthDate = new Date(year, month, day);
+
+    if (isNaN(birthDate.getTime())) {
+        resultDiv.innerHTML = '<p style="color:red;">⚠️ รูปแบบวันที่ไม่ถูกต้อง</p>';
+        return;
+    }
+
+    // 2. คำนวณข้อมูลที่เหลือ
     const age = calculateAge(birthDate);
     const zodiacSign = getZodiacSign(birthDate);
     
     const zodiacThai = getLunarZodiac(birthDate, 'thai');
     const zodiacJapan = getLunarZodiac(birthDate, 'japan');
 
+    // 3. เตรียมการแสดงผล (ใช้ปี พ.ศ. ที่ถูกต้องเสมอ)
+    const birthYearCE = birthDate.getFullYear();
     const birthYearBE = birthDate.getFullYear() + 543;
     const birthDayText = birthDate.toLocaleDateString('th-TH', { 
         year: 'numeric', month: 'long', day: 'numeric' 
@@ -112,7 +138,7 @@ window.calculatePersonalInfo = function() {
     resultDiv.innerHTML = `
         <h3>✅ ข้อมูลที่คำนวณได้:</h3>
         <div class="result-box">
-            <p><strong>วันเกิดที่ป้อน:</strong> ${birthDayText} พ.ศ. ${birthYearBE}</p>
+            <p><strong>วันเกิดที่ป้อน:</strong> ${birthDayText} พ.ศ. ${birthYearBE} (ค.ศ. ${birthYearCE})</p>
             <p><strong>อายุปัจจุบัน:</strong> ${age} ปี</p>
         </div>
         
@@ -137,7 +163,6 @@ window.calculatePersonalInfo = function() {
 // ฟังก์ชันสำหรับนาฬิกาโลก (WORLD CLOCK FUNCTIONS)
 // ==============================================
 
-// ฟังก์ชันคำนวณและแสดงผลปีนักษัตรปัจจุบัน (สำหรับส่วนหัว)
 function displayCurrentZodiacYear() {
     const currentCEYear = new Date().getFullYear(); 
     const currentBEYear = currentCEYear + 543;
@@ -152,7 +177,6 @@ function displayCurrentZodiacYear() {
     document.getElementById('current-zodiac').textContent = `ปีนักษัตรปัจจุบัน: ${currentZodiac}`;
 }
 
-// ฟังก์ชันสร้างโครงสร้าง HTML ของนาฬิกาทุกเรือน
 function createClockElements() {
     const container = document.getElementById('clock-display-container');
     container.innerHTML = ''; 
@@ -172,7 +196,6 @@ function createClockElements() {
     }
 }
 
-// ฟังก์ชันอัปเดตเวลาและธีมทุกวินาที
 function updateClocks() {
     const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     let thaiOffset = 0;
