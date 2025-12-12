@@ -3,77 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyToolbox | Quiz Game</title>
-    <link rel="stylesheet" href="style.css"> 
-</head>
+    <title>Quiz Game | เครื่องมือคำนวณ</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script>
+        if (!localStorage.getItem('loggedInUser') && !window.location.pathname.includes('login.html') && !window.location.pathname.includes('register.html')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+    </head>
 <body>
+
     <header>
-        <div class="container">
-            <h1><a href="index.html">MyToolbox</a></h1>
-            <nav>
-                <a href="index.html">หน้าแรก</a>
-                <a href="personal.html">ข้อมูลส่วนตัว</a>
-                <a href="converter.html">ตัวแปลง</a>
-                <a href="worldclock.html">นาฬิกาโลก</a>
-                <a href="quiz.html" class="active">Quiz Game</a>
-                </nav>
-        </div>
+        <h1>เครื่องมือคำนวณและเกมความรู้รอบตัว</h1>
+        <nav>
+            <a href="index.html">🎂 ข้อมูลส่วนบุคคล</a>
+            <a href="worldclock.html">🌎 นาฬิกาโลก</a>
+            <a href="converter.html">🔄 เครื่องมือแปลงค่า</a>
+            <a href="quiz.html" class="active">🧠 Quiz Game</a>
+            </nav>
     </header>
 
     <main class="container">
-        <h2 id="welcome-message">👋 ยินดีต้อนรับสู่ MyToolbox</h2>
-
-        <section id="quiz" class="tool-card">
-            <h2>🏆 Quiz Game: ทดสอบความรู้รอบตัว (10 ข้อ)</h2>
-            <div class="tip-box">
-                🎯 **กติกา:** ตอบคำถาม 10 ข้อใน 60 วินาที คะแนนสูงสุดจะถูกบันทึกใน Leaderboard
-            </div>
-
-            <div id="quiz-start-area">
-                <p>พร้อมแล้วหรือยัง? เมื่อเริ่มเกม นาฬิกาจะเริ่มนับถอยหลังทันที!</p>
-                <button onclick="startQuiz()" class="action-btn">▶️ เริ่ม Quiz (10 ข้อ)</button>
+        
+        <div id="quiz" class="main-section">
+            <h2>🧠 เกมตอบคำถามความรู้รอบตัว</h2>
+            
+            <div id="quiz-start-area" style="text-align: center;">
+                <p>ทดสอบความรู้ของคุณกับคำถามหลากหลายประเภท!</p>
+                <button id="quiz-start-btn" class="action-btn" style="padding: 15px 30px; font-size: 1.2em;">
+                    ▶️ เริ่มเกม
+                </button>
             </div>
 
             <div id="quiz-game-area" style="display: none;">
-                <div class="quiz-status">
-                    <span id="quiz-question-number">คำถามที่: 1 / 10</span>
-                    <span id="quiz-score">คะแนน: 0</span>
-                    <span id="quiz-timer">⏰ เหลือเวลา: 60 วินาที</span>
+                <div class="info-box" style="display: flex; justify-content: space-between; font-weight: bold;">
+                    <span id="quiz-score">คะแนน: 0 / 0</span>
+                    <span id="quiz-timer">⏳ เวลา: -- วินาที</span>
                 </div>
                 
-                <h3 id="quiz-question" class="quiz-question-text">คำถามจะปรากฏที่นี่</h3>
-                
-                <div id="quiz-options" class="quiz-options-container">
-                    </div>
+                <div class="question-box">
+                    <h3 id="quiz-question">คำถามที่ 1: ...</h3>
+                    <div id="quiz-options" class="options-container">
+                        </div>
+                </div>
             </div>
 
-            <div id="quiz-result-area" class="quiz-result-box" style="display: none;">
-                </div>
+            <div id="quiz-result-area" class="result-area" style="display: none; text-align: center;">
+                <div id="quiz-final-result">
+                    </div>
+            </div>
             
-            <h3>🏅 Leaderboard (10 อันดับสูงสุด)</h3>
-            <div class="leaderboard-table">
-                <table>
+            <div id="quiz-leaderboard-area" style="margin-top: 30px;">
+                <h3>🏆 ตารางสถิติผู้ทำคะแนนสูงสุด (Top 10)</h3>
+                <table class="leaderboard-table">
                     <thead>
                         <tr>
-                            <th>Rank</th>
-                            <th>ผู้เล่น</th>
+                            <th>ลำดับ</th>
+                            <th>ชื่อผู้เล่น</th>
                             <th>คะแนน</th>
-                            <th>เวลาที่ใช้</th>
+                            <th>เวลา</th>
                             <th>วันที่</th>
                         </tr>
                     </thead>
                     <tbody id="leaderboard-body">
-                        <tr><td colspan="5" style="text-align: center;">กำลังโหลด...</td></tr>
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
-        </section>
+        </div>
         
-
     </main>
 
     <footer>
-        <p id="footer-text">© 2025 MyToolbox Project. All rights reserved.</p>
+        <div class="footer-links">
+            <p>ติดตามช่องทางต่างๆ:</p>
+            <a href="https://www.youtube.com/channel/UCnhhMJrPVY3ILErkK5PClnQ" target="_blank">📺 ช่อง YouTube (YU RI)</a>
+            <a href="https://www.tiktok.com/@ayu_9i?is_from_webapp=1&sender_device=pc" target="_blank">🎵 TikTok (@ayu_9i)</a>
+        </div>
+        <p>&copy; 2025 AI Tools - Data is stored locally on your browser.</p>
     </footer>
 
     <script src="script.js"></script>
