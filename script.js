@@ -15,7 +15,7 @@ const CHINESE_ZODIACS = [
 const isNight = (hour) => hour >= 19 || hour < 6;
 
 // ==============================================
-// 🛠️ ฟังก์ชันช่วยเหลือ: แปลงรูปแบบวันที่ DD/MM/YYYY หรือ DD/MM/BBBB เป็น Date Object
+// 🛠️ ฟังก์ชันช่วยเหลือ: แปลงรูปแบบวันที่
 // ==============================================
 
 function parseDate(dateString) {
@@ -280,7 +280,7 @@ window.calculateNumerology = function() {
 
 
 // ==============================================
-// 🆕 ฟังก์ชันคำนวณอายุแบบละเอียด (ปี, เดือน, วัน, ชม., นาที)
+// 🆕 ฟังก์ชันคำนวณอายุแบบละเอียด
 // ==============================================
 
 function calculateDetailedAge(birthDate) {
@@ -519,7 +519,6 @@ function resetTimerDisplay() {
 }
 
 function initTimer() {
-    // ต้องแน่ใจว่าแท็ก <audio> ใน timer.html มี id="alarm-sound" และ src="7093e7ef1415.mp3"
     alarmSound = document.getElementById('alarm-sound');
     resetTimerDisplay();
 }
@@ -685,7 +684,7 @@ function updateClocks() {
 
 
 // ==============================================
-// 🧠 ฐานข้อมูลคำถาม 30 ข้อ (สำหรับ Quiz Game - ชุดใหม่)
+// 🧠 ฐานข้อมูลคำถาม 30 ข้อ (สำหรับ Quiz Game)
 // ==============================================
 
 const QUIZ_QUESTIONS = [
@@ -745,6 +744,9 @@ let score = 0;
 let timeLimit = 0;
 let timerInterval;
 
+let totalTimeTaken = 0; // เพิ่มตัวแปรนี้เพื่อจับเวลาที่ใช้ไปทั้งหมด
+const LEADERBOARD_KEY = 'quiz_leaderboard'; // Key สำหรับ localStorage
+
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -760,11 +762,13 @@ function startQuiz() {
     
     currentQuestionIndex = 0;
     score = 0;
+    totalTimeTaken = 0; // รีเซ็ตเวลาที่ใช้ไป
     
     // ซ่อนปุ่มเริ่ม และแสดงส่วนเกม
     document.getElementById('quiz-start-area').style.display = 'none';
     document.getElementById('quiz-game-area').style.display = 'block';
     document.getElementById('quiz-result-area').style.display = 'none';
+    document.getElementById('quiz-leaderboard-area').style.display = 'none'; // ซ่อนบอร์ดขณะเล่น
 
     displayQuestion();
 }
@@ -830,6 +834,10 @@ function startTimer() {
 function checkAnswer(selectedButton, selectedOption, correctAnswer) {
     clearInterval(timerInterval); // หยุดเวลาทันทีที่ตอบ
 
+    // เวลาที่ใช้ไปสำหรับข้อนี้ (เวลาตั้งต้น - เวลาที่เหลือ)
+    const timeSpentOnThisQuestion = (DIFFICULTY_TIME[quizQuestions[currentQuestionIndex].difficulty] || 45) - timeLimit;
+    totalTimeTaken += timeSpentOnThisQuestion; // สะสมเวลาที่ใช้ไป
+
     const optionsDiv = document.getElementById('quiz-options');
     optionsDiv.querySelectorAll('button').forEach(btn => {
         btn.disabled = true; 
@@ -855,6 +863,80 @@ function checkAnswer(selectedButton, selectedOption, correctAnswer) {
     }, 2000); 
 }
 
+// ==============================================
+// 🏆 ฟังก์ชัน Leaderboard
+// ==============================================
+
+function loadLeaderboard() {
+    try {
+        const leaderboardJson = localStorage.getItem(LEADERBOARD_KEY);
+        return leaderboardJson ? JSON.parse(leaderboardJson) : [];
+    } catch (e) {
+        console.error("Error loading leaderboard from localStorage", e);
+        return [];
+    }
+}
+
+function saveToLeaderboard(score, timeTaken, playerName) {
+    let leaderboard = loadLeaderboard();
+    
+    const newEntry = {
+        name: playerName || 'ผู้กล้าไร้นาม',
+        score: score,
+        timeTaken: timeTaken, // เวลาเป็นวินาที
+        date: new Date().toLocaleDateString('th-TH'),
+    };
+
+    leaderboard.push(newEntry);
+    
+    // เรียงลำดับ: คะแนนมาก่อน (desc), เวลาที่ใช้น้อยกว่ามาก่อน (asc)
+    leaderboard.sort((a, b) => {
+        if (b.score !== a.score) {
+            return b.score - a.score; // คะแนนสูงกว่าอยู่บน
+        }
+        return a.timeTaken - b.timeTaken; // ถ้าคะแนนเท่ากัน เวลาที่ใช้น้อยกว่าอยู่บน
+    });
+    
+    // เก็บแค่ 10 อันดับแรก
+    leaderboard = leaderboard.slice(0, 10);
+    
+    try {
+        localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(leaderboard));
+    } catch (e) {
+        console.error("Error saving leaderboard to localStorage", e);
+    }
+    
+    return leaderboard;
+}
+
+function displayLeaderboard(leaderboard) {
+    const tableBody = document.getElementById('leaderboard-body');
+    if (!tableBody) return;
+
+    tableBody.innerHTML = '';
+    
+    if (leaderboard.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">ยังไม่มีผู้เล่นทำคะแนนสูงสุด</td></tr>';
+        return;
+    }
+
+    leaderboard.forEach((entry, index) => {
+        const timeFormat = `${Math.floor(entry.timeTaken / 60)}:${String(entry.timeTaken % 60).padStart(2, '0')}`;
+        const row = tableBody.insertRow();
+        
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td style="font-weight: bold;">${entry.name}</td>
+            <td>${entry.score} / 10</td>
+            <td>${timeFormat}</td>
+            <td>${entry.date}</td>
+        `;
+    });
+    
+    document.getElementById('quiz-leaderboard-area').style.display = 'block';
+}
+
+
 function showQuizResult() {
     const resultElement = document.getElementById('quiz-final-result');
     const totalQuestions = quizQuestions.length;
@@ -867,10 +949,20 @@ function showQuizResult() {
     } else {
         message = '🤔 ลองใหม่นะครับ! เพิ่มเติมความรู้รอบตัวอีกนิด';
     }
+    
+    // ถามชื่อผู้เล่น (ใช้ prompt)
+    let playerName = prompt(`🎉 ยินดีด้วย! คุณทำได้ ${score} คะแนน ใช้เวลา ${totalTimeTaken} วินาที\nกรุณาใส่ชื่อของคุณเพื่อบันทึกสถิติ:`, "ผู้เล่น");
+    if (!playerName || playerName.trim() === '') {
+        playerName = 'ผู้กล้าไร้นาม';
+    }
+    
+    // บันทึกคะแนน
+    const updatedLeaderboard = saveToLeaderboard(score, totalTimeTaken, playerName.substring(0, 20)); // ตัดชื่อไม่ให้ยาวเกิน 20 ตัว
 
     resultElement.innerHTML = `
         <h3 style="color:#2980b9;">🎉 จบเกมตอบคำถาม 🎉</h3>
         <p>คุณทำได้ **${score}** คะแนน จากทั้งหมด **${totalQuestions}** ข้อ</p>
+        <p>ใช้เวลาตอบทั้งหมด: <strong>${Math.floor(totalTimeTaken / 60)} นาที ${String(totalTimeTaken % 60).padStart(2, '0')} วินาที</strong></p>
         <p style="font-size: 1.2em; font-weight: bold;">${message}</p>
     `;
     
@@ -878,6 +970,9 @@ function showQuizResult() {
     document.getElementById('quiz-result-area').style.display = 'block';
     document.getElementById('quiz-start-area').style.display = 'block';
     document.getElementById('quiz-start-btn').textContent = 'เริ่มเล่นใหม่';
+    
+    // แสดงตารางท็อปสกอร์หลังจบเกม
+    displayLeaderboard(updatedLeaderboard);
 }
 
 // -----------------------------------------------------
@@ -903,5 +998,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const startBtn = document.getElementById('quiz-start-btn');
     if (startBtn) {
         startBtn.onclick = startQuiz;
+        // โหลดตารางเมื่อเปิดหน้า Quiz
+        const initialLeaderboard = loadLeaderboard();
+        displayLeaderboard(initialLeaderboard);
     }
 });
