@@ -1,4 +1,4 @@
-// script.js - ฉบับสมบูรณ์ (รวมทุกฟังก์ชันและปีนักษัตร)
+// script.js - ฉบับสมบูรณ์ (รวมทุกฟังก์ชันล่าสุด)
 
 // =================================================================
 // 1. DATA (ข้อมูลหลัก)
@@ -19,17 +19,117 @@ const unitConversions = {
     cm: 0.01
 };
 
-// ข้อมูลสำหรับ World Clock: เวลาหลักทั่วโลก
+// ข้อมูลสำหรับ World Clock: เวลาหลักทั่วโลก (อัปเดตตามรายชื่อประเทศที่ร้องขอ)
 const requestedWorldClocks = [
-    { name: "ไทย (Bangkok)", timeZone: "Asia/Bangkok" },
-    { name: "สหรัฐอเมริกา (New York)", timeZone: "America/New_York" },
-    { name: "สหราชอาณาจักร (London)", timeZone: "Europe/London" },
-    { name: "ญี่ปุ่น (Tokyo)", timeZone: "Asia/Tokyo" },
-    { name: "จีน (Shanghai)", timeZone: "Asia/Shanghai" },
+    // === กลุ่มประเทศ A-C ===
+    { name: "อัฟกานิสถาน (Kabul)", timeZone: "Asia/Kabul" },
+    { name: "แอลเบเนีย (Tirane)", timeZone: "Europe/Tirane" },
+    { name: "แอลจีเรีย (Algiers)", timeZone: "Africa/Algiers" },
+    { name: "อันดอร์รา (Andorra la Vella)", timeZone: "Europe/Andorra" },
+    { name: "แองโกลา (Luanda)", timeZone: "Africa/Luanda" },
+    { name: "แอนทีกาและบาร์บิวดา (St. John's)", timeZone: "America/Port_of_Spain" },
+    { name: "อาร์เจนตินา (Buenos Aires)", timeZone: "America/Argentina/Buenos_Aires" },
+    { name: "อาร์มีเนีย (Yerevan)", timeZone: "Asia/Yerevan" },
     { name: "ออสเตรเลีย (Sydney)", timeZone: "Australia/Sydney" },
+    { name: "ออสเตรีย (Vienna)", timeZone: "Europe/Vienna" },
+    { name: "อาเซอร์ไบจาน (Baku)", timeZone: "Asia/Baku" },
+    { name: "บาฮามาส (Nassau)", timeZone: "America/Nassau" },
+    { name: "บาห์เรน (Manama)", timeZone: "Asia/Bahrain" },
+    { name: "บังกลาเทศ (Dhaka)", timeZone: "Asia/Dhaka" },
+    { name: "บาร์เบโดส (Bridgetown)", timeZone: "America/Barbados" },
+    { name: "เบลารุส (Minsk)", timeZone: "Europe/Minsk" },
+    { name: "เบลเยียม (Brussels)", timeZone: "Europe/Brussels" },
+    { name: "เบลีซ (Belmopan)", timeZone: "America/Belize" },
+    { name: "เบนิน (Porto-Novo)", timeZone: "Africa/Porto-Novo" },
+    { name: "ภูฏาน (Thimphu)", timeZone: "Asia/Thimphu" },
+    { name: "โบลิเวีย (La Paz)", timeZone: "America/La_Paz" },
+    { name: "บอสเนียและเฮอร์เซโกวีนา (Sarajevo)", timeZone: "Europe/Sarajevo" },
+    { name: "บอตสวานา (Gaborone)", timeZone: "Africa/Gaborone" },
+    { name: "บราซิล (Sao Paulo)", timeZone: "America/Sao_Paulo" },
+    { name: "บรูไน (Bandar Seri Begawan)", timeZone: "Asia/Brunei" },
+    { name: "บัลแกเรีย (Sofia)", timeZone: "Europe/Sofia" },
+    { name: "บูร์กินาฟาโซ (Ouagadougou)", timeZone: "Africa/Ouagadougou" },
+    { name: "บุรุนดี (Bujumbura)", timeZone: "Africa/Bujumbura" },
+    { name: "กัมพูชา (Phnom Penh)", timeZone: "Asia/Phnom_Penh" },
+    { name: "แคเมอรูน (Yaounde)", timeZone: "Africa/Douala" },
+    { name: "แคนาดา (Toronto)", timeZone: "America/Toronto" },
+    { name: "กาบูเวร์ดี (Praia)", timeZone: "Atlantic/Cape_Verde" },
+    { name: "สาธารณรัฐแอฟริกากลาง (Bangui)", timeZone: "Africa/Bangui" },
+    { name: "ชาด (N'Djamena)", timeZone: "Africa/Ndjamena" },
+    { name: "ชิลี (Santiago)", timeZone: "America/Santiago" },
+    { name: "จีน (Shanghai)", timeZone: "Asia/Shanghai" },
+    { name: "โคลอมเบีย (Bogota)", timeZone: "America/Bogota" },
+    { name: "คอโมโรส (Moroni)", timeZone: "Indian/Comoro" },
+    { name: "สาธารณรัฐคองโก (Brazzaville)", timeZone: "Africa/Brazzaville" },
+    { name: "คอสตาริกา (San Jose)", timeZone: "America/Costa_Rica" },
+    { name: "โครเอเชีย (Zagreb)", timeZone: "Europe/Zagreb" },
+    { name: "คิวบา (Havana)", timeZone: "America/Havana" },
+    { name: "ไซปรัส (Nicosia)", timeZone: "Asia/Nicosia" },
+    { name: "เช็กเกีย (Prague)", timeZone: "Europe/Prague" },
+
+    // === กลุ่มประเทศ D-E ===
+    { name: "เดนมาร์ก (Copenhagen)", timeZone: "Europe/Copenhagen" },
+    { name: "จิบูตี (Djibouti)", timeZone: "Africa/Djibouti" },
+    { name: "ดอมินีกา (Roseau)", timeZone: "America/Dominica" },
+    { name: "สาธารณรัฐโดมินิกัน (Santo Domingo)", timeZone: "America/Santo_Domingo" },
+    { name: "เอกวาดอร์ (Quito)", timeZone: "America/Guayaquil" },
+    { name: "อียิปต์ (Cairo)", timeZone: "Africa/Cairo" },
+    { name: "เอลซัลวาดอร์ (San Salvador)", timeZone: "America/El_Salvador" },
+    { name: "อิเควทอเรียลกินี (Malabo)", timeZone: "Africa/Malabo" },
+    { name: "เอริเทรีย (Asmara)", timeZone: "Africa/Asmara" },
+    { name: "เอสโตเนีย (Tallinn)", timeZone: "Europe/Tallinn" },
+    { name: "เอสวาตินี (Mbabane)", timeZone: "Africa/Mbabane" },
+    { name: "เอธิโอเปีย (Addis Ababa)", timeZone: "Africa/Addis_Ababa" },
+
+    // === กลุ่มประเทศ F-H ===
+    { name: "ฟีจี (Suva)", timeZone: "Fiji" },
+    { name: "ฟินแลนด์ (Helsinki)", timeZone: "Europe/Helsinki" },
+    { name: "ฝรั่งเศส (Paris)", timeZone: "Europe/Paris" },
+    { name: "กาบอง (Libreville)", timeZone: "Africa/Libreville" },
+    { name: "แกมเบีย (Banjul)", timeZone: "Africa/Banjul" },
+    { name: "จอร์เจีย (Tbilisi)", timeZone: "Asia/Tbilisi" },
     { name: "เยอรมนี (Berlin)", timeZone: "Europe/Berlin" },
+    { name: "กานา (Accra)", timeZone: "Africa/Accra" },
+    { name: "กรีซ (Athens)", timeZone: "Europe/Athens" },
+    { name: "เกรเนดา (St. George's)", timeZone: "America/Grenada" },
+    { name: "กัวเตมาลา (Guatemala City)", timeZone: "America/Guatemala" },
+    { name: "กินี (Conakry)", timeZone: "Africa/Conakry" },
+    { name: "กินี-บิสเซา (Bissau)", timeZone: "Africa/Bissau" },
+    { name: "กายอานา (Georgetown)", timeZone: "America/Guyana" },
+    { name: "เฮติ (Port-au-Prince)", timeZone: "America/Port-au-Prince" },
+    { name: "ฮอนดูรัส (Tegucigalpa)", timeZone: "America/Tegucigalpa" },
+    { name: "ฮังการี (Budapest)", timeZone: "Europe/Budapest" },
+
+    // === กลุ่มประเทศ I-L ===
+    { name: "ไอซ์แลนด์ (Reykjavik)", timeZone: "Atlantic/Reykjavik" },
     { name: "อินเดีย (Kolkata)", timeZone: "Asia/Kolkata" },
-    { name: "มาเลเซีย (Kuala Lumpur)", timeZone: "Asia/Kuala_Lumpur" },
+    { name: "อินโดนีเซีย (Jakarta)", timeZone: "Asia/Jakarta" },
+    { name: "อิหร่าน (Tehran)", timeZone: "Asia/Tehran" },
+    { name: "อิรัก (Baghdad)", timeZone: "Asia/Baghdad" },
+    { name: "ไอร์แลนด์ (Dublin)", timeZone: "Europe/Dublin" },
+    { name: "อิสราเอล (Jerusalem)", timeZone: "Asia/Jerusalem" },
+    { name: "อิตาลี (Rome)", timeZone: "Europe/Rome" },
+    { name: "โกตดิวัวร์ (Abidjan)", timeZone: "Africa/Abidjan" },
+    { name: "จาเมกา (Kingston)", timeZone: "America/Jamaica" },
+    { name: "ญี่ปุ่น (Tokyo)", timeZone: "Asia/Tokyo" },
+    { name: "จอร์แดน (Amman)", timeZone: "Asia/Amman" },
+    { name: "คาซัคสถาน (Almaty)", timeZone: "Asia/Almaty" },
+    { name: "เคนยา (Nairobi)", timeZone: "Africa/Nairobi" },
+    { name: "คิริบาส (Tarawa)", timeZone: "Pacific/Tarawa" },
+    { name: "เกาหลีเหนือ (Pyongyang)", timeZone: "Asia/Pyongyang" },
+    { name: "เกาหลีใต้ (Seoul)", timeZone: "Asia/Seoul" },
+    { name: "โคโซโว (Pristina)", timeZone: "Europe/Belgrade" },
+    { name: "คูเวต (Kuwait City)", timeZone: "Asia/Kuwait" },
+    { name: "คีร์กีซสถาน (Bishkek)", timeZone: "Asia/Bishkek" },
+    { name: "ลาว (Vientiane)", timeZone: "Asia/Vientiane" },
+    { name: "ลัตเวีย (Riga)", timeZone: "Europe/Riga" },
+    { name: "เลบานอน (Beirut)", timeZone: "Asia/Beirut" },
+    { name: "เลโซโท (Maseru)", timeZone: "Africa/Maseru" },
+    { name: "ไลบีเรีย (Monrovia)", timeZone: "Africa/Monrovia" },
+    { name: "ลิเบีย (Tripoli)", timeZone: "Africa/Tripoli" },
+    { name: "ลิกเตนสไตน์ (Vaduz)", timeZone: "Europe/Zurich" }, 
+    // เพิ่มประเทศไทยเพื่อให้ง่ายต่อการอ้างอิง
+    { name: "ไทย (Bangkok)", timeZone: "Asia/Bangkok" } 
 ];
 const worldClocks = requestedWorldClocks.sort((a, b) => a.name.localeCompare(b.name));
 let clockInterval; 
@@ -88,6 +188,7 @@ let score = 0;
 let quizTimer;
 let startTime;
 const TIME_LIMIT = 60; // 60 วินาที
+const MAX_QUIZ_QUESTIONS = 10; // จำนวนคำถามสูงสุดที่สุ่มมาเล่น
 
 // =================================================================
 // 2. MESSAGE HANDLER (กล่องข้อความแจ้งเตือน)
@@ -231,7 +332,7 @@ function loadAuthButton() {
 }
 
 // =================================================================
-// 4. PERSONAL INFO & NUMEROLOGY FUNCTIONS (เพิ่มปีนักษัตร)
+// 4. PERSONAL INFO & NUMEROLOGY FUNCTIONS
 // =================================================================
 
 function parseBirthdate(dateString) {
@@ -242,7 +343,6 @@ function parseBirthdate(dateString) {
     let month = parseInt(parts[1], 10);
     let year = parseInt(parts[2], 10);
 
-    // แปลง พ.ศ. ให้เป็น ค.ศ. หากปีมากกว่า 2500
     if (year > 2500) {
         year -= 543;
     }
@@ -254,7 +354,6 @@ function parseBirthdate(dateString) {
 
     const date = new Date(year, month - 1, day);
 
-    // ตรวจสอบความถูกต้องของวัน (เช่น 30 ก.พ. จะถูกแปลงเป็น 1 มี.ค.)
     if (date.getDate() !== day || date.getMonth() !== month - 1 || date.getFullYear() !== year) {
         return null;
     }
@@ -315,7 +414,6 @@ function calculateZodiacYear(year) {
         'วอก (ลิง)', 'ระกา (ไก่)', 'จอ (หมา)', 'กุน (หมู)'
     ];
 
-    // ใช้สูตร (Year - 3) mod 12 เพื่อให้ปีนักษัตรเริ่มต้นที่ ชวด (หนู) เมื่อเศษเหลือเป็น 0
     let remainder = (year - 3) % 12;
 
     if (remainder < 0) {
@@ -338,7 +436,6 @@ function calculatePersonalInfo() {
         return;
     }
     
-    // ซ่อนกล่องข้อความเมื่อสำเร็จ
     document.getElementById('main-message-box').style.display = 'none';
 
     const now = new Date();
@@ -361,7 +458,7 @@ function calculatePersonalInfo() {
     }
 
     const zodiac = calculateZodiacSign(birthdate);
-    const zodiacYear = calculateZodiacYear(birthYear); // ใช้ปี ค.ศ. ที่แปลงแล้ว
+    const zodiacYear = calculateZodiacYear(birthYear); 
 
     let nextBirthday = new Date(now.getFullYear(), birthMonth, birthDay);
     if (nextBirthday < now) {
@@ -564,7 +661,6 @@ function updateWorldClocks() {
     
     container.innerHTML = '';
     
-    // Header
     const header = document.createElement('div');
     header.className = 'clock-table-header';
     header.innerHTML = '<div>เมือง</div><div>เวลา</div><div>วันที่</div>';
@@ -588,8 +684,15 @@ function updateWorldClocks() {
                 day: 'numeric' 
             };
 
-            const localTime = now.toLocaleTimeString('th-TH', timeOptions);
-            const localDate = now.toLocaleDateString('th-TH', dateOptions);
+            let localTime, localDate;
+            try {
+                // toLocaleTimeString/DateString อาจเกิด Error หาก TimeZone ไม่ถูกต้อง
+                localTime = now.toLocaleTimeString('th-TH', timeOptions);
+                localDate = now.toLocaleDateString('th-TH', dateOptions);
+            } catch (e) {
+                localTime = 'Error';
+                localDate = 'Error';
+            }
 
             const hour = parseInt(localTime.substring(0, 2), 10);
             const isNight = hour < 6 || hour >= 18; 
@@ -611,7 +714,7 @@ function updateWorldClocks() {
 
 function initializeWorldClock() {
     const container = document.getElementById('world-clock');
-    if (container) {
+    if (container && document.getElementById('world-clock-container')) { 
         updateWorldClocks();
         clockInterval = setInterval(updateWorldClocks, 1000); 
     }
@@ -630,7 +733,7 @@ function shuffleArray(array) {
 }
 
 function startQuiz() {
-    quizQuestions = shuffleArray([...originalQuizQuestions]).slice(0, 10);
+    quizQuestions = shuffleArray([...originalQuizQuestions]).slice(0, MAX_QUIZ_QUESTIONS);
     currentQuestionIndex = 0;
     score = 0;
     
@@ -711,14 +814,15 @@ function endQuiz(reason = 'จบคำถามทั้งหมด') {
     clearInterval(quizTimer);
     const finalTime = Math.floor((Date.now() - startTime) / 1000);
 
-    saveScore(score, finalTime);
+    const totalQuestions = quizQuestions.length > 0 ? quizQuestions.length : MAX_QUIZ_QUESTIONS; 
+    saveScore(score, finalTime, totalQuestions);
     
     document.getElementById('quiz-game-area').style.display = 'none';
     const resultArea = document.getElementById('quiz-result-area');
     resultArea.style.display = 'block';
 
     let message = `<h2>${reason}!</h2>`;
-    message += `<p>คุณทำได้: **${score}** คะแนน จาก ${quizQuestions.length} ข้อ</p>`;
+    message += `<p>คุณทำได้: **${score}** คะแนน จาก ${totalQuestions} ข้อ</p>`;
     message += `<p>ใช้เวลาไป: **${finalTime}** วินาที</p>`;
     message += `<button onclick="restartQuiz()" class="action-btn" style="background-color: var(--secondary-color);">เล่นอีกครั้ง</button>`;
     
@@ -733,11 +837,11 @@ function restartQuiz() {
     document.getElementById('quiz-timer').textContent = `⏰ เหลือเวลา: ${TIME_LIMIT} วินาที`;
 }
 
-function saveScore(finalScore, finalTime) {
+function saveScore(finalScore, finalTime, totalQuestions) {
     const playerName = localStorage.getItem('loggedInUser') || 'Guest';
     let leaderboard = JSON.parse(localStorage.getItem('quizLeaderboard')) || [];
     
-    leaderboard.push({ name: playerName, score: finalScore, time: finalTime, date: new Date().toLocaleDateString('th-TH') });
+    leaderboard.push({ name: playerName, score: finalScore, time: finalTime, total: totalQuestions, date: new Date().toLocaleDateString('th-TH') });
     
     leaderboard.sort((a, b) => {
         if (b.score !== a.score) {
@@ -759,10 +863,11 @@ function loadLeaderboard() {
     leaderboardBody.innerHTML = '';
     
     leaderboard.forEach((record, index) => {
+        const total = record.total || MAX_QUIZ_QUESTIONS; 
         const row = leaderboardBody.insertRow();
         row.insertCell(0).textContent = index + 1;
         row.insertCell(1).textContent = record.name;
-        row.insertCell(2).textContent = `${record.score} / ${quizQuestions.length}`;
+        row.insertCell(2).textContent = `${record.score} / ${total}`; 
         row.insertCell(3).textContent = `${record.time} วินาที`;
         row.insertCell(4).textContent = record.date;
     });
@@ -785,7 +890,7 @@ function initializeQuiz() {
 function updateFooterText() {
     const footerTextElement = document.getElementById('footer-text');
     if (footerTextElement) {
-        footerTextElement.textContent = 'ติดต่อโฆษณาได้นะคะ';
+        footerTextElement.textContent = '© 2025 MyToolbox Project. All rights reserved.'; // รีเซ็ต Footer ให้เป็นข้อความมาตรฐาน
     }
 }
 
