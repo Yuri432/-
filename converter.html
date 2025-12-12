@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เครื่องมือแปลงค่า | เครื่องมือคำนวณ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>เครื่องมือคำนวณและเกมความรู้รอบตัว</h1>
+        <nav>
+            <a href="index.html">🎂 ข้อมูลส่วนบุคคล</a>
+            <a href="worldclock.html">🌎 นาฬิกาโลก</a>
+            <a href="converter.html" class="active">🔄 เครื่องมือแปลงค่า</a>
+            <a href="quiz.html">🧠 Quiz Game</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        
+        <div id="converter-suite" class="main-section">
+            <h2>🔄 เครื่องมือแปลงค่าอเนกประสงค์</h2>
+            <p>เลือกประเภทของการแปลงค่าที่คุณต้องการ</p>
+
+            <div class="input-group" style="margin-bottom: 30px;">
+                <label for="converter-type">เลือกประเภทการแปลง:</label>
+                <select id="converter-type" onchange="showConverterSection(this.value)">
+                    <option value="currency">แปลงสกุลเงิน (Currency)</option>
+                    <option value="unit">แปลงหน่วยวัด (Unit)</option>
+                    <option value="base">แปลงเลขฐาน (Base)</option>
+                </select>
+            </div>
+
+            <div id="currency-section" class="converter-section">
+                <h3>💵 แปลงสกุลเงิน</h3>
+                <div class="input-group input-timer">
+                    <input type="number" id="currency-amount" placeholder="จำนวนเงิน" value="1" min="0">
+                    <select id="currency-from">
+                        </select>
+                    <span>เป็น</span>
+                    <select id="currency-to">
+                        </select>
+                </div>
+                <button onclick="convertCurrency()" class="action-btn">คำนวณ</button>
+                <div id="currency-result" class="result-area" style="margin-top: 20px;">
+                    <p>ผลลัพธ์: -</p>
+                </div>
+                <p style="font-size: 0.8em; color: #7f8c8d;">* อัตราแลกเปลี่ยนเป็นค่าจำลองสำหรับสาธิตเท่านั้น</p>
+            </div>
+
+            <div id="unit-section" class="converter-section" style="display: none;">
+                <h3>📏 แปลงหน่วยวัด (ความยาว)</h3>
+                <div class="input-group input-timer">
+                    <input type="number" id="unit-amount" placeholder="จำนวน" value="100" min="0">
+                    <select id="unit-from">
+                        <option value="m">เมตร (m)</option>
+                        <option value="km">กิโลเมตร (km)</option>
+                        <option value="cm">เซนติเมตร (cm)</option>
+                    </select>
+                    <span>เป็น</span>
+                    <select id="unit-to">
+                        <option value="km">กิโลเมตร (km)</option>
+                        <option value="m">เมตร (m)</option>
+                        <option value="cm">เซนติเมตร (cm)</option>
+                    </select>
+                </div>
+                <button onclick="convertUnit()" class="action-btn">คำนวณ</button>
+                <div id="unit-result" class="result-area" style="margin-top: 20px;">
+                    <p>ผลลัพธ์: -</p>
+                </div>
+            </div>
+
+            <div id="base-section" class="converter-section" style="display: none;">
+                <h3>🔢 แปลงเลขฐาน</h3>
+                <div class="input-group input-timer">
+                    <input type="text" id="base-input" placeholder="ป้อนเลขฐาน" value="10" style="width: 150px;">
+                    <select id="base-from">
+                        <option value="10">ฐาน 10 (Decimal)</option>
+                        <option value="2">ฐาน 2 (Binary)</option>
+                        <option value="16">ฐาน 16 (Hexadecimal)</option>
+                    </select>
+                    <span>เป็น</span>
+                    <select id="base-to">
+                        <option value="2">ฐาน 2 (Binary)</option>
+                        <option value="10">ฐาน 10 (Decimal)</option>
+                        <option value="16">ฐาน 16 (Hexadecimal)</option>
+                    </select>
+                </div>
+                <button onclick="convertBase()" class="action-btn">คำนวณ</button>
+                <div id="base-result" class="result-area" style="margin-top: 20px;">
+                    <p>ผลลัพธ์: -</p>
+                </div>
+            </div>
+
+        </div>
+        
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <p>ติดตามช่องทางต่างๆ:</p>
+            <a href="https://www.youtube.com/channel/UCnhhMJrPVY3ILErkK5PClnQ" target="_blank">📺 ช่อง YouTube (YU RI)</a>
+            <a href="https://www.tiktok.com/@ayu_9i?is_from_webapp=1&sender_device=pc" target="_blank">🎵 TikTok (@ayu_9i)</a>
+        </div>
+        <p>&copy; 2025 AI Tools - Data is stored locally on your browser.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
