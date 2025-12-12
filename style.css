@@ -299,7 +299,7 @@ hr {
     color: white;
 }
 
-/* --- Footer --- */
+/* --- Footer Styles (แก้ไขเพิ่มลิงก์) --- */
 footer {
     text-align: center;
     padding: 15px 0;
@@ -307,6 +307,27 @@ footer {
     background-color: #2c3e50;
     color: #ecf0f1;
     font-size: 0.85em;
+}
+
+.footer-links {
+    margin-bottom: 10px;
+}
+
+.footer-links p {
+    margin: 5px 0;
+}
+
+.footer-links a {
+    color: #3498db; /* สีฟ้า */
+    text-decoration: none;
+    margin: 0 10px;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: #e74c3c; /* สีแดงเมื่อโฮเวอร์ */
+    text-decoration: underline;
 }
 
 /* --- Responsive Adjustments --- */
@@ -325,5 +346,9 @@ footer {
     }
     .timer-display {
         font-size: 3em;
+    }
+    .footer-links a {
+        display: block;
+        margin: 5px 0;
     }
 }
