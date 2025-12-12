@@ -76,7 +76,7 @@ header nav a.active {
 }
 
 #auth-button {
-    background-color: var(--success-color); /* ถูกกำหนดใน JS */
+    background-color: var(--success-color); 
     color: white !important;
     font-weight: bold;
 }
@@ -229,7 +229,7 @@ main h3 {
 /* --- World Clock Styles (worldclock.html) --- */
 .clock-table {
     display: grid;
-    grid-template-columns: 1fr; /* Default: Single column */
+    grid-template-columns: 1fr; 
     gap: 10px;
     margin-top: 1.5rem;
 }
@@ -252,6 +252,7 @@ main h3 {
     border-bottom: 1px solid var(--border-color);
     align-items: center;
     transition: background-color 0.3s;
+    background-color: var(--card-background); /* ต้องมีเพื่อให้ night-mode ทำงาน */
 }
 
 .clock-row:nth-child(even) {
