@@ -3,10 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('personal-info')) {
         // initializePersonalInfo(); // ไม่มีฟังก์ชันเริ่มต้นที่จำเป็น
     } else if (document.getElementById('world-clock')) {
-        // ตรวจสอบว่าหน้าไม่ได้อยู่ในโหมดปิดใช้งานชั่วคราวหรือไม่
-        if (document.getElementById('clock-display-container').style.display !== 'none') {
-             initializeWorldClock();
-        }
+        // *** แก้ไขแล้ว: เรียกใช้ฟังก์ชันทันทีที่พบ ID ของหน้า ***
+        initializeWorldClock();
     } else if (document.getElementById('timer')) {
         initializeTimer();
     } else if (document.getElementById('quiz')) {
@@ -16,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ==============================================
-// 1. PERSONAL INFO & NUMEROLOGY FUNCTIONS
+// 1. PERSONAL INFO & NUMEROLOGY FUNCTIONS (ไม่เปลี่ยนแปลง)
 // ==============================================
 
 function getZodiacSign(day, month) {
@@ -265,6 +263,7 @@ function updateCurrentZodiac() {
     const zodiacDiv = document.getElementById('current-zodiac');
     if (!zodiacDiv) return;
     
+    // ใช้เวลาปัจจุบันในกรุงเทพฯ เพื่อคำนวณราศี
     const nowInBangkok = new Date().toLocaleString("en-US", { timeZone: "Asia/Bangkok" });
     const bangkokDate = new Date(nowInBangkok);
     const zodiac = getThaiZodiacSign(bangkokDate);
@@ -295,7 +294,7 @@ function initializeWorldClock() {
     updateAllClocks();
     clockInterval = setInterval(updateAllClocks, 1000);
     
-    // แสดงเวลาที่ต่างกัน
+    // แสดงข้อมูลเสริม
     displayTimeDifference();
     updateCurrentZodiac();
 }
@@ -343,7 +342,7 @@ function updateAllClocks() {
 
 
 // ==============================================
-// 3. TIMER FUNCTIONS
+// 3. TIMER FUNCTIONS (ไม่เปลี่ยนแปลง)
 // ==============================================
 
 let countdownInterval;
@@ -435,7 +434,7 @@ function resetTimer() {
 
 
 // ==============================================
-// 4. QUIZ GAME FUNCTIONS
+// 4. QUIZ GAME FUNCTIONS (ไม่เปลี่ยนแปลง)
 // ==============================================
 
 const quizQuestions = [
@@ -582,7 +581,7 @@ function promptForScore(score, totalTimeSeconds, timeFormat) {
 }
 
 // ==============================================
-// 5. LEADERBOARD FUNCTIONS
+// 5. LEADERBOARD FUNCTIONS (ไม่เปลี่ยนแปลง)
 // ==============================================
 
 function saveScore(score, totalTimeSeconds, timeFormat, playerName) {
