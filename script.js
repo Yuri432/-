@@ -46,8 +46,8 @@ function parseDate(dateString) {
 
 // ==============================================
 // 🔮 ข้อมูลฐานระบบทำนายชื่อ (ทักษา)
-// ==============================================
-
+// ... (โค้ด TAKSA_RULES และ TAKSA_NAMES เหมือนเดิม) ...
+// ... (โค้ด getDayOfWeek และ analyzeTaksā เหมือนเดิม) ...
 const TAKSA_RULES = {
     // 0: อาทิตย์, 1: จันทร์, 2: อังคาร, 3: พุธ, 4: พฤหัส, 5: ศุกร์, 6: เสาร์, 7: พุธกลางคืน (ราหู)
     0: { day: "วันอาทิตย์", rules: ["อห", "กขคฆง", "จฉชซฌญ", "ฎฏฐฑฒณ", "ตถทธน", "บปผฝพฟภม", "ยรลว", "ศษสหฬฮ"], vowels: "ะาิีึืุูเแอโอไอใ", kala: "ศษสหฬฮ", kalaType: "อักขระ" },
@@ -145,8 +145,8 @@ function analyzeTaksā(birthDate, name, surname) {
 
 // ==============================================
 // 🔮 ฟังก์ชันทำนายชื่อ-นามสกุล (หลักเลขศาสตร์)
-// ==============================================
-
+// ... (โค้ด THAI_NUMEROLOGY_VALUES และ NUMEROLOGY_MEANINGS เหมือนเดิม) ...
+// ... (โค้ด getNumerologySum และ calculateNumerology เหมือนเดิม) ...
 const THAI_NUMEROLOGY_VALUES = {
     'ก': 1, 'ด': 1, 'ถ': 1, 'ท': 1, 'ภ': 1, 'อ': 1, 'ะ': 1, 'า': 1, 'ั': 6, 'ำ': 1, 'ฤ': 1,
     'ข': 2, 'ช': 2, 'บ': 2, 'ป': 2, 'ง': 2, 'เ': 2, 'แ': 2, 'ใ': 2, 'ไ': 2, '่': 2, '้': 2, '๊': 2, '๋': 2,
@@ -155,8 +155,6 @@ const THAI_NUMEROLOGY_VALUES = {
     'ฆ': 5, 'ค': 5, 'ฉ': 5, 'ฑ': 5, 'ม': 5, 'ห': 5, 'ฮ': 5,
     'ผ': 6, 'พ': 6, 'ฝ': 6, 'ฟ': 6, 'ม': 6, 'ย': 6, 'ศ': 6, 'ส': 6,
     'ซ': 7, 'ฐ': 7, 'ฑ': 7, 'ฒ': 7, 'ร': 7, 'ิ': 4,
-    // 8: ซ, ศ, ส, ห (ซ้ำกับ 7)
-    // 9: ฎ, ฐ, ธ, ป, ผ, ฝ, พ, ฟ, ภ, ร, ล, ว, ศ, ส, ห, อ, ฮ, สระ-อี, สระ-อือ, สระ-อึ (มีซ้ำ)
     'ฎ': 9, 'ล': 9,
 };
 
@@ -281,16 +279,121 @@ window.calculateNumerology = function() {
 };
 
 
-// ... (โค้ดส่วนของ calculatePersonalInfo, calculateAge, getZodiacSign, getLunarZodiac, World Clock, และ Timer ทั้งหมด) ...
-// (นำโค้ดที่ผมส่งให้ก่อนหน้าในส่วนของ calculatePersonalInfo, World Clock, และ Timer มาใส่ต่อจากนี้)
-// เนื่องจากโค้ดยาวมาก ผมจึงแสดงแค่ส่วนที่แก้ไขหลักเท่านั้น
-// **หากคุณทำตามคำแนะนำในคำตอบก่อนหน้าแล้วและอัปโหลด script.js ฉบับเต็มแล้ว, ทุกอย่างควรจะถูกรวมอยู่**
-
 // ==============================================
-// ฟังก์ชันคำนวณข้อมูลส่วนตัว (สำหรับ index.html)
+// 🆕 ฟังก์ชันคำนวณอายุแบบละเอียด (ปี, เดือน, วัน, ชม., นาที)
 // ==============================================
 
-function getZodiacSign(birthDate) {
+function calculateDetailedAge(birthDate) {
+    const now = new Date();
+    const diffMs = now.getTime() - birthDate.getTime();
+    
+    if (diffMs < 0) return "ยังไม่เกิด";
+
+    const diffDate = new Date(diffMs); // สร้าง Date object จากความแตกต่างของเวลา
+
+    // 1. คำนวณเป็น ปี เดือน วัน (แบบปฏิทิน)
+    let years = now.getFullYear() - birthDate.getFullYear();
+    let months = now.getMonth() - birthDate.getMonth();
+    let days = now.getDate() - birthDate.getDate();
+    
+    if (days < 0) {
+        months--;
+        days += new Date(now.getFullYear(), now.getMonth(), 0).getDate(); // จำนวนวันในเดือนที่แล้ว
+    }
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+
+    // 2. คำนวณเป็น ชั่วโมง นาที วินาที (จากเวลาปัจจุบัน)
+    const totalSeconds = Math.floor(diffMs / 1000);
+    const hours = Math.floor(totalSeconds / 3600) % 24;
+    const minutes = Math.floor(totalSeconds / 60) % 60;
+    
+    // 3. คำนวณเป็น วันทั้งหมด (Total Days)
+    const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+
+    return {
+        years: years,
+        months: months,
+        days: days,
+        hours: hours,
+        minutes: minutes,
+        totalDays: totalDays
+    };
+}
+
+
+// ==============================================
+// 🆕 ฟังก์ชันคำนวณราศีแบบไทย (13 ราศี ตามการโคจรของอาทิตย์)
+// ==============================================
+
+function getThaiZodiacSign(birthDate) {
+    const month = birthDate.getMonth() + 1; // 1-12
+    const day = birthDate.getDate();
+
+    // วันที่เปลี่ยนราศีตามหลักไทย (โดยประมาณ)
+    // เมษ: 13 เม.ย. - 13 พ.ค.
+    // พฤษภ: 14 พ.ค. - 13 มิ.ย.
+    
+    const dates = [
+        { name: "เมษ (Aries)", start: [4, 13] },
+        { name: "พฤษภ (Taurus)", start: [5, 14] },
+        { name: "เมถุน (Gemini)", start: [6, 14] },
+        { name: "กรกฎ (Cancer)", start: [7, 15] },
+        { name: "สิงห์ (Leo)", start: [8, 15] },
+        { name: "กันย์ (Virgo)", start: [9, 15] },
+        { name: "ตุลย์ (Libra)", start: [10, 15] },
+        { name: "พิจิก (Scorpio)", start: [11, 14] },
+        { name: "ธนู (Sagittarius)", start: [12, 15] },
+        { name: "มังกร (Capricorn)", start: [1, 15] },
+        { name: "กุมภ์ (Aquarius)", start: [2, 13] },
+        { name: "มีน (Pisces)", start: [3, 14] },
+    ];
+
+    let zodiac = "ไม่ทราบ";
+
+    for (let i = 0; i < dates.length; i++) {
+        const nextIndex = (i + 1) % dates.length;
+        const current = dates[i];
+        const next = dates[nextIndex];
+
+        // ตรวจสอบราศีปัจจุบัน
+        if (month === current.start[0] && day >= current.start[1]) {
+            zodiac = current.name;
+            break;
+        }
+        
+        // ตรวจสอบราศีข้ามเดือน (เกิดก่อนวันที่เปลี่ยนราศี)
+        if (month === next.start[0] && day < next.start[1]) {
+            zodiac = current.name;
+            break;
+        }
+        
+        // ตรวจสอบเดือนเต็ม
+        if ((month > current.start[0] && month < next.start[0]) || 
+            (current.start[0] > next.start[0] && (month > current.start[0] || month < next.start[0]))) 
+        {
+            zodiac = current.name;
+            break;
+        }
+    }
+    
+    // ⚠️ ราศีนพเก้า/ราศีที่ 13 (Ophiuchus) - สำหรับผู้ที่เกิดช่วง 16 ธ.ค. - 15 ม.ค. 
+    // ในระบบ 13 ราศี มักใช้ 16 ธ.ค. - 15 ม.ค.
+    // แต่ในระบบไทย 12 ราศี มักจะนับตามราศีมังกร/ธนู
+    // เพื่อความชัดเจน ผมจะใช้ 12 ราศีแบบไทยมาตรฐานก่อน ถ้าต้องการ 13 ราศี โปรดแจ้ง
+    
+    return zodiac; 
+}
+
+
+// ==============================================
+// 📅 ฟังก์ชันคำนวณราศีแบบสากล (Western Zodiac)
+// ==============================================
+
+function getWesternZodiacSign(birthDate) {
     const month = birthDate.getMonth(); 
     const day = birthDate.getDate();
 
@@ -310,16 +413,6 @@ function getZodiacSign(birthDate) {
     return 'ไม่ทราบ';
 }
 
-function calculateAge(birthDate) {
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-    }
-    return age;
-}
 
 function getLunarZodiac(birthDate, system = 'thai') {
     const birthYearCE = birthDate.getFullYear();
@@ -348,17 +441,23 @@ window.calculatePersonalInfo = function() {
     }
 
     const dateValue = inputElement.value;
-    const birthDate = parseDate(dateValue); // ใช้ฟังก์ชัน parseDate ใหม่
+    const birthDate = parseDate(dateValue); // ใช้ฟังก์ชัน parseDate
 
     if (!birthDate) {
         resultDiv.innerHTML = '<p style="color:red;">⚠️ รูปแบบวันที่ไม่ถูกต้อง กรุณาใช้ DD/MM/YYYY (เช่น 13/02/2552)</p>';
         return;
     }
 
-    const age = calculateAge(birthDate);
-    const westernZodiac = getZodiacSign(birthDate); 
+    // 🆕 คำนวณอายุแบบละเอียด
+    const ageData = calculateDetailedAge(birthDate);
+
+    // 📅 คำนวณราศี
+    const westernZodiac = getWesternZodiacSign(birthDate); 
+    const thaiZodiac = getThaiZodiacSign(birthDate); // 🆕 ราศีแบบไทย
+    
     const lunarZodiacThai = getLunarZodiac(birthDate, 'thai'); 
     const lunarZodiacJapan = getLunarZodiac(birthDate, 'japan');
+    
     const birthYearCE = birthDate.getFullYear();
     const birthYearBE = birthYearCE + 543;
     const birthDayText = birthDate.toLocaleDateString('th-TH', { 
@@ -368,11 +467,21 @@ window.calculatePersonalInfo = function() {
 
     resultDiv.innerHTML = `
         <h3>✅ ข้อมูลที่คำนวณได้:</h3>
-        <div class="result-box">
+        <div class="result-box age-details">
             <p><strong>วันเกิดที่ป้อน:</strong> ${birthDayText} พ.ศ. ${birthYearBE} (ค.ศ. ${birthYearCE})</p>
-            <p><strong>อายุปัจจุบัน:</strong> ${age} ปี</p>
+            <h4>⏱️ อายุปัจจุบัน (ละเอียด):</h4>
+            <p style="font-size: 1.1em; font-weight: bold; color: #e74c3c;">
+                ${ageData.years} ปี ${ageData.months} เดือน ${ageData.days} วัน
+            </p>
+            <p style="font-size: 0.9em;">(ประมาณ ${ageData.totalDays} วัน / ${ageData.hours} ชั่วโมง ${ageData.minutes} นาที)</p>
         </div>
         
+        <div class="result-box">
+            <h4>🇹🇭 ราศีไทย (ตามหลักโหราศาสตร์):</h4>
+            <p><strong>ราศีตามเดือนเกิด:</strong> <span style="font-weight: bold;">${thaiZodiac}</span></p>
+            <p style="font-size: 0.8em; color: #7f8c8d;">(ราศีตามการโคจรของดวงอาทิตย์)</p>
+        </div>
+
         <div class="result-box">
             <h4>🌟 ราศีตะวันตก (สากล):</h4>
             <p><strong>ราศีตามเดือนเกิด:</strong> ${westernZodiac}</p>
@@ -386,6 +495,9 @@ window.calculatePersonalInfo = function() {
     `;
 };
 
+
+// ... (โค้ดส่วนของ World Clock และ Timer ทั้งหมดที่อยู่ด้านล่าง) ...
+// ... (โค้ด World Clock, Timer และ DOMContentLoaded ต้องอยู่ด้านล่างสุดเหมือนเดิม) ...
 
 // ==============================================
 // ฟังก์ชันระบบจับเวลา (สำหรับ timer.html)
