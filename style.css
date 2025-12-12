@@ -1,14 +1,15 @@
-/* style.css - ฉบับสมบูรณ์ */
+/* style.css - ฉบับสมบูรณ์และปรับปรุงล่าสุด */
 
 :root {
-    --primary-color: #3498db;
-    --secondary-color: #2ecc71;
-    --background-color: #ecf0f1;
+    --primary-color: #007bff; /* สีน้ำเงินหลัก */
+    --secondary-color: #28a745; /* สีเขียวสำหรับสำเร็จ */
+    --warning-color: #ffc107; /* สีเหลืองสำหรับคำเตือน */
+    --background-color: #f8f9fa; /* พื้นหลังสีขาวนวล */
     --card-background: #ffffff;
-    --text-color: #2c3e50;
-    --error-color: #e74c3c;
-    --border-color: #bdc3c7;
-    --shadow-color: rgba(0, 0, 0, 0.1);
+    --text-color: #343a40;
+    --error-color: #dc3545; /* สีแดงสำหรับข้อผิดพลาด */
+    --border-color: #ced4da;
+    --shadow-color: rgba(0, 0, 0, 0.08);
 }
 
 * {
@@ -31,7 +32,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 6px var(--shadow-color);
+    box-shadow: 0 4px 8px var(--shadow-color);
 }
 
 header .logo {
@@ -60,7 +61,7 @@ header nav a:hover {
 }
 
 #auth-button:hover {
-    background-color: #1abc9c !important; /* เขียวเข้มขึ้น */
+    background-color: #218838 !important;
 }
 
 /* --- Main Layout & Containers --- */
@@ -75,7 +76,7 @@ header nav a:hover {
     padding: 30px;
     border-radius: 10px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 4px var(--shadow-color);
+    box-shadow: 0 4px 8px var(--shadow-color);
     text-align: center;
 }
 
@@ -89,7 +90,7 @@ header nav a:hover {
     padding: 25px;
     border-radius: 8px;
     margin-bottom: 20px;
-    box-shadow: 0 1px 3px var(--shadow-color);
+    box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 .tool-card h2 {
@@ -138,32 +139,62 @@ header nav a:hover {
 }
 
 .tool-card button:hover, .action-btn:hover {
-    background-color: #2980b9;
+    background-color: #0056b3;
 }
 
-/* --- Result & Info Boxes --- */
+/* --- Result & Info Boxes (ปรับปรุงให้ดูมีมิติ) --- */
 .result-box {
     margin-top: 20px;
     padding: 15px;
-    border: 1px solid #dcdcdc;
-    border-left: 5px solid var(--secondary-color);
-    background-color: #f8f8f8;
     border-radius: 5px;
+    background-color: #e9f5ff; 
+    border: 1px solid #cce5ff;
+    border-left: 5px solid var(--primary-color);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .info-banner {
     padding: 10px 15px;
-    background-color: #d1e7dd;
-    color: #0f5132;
+    background-color: #d4edda;
+    color: #155724;
     border-radius: 5px;
     margin-bottom: 15px;
     border: 1px solid #c3e6cb;
 }
 
+/* --- New: Message Boxes (แจ้งเตือน) --- */
+.message-box {
+    margin-top: 15px;
+    margin-bottom: 20px;
+    padding: 12px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    color: white !important;
+}
+.message-error {
+    background-color: var(--error-color);
+    border: 1px solid #bd2130;
+}
+.message-success {
+    background-color: var(--secondary-color);
+    border: 1px solid #1e7e34;
+}
+.message-warning {
+    background-color: var(--warning-color);
+    border: 1px solid #d39e00;
+}
+/* ให้ข้อความภายในกล่องใช้สี white */
+.message-box p {
+    color: white !important; 
+    margin: 0;
+}
+/* สำหรับ Auth Page */
 .message-area {
     margin-top: 10px;
     font-weight: bold;
-    color: var(--error-color);
+}
+.message-area p {
+    color: inherit !important;
 }
 
 /* --- Auth Pages --- */
@@ -180,7 +211,7 @@ header nav a:hover {
     background-color: var(--card-background);
     padding: 30px;
     border-radius: 10px;
-    box-shadow: 0 4px 12px var(--shadow-color);
+    box-shadow: 0 8px 16px var(--shadow-color);
 }
 
 .auth-box h2 {
@@ -232,7 +263,7 @@ header nav a:hover {
 }
 
 .converter-tabs button[style*="background-color: var(--primary-color)"],
-.converter-tabs button[style*="background-color: rgb(52, 152, 219)"] {
+.converter-tabs button[style*="background-color: rgb(0, 123, 255)"] {
     background-color: var(--primary-color) !important;
     color: white;
     font-weight: bold;
@@ -255,6 +286,10 @@ header nav a:hover {
 .conversion-form button {
     margin-top: 0;
     min-width: 100px;
+}
+
+.conversion-form span {
+    white-space: nowrap;
 }
 
 .conversion-tutorial-box {
@@ -352,7 +387,7 @@ header nav a:hover {
 }
 
 #quiz-start-btn:hover {
-    background-color: #1abc9c;
+    background-color: #218838;
 }
 
 .quiz-status {
@@ -428,7 +463,7 @@ header nav a:hover {
 footer {
     text-align: center;
     padding: 15px;
-    background-color: var(--text-color);
+    background-color: var(--primary-color);
     color: white;
     margin-top: 30px;
 }
