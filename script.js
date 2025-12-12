@@ -1,58 +1,116 @@
-// ==============================================
-// 1. LOGIN & AUTHENTICATION FUNCTIONS
-// ==============================================
+// script.js - ฉบับสมบูรณ์ (รวมทุกฟังก์ชัน)
 
-// เรียกใช้งานฟังก์ชันเมื่อ DOM โหลดเสร็จ
-document.addEventListener('DOMContentLoaded', () => {
-    // โหลดปุ่ม Login/Logout ใน Header
-    loadAuthButton();
+// =================================================================
+// 1. DATA (ข้อมูลหลัก)
+// =================================================================
 
-    // เรียกใช้งานฟังก์ชันเริ่มต้นตามหน้า
-    if (document.getElementById('world-clock')) {
-        initializeWorldClock();
-    }
-    if (document.getElementById('converter-suite')) {
-        initializeConverter();
-    }
-    if (document.getElementById('quiz')) {
-        initializeQuiz();
-    }
-});
+// ข้อมูลสำหรับ Converter: Currency (อัตราแลกเปลี่ยนจำลอง)
+const exchangeRates = {
+    THB: { USD: 0.028, EUR: 0.025, JPY: 4.1, THB: 1 },
+    USD: { THB: 35.7, EUR: 0.92, JPY: 147.2, USD: 1 },
+    EUR: { THB: 38.8, USD: 1.08, JPY: 159.4, EUR: 1 },
+    JPY: { THB: 0.24, USD: 0.0068, EUR: 0.0063, JPY: 1 }
+};
 
-// ตรวจสอบและแสดงปุ่ม Log In/Out
-function loadAuthButton() {
-    const nav = document.querySelector('header nav');
-    if (!nav) return;
+// ข้อมูลสำหรับ Converter: Unit (ฐานเมตร)
+const unitConversions = {
+    km: 1000,
+    m: 1,
+    cm: 0.01
+};
 
-    // ล้างปุ่มเดิมก่อน
-    let existingButton = nav.querySelector('#auth-button');
-    if (existingButton) {
-        existingButton.remove();
-    }
+// ข้อมูลสำหรับ World Clock: เวลาหลักทั่วโลก
+const requestedWorldClocks = [
+    { name: "อัฟกานิสถาน (Kabul)", timeZone: "Asia/Kabul" },
+    { name: "ออสเตรเลีย (Sydney)", timeZone: "Australia/Sydney" }, 
+    { name: "บราซิล (Sao Paulo)", timeZone: "America/Sao_Paulo" }, 
+    { name: "แคนาดา (Toronto)", timeZone: "America/Toronto" }, 
+    { name: "จีน (Shanghai)", timeZone: "Asia/Shanghai" },
+    { name: "ฝรั่งเศส (Paris)", timeZone: "Europe/Paris" },
+    { name: "เยอรมนี (Berlin)", timeZone: "Europe/Berlin" },
+    { name: "อินเดีย (Kolkata)", timeZone: "Asia/Kolkata" },
+    { name: "อินโดนีเซีย (Jakarta)", timeZone: "Asia/Jakarta" },
+    { name: "ญี่ปุ่น (Tokyo)", timeZone: "Asia/Tokyo" },
+    { name: "เกาหลีใต้ (Seoul)", timeZone: "Asia/Seoul" },
+    { name: "มาเลเซีย (Kuala Lumpur)", timeZone: "Asia/Kuala_Lumpur" },
+    { name: "นิวซีแลนด์ (Auckland)", timeZone: "Pacific/Auckland" },
+    { name: "ฟิลิปปินส์ (Manila)", timeZone: "Asia/Manila" },
+    { name: "รัสเซีย (Moscow)", timeZone: "Europe/Moscow" },
+    { name: "สิงคโปร์ (Singapore)", timeZone: "Asia/Singapore" },
+    { name: "แอฟริกาใต้ (Johannesburg)", timeZone: "Africa/Johannesburg" },
+    { name: "สเปน (Madrid)", timeZone: "Europe/Madrid" },
+    { name: "ไทย (Bangkok)", timeZone: "Asia/Bangkok" },
+    { name: "สหรัฐอเมริกา (New York)", timeZone: "America/New_York" },
+    { name: "สหราชอาณาจักร (London)", timeZone: "Europe/London" },
+];
+const worldClocks = requestedWorldClocks.sort((a, b) => a.name.localeCompare(b.name));
+let clockInterval; 
 
-    const isLoggedIn = localStorage.getItem('loggedInUser');
-    const authButton = document.createElement('a');
-    authButton.id = 'auth-button';
+// ข้อมูลสำหรับ Personal Info: Numerology (เลขศาสตร์)
+// ข้อมูลการให้ค่าตัวเลขตามหลักเลขศาสตร์สำหรับอักขระไทย (จำลอง)
+const numerologyMap = {
+    'ก': 1, 'ด': 1, 'ถ': 1, 'ท': 1, 'ภ': 1, 'ฤ': 1,
+    'ข': 2, 'ช': 2, 'บ': 2, 'ป': 2, 'ง': 2, 'เ': 2,
+    'จ': 3, 'ร': 3, 'ล': 3, 'ว': 3,
+    'ค': 4, 'ธ': 4, 'ญ': 4, 'ฑ': 4, 'ฒ': 4, 'ม': 4, 'ห': 4,
+    'น': 5, 'ย': 5, 'ศ': 5, 'ษ': 5, 'ส': 5, 'ฆ': 5, 'ฬ': 5, 'ฮ': 5,
+    'ต': 6, 'ผ': 6, 'พ': 6, 'ฝ': 6,
+    'ซ': 7, 'ซี': 7, 'อ': 7, 'โ': 7, 'ใ': 7, 'ไ': 7,
+    'ฉ': 8, 'ล': 8, 'ฟ': 8, 'ฏ': 8, 'ฎ': 8, 'ะ': 8, 'า': 8, 'ำ': 8,
+    'ั': 1, 'ิ': 1, 'ี': 1, 'ุ': 1, 'ู': 1, '่': 1, '้': 1, '๊': 1, '๋': 1, '์': 1,
+    'ๆ': 1, 'ฯ': 1, 'ํ': 1
+};
 
-    if (isLoggedIn) {
-        authButton.href = '#';
-        authButton.textContent = '➡️ Log Out';
-        authButton.onclick = handleLogout;
-        authButton.style.backgroundColor = '#e74c3c'; // สีแดง
-    } else {
-        // เฉพาะหน้าหลักเท่านั้นที่จะแสดงปุ่ม Log In ได้ถ้ายังไม่ได้ล็อกอิน
-        if (window.location.pathname.includes('login.html') || window.location.pathname.includes('register.html')) {
-            return;
-        }
-        authButton.href = 'login.html';
-        authButton.textContent = '✅ Log In';
-        authButton.style.backgroundColor = '#1abc9c'; // สีเขียว
-    }
 
-    nav.appendChild(authButton);
-}
+// ข้อมูลสำหรับ Quiz Game: คำถาม 30 ข้อ
+const originalQuizQuestions = [
+    { question: "แม่น้ำที่ยาวที่สุดในโลกคือแม่น้ำใด?", options: ["แอมะซอน", "ไนล์", "แยงซี", "มิสซิสซิปปี"], answer: "ไนล์" },
+    { question: "สิ่งมีชีวิตชนิดใดที่มีเซลล์สมองมากที่สุด?", options: ["ปลาวาฬ", "มนุษย์", "ช้าง", "โลมา"], answer: "ปลาวาฬ" },
+    { question: "แสงเดินทางเร็วแค่ไหน (กิโลเมตรต่อวินาที)?", options: ["150,000", "299,792", "380,000", "450,000"], answer: "299,792" },
+    { question: "ดาวเคราะห์ดวงใดในระบบสุริยะที่ร้อนที่สุด?", options: ["ดาวพุธ", "ดาวศุกร์", "ดาวอังคาร", "ดาวยูเรนัส"], answer: "ดาวศุกร์" },
+    { question: "ใครเป็นผู้คิดค้นทฤษฎีสัมพัทธภาพ?", options: ["ไอแซค นิวตัน", "อัลเบิร์ต ไอน์สไตน์", "กาลิเลโอ กาลิเลอี", "สตีเฟน ฮอว์คิง"], answer: "อัลเบิร์ต ไอน์สไตน์" },
+    
+    { question: "ประเทศใดมีจำนวนประชากรมากที่สุดในโลก?", options: ["อินเดีย", "จีน", "สหรัฐอเมริกา", "อินโดนีเซีย"], answer: "อินเดีย" },
+    { question: "องค์ประกอบทางเคมีที่เบาที่สุดคืออะไร?", options: ["ออกซิเจน", "คาร์บอน", "ไฮโดรเจน", "ฮีเลียม"], answer: "ไฮโดรเจน" },
+    { question: "กีฬาโอลิมปิกสมัยใหม่เริ่มขึ้นในปีใด?", options: ["1896", "1900", "1924", "1948"], answer: "1896" },
+    { question: "หัวใจมนุษย์มีกี่ห้อง?", options: ["2", "3", "4", "5"], answer: "4" },
+    { question: "ใครวาดภาพ 'Mona Lisa'?", options: ["แวน โก๊ะ", "ปิกัสโซ่", "เลโอนาร์โด ดา วินชี", "มิเคลันเจโล"], answer: "เลโอนาร์โด ดา วินชี" },
 
-// ฟังก์ชัน Log In
+    { question: "เมืองหลวงของประเทศแคนาดาคือที่ใด?", options: ["โตรอนโต", "แวนคูเวอร์", "มอนทรีออล", "ออตตาวา"], answer: "ออตตาวา" },
+    { question: "ทวีปที่ใหญ่ที่สุดในโลกคือทวีปใด?", options: ["แอฟริกา", "ยุโรป", "เอเชีย", "อเมริกาเหนือ"], answer: "เอเชีย" },
+    { question: "อวัยวะใดทำหน้าที่ปั๊มเลือดทั่วร่างกาย?", options: ["ปอด", "ตับ", "ไต", "หัวใจ"], answer: "หัวใจ" },
+    { question: "อะไรคือหน่วยวัดความต้านทานไฟฟ้า?", options: ["แอมแปร์", "โวลต์", "โอห์ม", "วัตต์"], answer: "โอห์ม" },
+    { question: "ใครเขียนบทละคร 'Romeo and Juliet'?", options: ["เชคสเปียร์", "เจน ออสติน", "ชาร์ลส์ ดิกคินส์", "มาร์ค ทเวน"], answer: "เชคสเปียร์" },
+    
+    { question: "น้ำเดือดที่อุณหภูมิเท่าไหร่ที่ระดับน้ำทะเล (เซลเซียส)?", options: ["90°C", "100°C", "110°C", "120°C"], answer: "100°C" },
+    { question: "ธาตุที่มีสัญลักษณ์ 'Au' คืออะไร?", options: ["เงิน", "ทองคำ", "เหล็ก", "ทองแดง"], answer: "ทองคำ" },
+    { question: "ปีแสงคือหน่วยวัดอะไร?", options: ["ความเร็ว", "ระยะทาง", "เวลา", "มวล"], answer: "ระยะทาง" },
+    { question: "สัตว์เลี้ยงลูกด้วยนมชนิดใดที่บินได้?", options: ["นก", "ค้างคาว", "กระรอกบิน", "เพนกวิน"], answer: "ค้างคาว" },
+    { question: "เมืองหลวงของประเทศอียิปต์คือที่ใด?", options: ["อเล็กซานเดรีย", "ลักซอร์", "ไคโร", "กิซ่า"], answer: "ไคโร" },
+    
+    { question: "ประเทศใดเป็นที่ตั้งของหอไอเฟล?", options: ["อิตาลี", "สเปน", "ฝรั่งเศส", "เยอรมนี"], answer: "ฝรั่งเศส" },
+    { question: "ใครคือประธานาธิบดีคนแรกของสหรัฐอเมริกา?", options: ["โธมัส เจฟเฟอร์สัน", "จอห์น อดัมส์", "จอร์จ วอชิงตัน", "อับราฮัม ลินคอล์น"], answer: "จอร์จ วอชิงตัน" },
+    { question: "ทะเลทรายที่ใหญ่ที่สุดในโลกคือที่ใด?", options: ["โกบี", "คาราฮารี", "ซาฮารา", "แอนตาร์กติก"], answer: "แอนตาร์กติก" },
+    { question: "ปีใดที่มนุษย์เหยียบดวงจันทร์เป็นครั้งแรก?", options: ["1965", "1969", "1971", "1975"], answer: "1969" },
+    { question: "อะไรคือพืชที่สามารถผลิตไฟฟ้าได้?", options: ["ต้นกระบองเพชร", "สาหร่าย", "ไม่สามารถผลิตได้", "ต้นไม้ทุกชนิด"], answer: "สาหร่าย" },
+
+    { question: "การปฏิวัติอุตสาหกรรมเริ่มขึ้นในประเทศใด?", options: ["ฝรั่งเศส", "สหรัฐอเมริกา", "เยอรมนี", "สหราชอาณาจักร"], answer: "สหราชอาณาจักร" },
+    { question: "แบคทีเรียถูกค้นพบโดยใคร?", options: ["หลุยส์ ปาสเตอร์", "โรเบิร์ต คอค", "แอนโทนี ฟาน เลเวนฮุก", "ชาลส์ ดาร์วิน"], answer: "แอนโทนี ฟาน เลเวนฮุก" },
+    { question: "สีผสมหลักในการพิมพ์ (CMYK) คืออะไรบ้าง?", options: ["แดง เขียว น้ำเงิน ดำ", "ฟ้า ม่วง เหลือง ดำ", "แดง เหลือง น้ำเงิน", "ไซอัน มาเจนต้า เหลือง ดำ"], answer: "ไซอัน มาเจนต้า เหลือง ดำ" },
+    { question: "สนามบินที่วุ่นวายที่สุดในโลก (วัดจากผู้โดยสาร) คือที่ไหน?", options: ["ปักกิ่ง", "แอตแลนตา", "ลอนดอน ฮีทโธรว์", "ดูไบ"], answer: "แอตแลนตา" },
+    { question: "สิ่งมีชีวิตที่ถูกเรียกว่า 'ราชาแห่งสัตว์' คืออะไร?", options: ["เสือ", "หมี", "สิงโต", "จระเข้"], answer: "สิงโต" }
+];
+let quizQuestions = []; // Array ที่ใช้เก็บ 10 ข้อที่ถูกสุ่มมาในแต่ละรอบ
+let currentQuestionIndex = 0;
+let score = 0;
+let quizTimer;
+let startTime;
+const TIME_LIMIT = 60; // 60 วินาที
+
+// =================================================================
+// 2. AUTHENTICATION FUNCTIONS (Login, Register, Logout)
+// =================================================================
+
 function handleLogin() {
     const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
@@ -66,35 +124,23 @@ function handleLogin() {
         return;
     }
 
-    // ดึงข้อมูลผู้ใช้จาก Local Storage
     const users = JSON.parse(localStorage.getItem('users')) || [];
     const user = users.find(u => u.username === username && u.password === password);
 
     if (user) {
-        // ล็อกอินสำเร็จ
         localStorage.setItem('loggedInUser', username);
         message.textContent = 'เข้าสู่ระบบสำเร็จ! กำลังนำทาง...';
-        message.style.color = 'green';
+        message.style.color = '#2ecc71';
         
-        // หน่วงเวลา 1 วินาทีแล้วเปลี่ยนหน้า
         setTimeout(() => {
             window.location.href = 'index.html';
         }, 1000);
     } else {
         message.textContent = 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
+        message.style.color = '#e74c3c';
     }
 }
 
-// ฟังก์ชัน Log Out
-function handleLogout(event) {
-    event.preventDefault();
-    localStorage.removeItem('loggedInUser');
-    alert('ออกจากระบบสำเร็จ');
-    // นำทางไปหน้า Login
-    window.location.href = 'login.html';
-}
-
-// ฟังก์ชัน Register
 function handleRegister() {
     const username = document.getElementById('reg-username').value.trim();
     const password = document.getElementById('reg-password').value.trim();
@@ -123,24 +169,69 @@ function handleRegister() {
         return;
     }
 
-    // ลงทะเบียนสำเร็จ
     users.push({ username, password });
     localStorage.setItem('users', JSON.stringify(users));
     message.textContent = 'ลงทะเบียนสำเร็จ! กำลังนำไปหน้าล็อกอิน...';
-    message.style.color = 'green';
+    message.style.color = '#2ecc71';
 
     setTimeout(() => {
         window.location.href = 'login.html';
     }, 1500);
 }
 
+function handleLogout(event) {
+    event.preventDefault();
+    localStorage.removeItem('loggedInUser');
+    alert('ออกจากระบบสำเร็จ');
+    window.location.href = 'login.html';
+}
 
-// ==============================================
-// 2. PERSONAL INFO & NUMEROLOGY FUNCTIONS 
-// ==============================================
+function loadAuthButton() {
+    const nav = document.querySelector('header nav');
+    const isLoggedIn = localStorage.getItem('loggedInUser');
+
+    // ลบปุ่มเดิมออกก่อน (ถ้ามี)
+    let existingButton = document.getElementById('auth-button');
+    if (existingButton) {
+        existingButton.remove();
+    }
+
+    const authButton = document.createElement('a');
+    authButton.id = 'auth-button';
+
+    if (isLoggedIn) {
+        authButton.href = '#';
+        authButton.textContent = '➡️ Log Out';
+        authButton.onclick = handleLogout;
+        authButton.style.backgroundColor = '#e74c3c'; // สีแดง
+    } else {
+        // ไม่แสดงปุ่มบนหน้า Login/Register เพื่อป้องกันการซ้ำซ้อน
+        if (window.location.pathname.includes('login.html') || window.location.pathname.includes('register.html')) {
+            return;
+        }
+        authButton.href = 'login.html';
+        authButton.textContent = '✅ Log In';
+        authButton.style.backgroundColor = '#1abc9c'; // สีเขียว
+    }
+
+    if (nav) {
+        nav.appendChild(authButton);
+    }
+    
+    // อัปเดตข้อความต้อนรับ
+    const welcomeMessage = document.getElementById('welcome-message');
+    if (welcomeMessage) {
+        welcomeMessage.innerHTML = isLoggedIn 
+            ? `👋 ยินดีต้อนรับกลับ ${isLoggedIn}!` 
+            : `👋 ยินดีต้อนรับสู่ MyToolbox`;
+    }
+}
+
+// =================================================================
+// 3. PERSONAL INFO & NUMEROLOGY FUNCTIONS
+// =================================================================
 
 function parseBirthdate(dateString) {
-    // รูปแบบที่รองรับ: DD/MM/YYYY หรือ DD/MM/BBBB
     const parts = dateString.split('/');
     if (parts.length !== 3) return null;
 
@@ -148,26 +239,69 @@ function parseBirthdate(dateString) {
     let month = parseInt(parts[1], 10);
     let year = parseInt(parts[2], 10);
 
-    // ถ้าปีเป็น พ.ศ. (มากกว่า 2500) ให้แปลงเป็น ค.ศ.
+    // แปลง พ.ศ. ให้เป็น ค.ศ. หากปีมากกว่า 2500 (สมมติว่าเป็นปี พ.ศ.)
     if (year > 2500) {
         year -= 543;
     }
 
-    // ตรวจสอบความถูกต้องเบื้องต้น (เช่น วันที่ต้องอยู่ในช่วง 1-31, เดือน 1-12)
     if (isNaN(day) || isNaN(month) || isNaN(year) || 
         day < 1 || day > 31 || month < 1 || month > 12 || year < 1900) {
         return null;
     }
 
-    // สร้างวัตถุ Date (ใช้เดือน - 1 เพราะ JavaScript นับเดือน 0-11)
+    // สร้าง Date object
     const date = new Date(year, month - 1, day);
 
-    // ตรวจสอบว่าวันที่สร้างขึ้นถูกต้องตามที่กรอกหรือไม่ (เช่น 30 ก.พ. จะถูกแปลงเป็น 1 มี.ค.)
+    // ตรวจสอบความถูกต้องของวัน-เดือน-ปี เช่น 30 ก.พ.
     if (date.getDate() !== day || date.getMonth() !== month - 1 || date.getFullYear() !== year) {
-        return null; // วันที่กรอกไม่สมเหตุสมผล (เช่น 30 กุมภาพันธ์)
+        return null;
     }
 
     return date;
+}
+
+function calculateZodiacSign(birthdate) {
+    const birthMonth = birthdate.getMonth(); // 0-11
+    const birthDay = birthdate.getDate();
+
+    const zodiacSigns = [
+        { name: "มังกร (Capricorn)", start: [1, 20] }, { name: "กุมภ์ (Aquarius)", start: [2, 19] },
+        { name: "มีน (Pisces)", start: [3, 21] }, { name: "เมษ (Aries)", start: [4, 20] },
+        { name: "พฤษภ (Taurus)", start: [5, 21] }, { name: "เมถุน (Gemini)", start: [6, 21] },
+        { name: "กรกฎ (Cancer)", start: [7, 23] }, { name: "สิงห์ (Leo)", start: [8, 23] },
+        { name: "กันย์ (Virgo)", start: [9, 23] }, { name: "ตุลย์ (Libra)", start: [10, 23] },
+        { name: "พิจิก (Scorpio)", start: [11, 22] }, { name: "ธนู (Sagittarius)", start: [12, 22] }
+    ];
+
+    let zodiac = "ไม่พบราศี";
+
+    for (let i = 0; i < zodiacSigns.length; i++) {
+        const sign = zodiacSigns[i];
+        const nextSign = zodiacSigns[(i + 1) % zodiacSigns.length];
+        
+        const startMonth = sign.start[0];
+        const startDay = sign.start[1];
+        
+        // Month + 1 เนื่องจาก getMonth() คืนค่า 0-11
+        const currentMonth = birthMonth + 1;
+
+        if (currentMonth === startMonth && birthDay >= startDay) {
+            zodiac = sign.name;
+            break;
+        }
+        
+        // สำหรับราศีที่ข้ามปี (มังกร ธนู)
+        if (currentMonth === (nextSign.start[0] - 1 + 12) % 12 + 1 && birthDay < nextSign.start[1]) {
+            zodiac = sign.name;
+            break;
+        }
+    }
+    
+    // แก้ไขขอบเขตธนู/มังกร (เนื่องจากวนลูปไม่ครอบคลุมช่วงสิ้นปี)
+    if (birthMonth === 11 && birthDay >= 22) { zodiac = "ธนู (Sagittarius)"; }
+    if (birthMonth === 0 && birthDay < 20) { zodiac = "มังกร (Capricorn)"; }
+
+    return zodiac;
 }
 
 function calculatePersonalInfo() {
@@ -187,65 +321,24 @@ function calculatePersonalInfo() {
     const birthMonth = birthdate.getMonth();
     const birthDay = birthdate.getDate();
     
-    // 1. คำนวณอายุ
     let age = now.getFullYear() - birthYear;
     let months = now.getMonth() - birthMonth;
     let days = now.getDate() - birthDay;
 
+    // ปรับวันและเดือน
     if (days < 0) {
         months--;
-        // คำนวณจำนวนวันในเดือนที่แล้ว
         const lastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
         days += lastMonth.getDate();
     }
-    
     if (months < 0) {
         age--;
         months += 12;
     }
 
-    // 2. คำนวณราศี (โหราศาสตร์ตะวันตก)
-    const zodiacSigns = [
-        { name: "มังกร (Capricorn)", start: [1, 20] }, { name: "กุมภ์ (Aquarius)", start: [2, 19] },
-        { name: "มีน (Pisces)", start: [3, 21] }, { name: "เมษ (Aries)", start: [4, 20] },
-        { name: "พฤษภ (Taurus)", start: [5, 21] }, { name: "เมถุน (Gemini)", start: [6, 21] },
-        { name: "กรกฎ (Cancer)", start: [7, 23] }, { name: "สิงห์ (Leo)", start: [8, 23] },
-        { name: "กันย์ (Virgo)", start: [9, 23] }, { name: "ตุลย์ (Libra)", start: [10, 23] },
-        { name: "พิจิก (Scorpio)", start: [11, 22] }, { name: "ธนู (Sagittarius)", start: [12, 22] }
-    ];
+    const zodiac = calculateZodiacSign(birthdate);
 
-    let zodiac = "";
-    for (let i = 0; i < zodiacSigns.length; i++) {
-        const nextIndex = (i + 1) % zodiacSigns.length;
-        const startDay = zodiacSigns[i].start[1];
-        const startMonth = zodiacSigns[i].start[0];
-        const endDay = zodiacSigns[nextIndex].start[1] - 1; // สิ้นสุดก่อนเริ่มราศีถัดไป 1 วัน
-        const endMonth = zodiacSigns[nextIndex].start[0];
-
-        if (birthMonth + 1 === startMonth && birthDay >= startDay) {
-             zodiac = zodiacSigns[i].name;
-             break;
-        } else if (birthMonth + 1 === endMonth && birthDay <= endDay) {
-            zodiac = zodiacSigns[i].name;
-            break;
-        } else if (birthMonth + 1 === startMonth -1 && startMonth === 1) { // กรณีธนูข้ามปี
-             if (birthDay >= startDay) {
-                zodiac = zodiacSigns[i].name;
-                break;
-            }
-        }
-    }
-    if (!zodiac) {
-         // กรณีข้ามปี (มังกร/ธนู)
-         if (birthMonth + 1 === 12 && birthDay >= 22) {
-             zodiac = "ธนู (Sagittarius)";
-         } else if (birthMonth + 1 === 1 && birthDay < 20) {
-             zodiac = "มังกร (Capricorn)";
-         }
-    }
-
-
-    // 3. วันที่เหลือจนถึงวันเกิดหน้า
+    // นับวันถึงวันเกิดถัดไป
     let nextBirthday = new Date(now.getFullYear(), birthMonth, birthDay);
     if (nextBirthday < now) {
         nextBirthday.setFullYear(now.getFullYear() + 1);
@@ -253,6 +346,7 @@ function calculatePersonalInfo() {
     const diffTime = Math.abs(nextBirthday.getTime() - now.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
+    // การแสดงผล
     const birthdateAD = birthdate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     const birthdateBE = (birthYear + 543) + '/' + (birthMonth + 1).toString().padStart(2, '0') + '/' + birthDay.toString().padStart(2, '0');
 
@@ -265,33 +359,18 @@ function calculatePersonalInfo() {
     `;
 }
 
-// ข้อมูลค่าตัวอักษรสำหรับเลขศาสตร์/ทักษา
-const numerologyMap = {
-    // ฐาน 1
-    'ก': 1, 'ด': 1, 'ถ': 1, 'ท': 1, 'ภ': 1, 'ฤ': 1,
-    // ฐาน 2
-    'ข': 2, 'ช': 2, 'บ': 2, 'ป': 2, 'ง': 2, 'เ': 2,
-    // ฐาน 3
-    'จ': 3, 'ร': 3, 'ล': 3, 'ว': 3,
-    // ฐาน 4
-    'ค': 4, 'ธ': 4, 'ญ': 4, 'ฑ': 4, 'ฒ': 4, 'ม': 4, 'ห': 4,
-    // ฐาน 5
-    'น': 5, 'ย': 5, 'ศ': 5, 'ษ': 5, 'ส': 5, 'ฆ': 5, 'ฬ': 5, 'ฮ': 5,
-    // ฐาน 6
-    'ต': 6, 'ผ': 6, 'พ': 6, 'ฝ': 6,
-    // ฐาน 7
-    'ซ': 7, 'ซี': 7, 'อ': 7, 'โ': 7, 'ใ': 7, 'ไ': 7,
-    // ฐาน 8
-    'ฉ': 8, 'ล': 8, 'ฟ': 8, 'ห': 8, 'ฏ': 8, 'ฎ': 8, 'ษ': 8, 'ะ': 8, 'า': 8, 'ำ': 8,
-    // สระและวรรณยุกต์ (ค่า 1)
-    'ั': 1, 'ิ': 1, 'ี': 1, 'ุ': 1, 'ู': 1, 'เ': 2, 'แ': 2, 'โ': 7, 'ใ': 7, 'ไ': 7,
-    '็': 1, '์': 1, '่': 1, '้': 2, '๊': 3, '๋': 4, 'ๆ': 1, 'ฯ': 1, // ค่าสระและวรรณยุกต์อาจต่างกันตามตำรา
-    // ให้ค่าสระและวรรณยุกต์เป็น 1 เพื่อให้ผลรวมง่ายต่อการตรวจสอบ
-    'ะ': 1, 'า': 1, 'ำ': 1, 'ิ': 1, 'ี': 1, 'ึ': 1, 'ื': 1, 'ุ': 1, 'ู': 1, 'เ': 1, 'แ': 1, 'โ': 1, 'ใ': 1, 'ไ': 1,
-    'ๆ': 1, 'ฯ': 1, 'ํ': 1,
-    '่': 1, '้': 1, '๊': 1, '๋': 1, '์': 1
-};
+function calculateNameValue(text) {
+    let total = 0;
+    const cleanText = text.replace(/\s+/g, '').toUpperCase();
 
+    for (let char of cleanText) {
+        const value = numerologyMap[char];
+        if (value !== undefined) {
+            total += value;
+        }
+    }
+    return total;
+}
 
 function calculateNumerology() {
     const name = document.getElementById('name-input').value.trim();
@@ -307,7 +386,7 @@ function calculateNumerology() {
     let nameTotal = calculateNameValue(name);
     let surnameTotal = calculateNameValue(surname);
     let grandTotal = nameTotal + surnameTotal;
-
+    
     let resultHtml = '<h3>🔮 ผลทำนายเลขศาสตร์เบื้องต้น (ผลรวม)</h3>';
 
     if (name) {
@@ -318,216 +397,18 @@ function calculateNumerology() {
     }
     if (name && surname) {
          resultHtml += `<p style="font-size: 1.2em; color: #e67e22;"><strong>ผลรวมทั้งหมด (ชื่อ-นามสกุล):</strong> **${grandTotal}**</p>`;
-         resultHtml += `<p style="font-size: 0.9em; color: #2ecc71;">* ผลรวมที่ได้นี้เป็นเพียงการคำนวณตามหลักเลขศาสตร์เบื้องต้น ไม่ควรนำไปใช้ตัดสินใจโดยเด็ดขาด</p>`;
-    } else {
-        resultHtml += `<p style="font-size: 0.9em; color: #2ecc71;">* ผลรวมที่ได้นี้เป็นเพียงการคำนวณตามหลักเลขศาสตร์เบื้องต้น</p>`;
     }
+    
+    resultHtml += `<p style="font-size: 0.9em; color: #2ecc71;">* ผลรวมที่ได้นี้เป็นเพียงการคำนวณตามหลักเลขศาสตร์เบื้องต้น</p>`;
     
     resultDiv.innerHTML = resultHtml;
 }
 
-function calculateNameValue(text) {
-    let total = 0;
-    const cleanText = text.replace(/\s+/g, '').toUpperCase(); // ลบช่องว่างและแปลงเป็นตัวพิมพ์ใหญ่
-
-    for (let char of cleanText) {
-        const value = numerologyMap[char];
-        if (value !== undefined) {
-            total += value;
-        } else if (char.match(/[A-Z0-9]/i)) {
-             // ถ้าเป็นอักขระที่ไม่ใช่ภาษาไทย (อาจต้องข้ามหรือกำหนดค่าเพิ่มเติม)
-        }
-    }
-    return total;
-}
-
-// ==============================================
-// 3. WORLD CLOCK FUNCTIONS 
-// ==============================================
-
-// ข้อมูลนาฬิกาโลกสำหรับประเทศที่ร้องขอ (ใช้เขตเวลาหลักที่สุด)
-const requestedWorldClocks = [
-    { name: "อัฟกานิสถาน (Kabul)", timeZone: "Asia/Kabul" },
-    { name: "แอลเบเนีย (Tirana)", timeZone: "Europe/Tirana" },
-    { name: "แอลจีเรีย (Algiers)", timeZone: "Africa/Algiers" },
-    { name: "อันดอร์รา (Andorra la Vella)", timeZone: "Europe/Andorra" },
-    { name: "แองโกลา (Luanda)", timeZone: "Africa/Luanda" },
-    { name: "แอนติกาและบาร์บูดา (St. John's)", timeZone: "America/Antigua" },
-    { name: "อาร์เจนตินา (Buenos Aires)", timeZone: "America/Argentina/Buenos_Aires" },
-    { name: "อาร์เมเนีย (Yerevan)", timeZone: "Asia/Yerevan" },
-    { name: "ออสเตรเลีย (Sydney) - E", timeZone: "Australia/Sydney" }, 
-    { name: "ออสเตรีย (Vienna)", timeZone: "Europe/Vienna" },
-    { name: "อาเซอร์ไบจาน (Baku)", timeZone: "Asia/Baku" },
-    { name: "บาฮามาส (Nassau)", timeZone: "America/Nassau" },
-    { name: "บาห์เรน (Manama)", timeZone: "Asia/Bahrain" },
-    { name: "บังกลาเทศ (Dhaka)", timeZone: "Asia/Dhaka" },
-    { name: "บาร์เบโดส (Bridgetown)", timeZone: "America/Barbados" },
-    { name: "เบลารุส (Minsk)", timeZone: "Europe/Minsk" },
-    { name: "เบลเยียม (Brussels)", timeZone: "Europe/Brussels" },
-    { name: "เบลีซ (Belmopan)", timeZone: "America/Belize" },
-    { name: "เบนิน (Porto-Novo)", timeZone: "Africa/Porto-Novo" },
-    { name: "ภูฏาน (Thimphu)", timeZone: "Asia/Thimphu" },
-    { name: "โบลิเวีย (La Paz)", timeZone: "America/La_Paz" },
-    { name: "บอสเนียและเฮอร์เซโกวีนา (Sarajevo)", timeZone: "Europe/Sarajevo" },
-    { name: "บอตสวานา (Gaborone)", timeZone: "Africa/Gaborone" },
-    { name: "บราซิล (Sao Paulo) - E", timeZone: "America/Sao_Paulo" }, 
-    { name: "บรูไน (Bandar Seri Begawan)", timeZone: "Asia/Brunei" },
-    { name: "บัลแกเรีย (Sofia)", timeZone: "Europe/Sofia" },
-    { name: "บูร์กินาฟาโซ (Ouagadougou)", timeZone: "Africa/Ouagadougou" },
-    { name: "บุรุนดี (Bujumbura)", timeZone: "Africa/Bujumbura" },
-    { name: "กัมพูชา (Phnom Penh)", timeZone: "Asia/Phnom_Penh" },
-    { name: "แคเมอรูน (Yaounde)", timeZone: "Africa/Douala" },
-    { name: "แคนาดา (Toronto) - E", timeZone: "America/Toronto" }, 
-    { name: "เคปเวิร์ด (Praia)", timeZone: "Atlantic/Cape_Verde" },
-    { name: "สาธารณรัฐแอฟริกากลาง (Bangui)", timeZone: "Africa/Bangui" },
-    { name: "ชาด (N'Djamena)", timeZone: "Africa/Ndjamena" },
-    { name: "ชิลี (Santiago)", timeZone: "America/Santiago" },
-    { name: "จีน (Shanghai)", timeZone: "Asia/Shanghai" },
-    { name: "โคลอมเบีย (Bogota)", timeZone: "America/Bogota" },
-    { name: "คอโมโรส (Moroni)", timeZone: "Indian/Comoro" },
-    { name: "คองโก (สาธารณรัฐประชาธิปไตย) - Kinshasa", timeZone: "Africa/Kinshasa" },
-    { name: "คองโก (สาธารณรัฐ) - Brazzaville", timeZone: "Africa/Brazzaville" },
-    { name: "คอสตาริกา (San Jose)", timeZone: "America/Costa_Rica" },
-    { name: "โครเอเชีย (Zagreb)", timeZone: "Europe/Zagreb" },
-    { name: "คิวบา (Havana)", timeZone: "America/Havana" },
-    { name: "ไซปรัส (Nicosia)", timeZone: "Asia/Nicosia" },
-    { name: "เช็กเกีย (Prague)", timeZone: "Europe/Prague" },
-    { name: "เดนมาร์ก (Copenhagen)", timeZone: "Europe/Copenhagen" },
-    { name: "จิบูตี (Djibouti)", timeZone: "Africa/Djibouti" },
-    { name: "โดมินิกา (Roseau)", timeZone: "America/Dominica" },
-    { name: "สาธารณรัฐโดมินิกัน (Santo Domingo)", timeZone: "America/Santo_Domingo" },
-    { name: "ติมอร์-เลสเต (Dili)", timeZone: "Asia/Dili" },
-    { name: "เอกวาดอร์ (Guayaquil)", timeZone: "America/Guayaquil" },
-    { name: "อียิปต์ (Cairo)", timeZone: "Africa/Cairo" },
-    { name: "เอลซัลวาดอร์ (San Salvador)", timeZone: "America/El_Salvador" },
-    { name: "อิเควทอเรียลกินี (Malabo)", timeZone: "Africa/Malabo" },
-    { name: "เอริเทรีย (Asmara)", timeZone: "Africa/Asmara" },
-    { name: "เอสโตเนีย (Tallinn)", timeZone: "Europe/Tallinn" },
-    { name: "เอสวาตีนี (Mbabane)", timeZone: "Africa/Mbabane" },
-    { name: "เอธิโอเปีย (Addis Ababa)", timeZone: "Africa/Addis_Ababa" },
-    { name: "ฟิจิ (Suva)", timeZone: "Pacific/Fiji" },
-    { name: "ฟินแลนด์ (Helsinki)", timeZone: "Europe/Helsinki" },
-    { name: "ฝรั่งเศส (Paris)", timeZone: "Europe/Paris" },
-    { name: "กาบอง (Libreville)", timeZone: "Africa/Libreville" },
-    { name: "แกมเบีย (Banjul)", timeZone: "Africa/Banjul" },
-    { name: "จอร์เจีย (Tbilisi)", timeZone: "Asia/Tbilisi" },
-    { name: "เยอรมนี (Berlin)", timeZone: "Europe/Berlin" },
-    { name: "กานา (Accra)", timeZone: "Africa/Accra" },
-    { name: "กรีซ (Athens)", timeZone: "Europe/Athens" },
-    { name: "เกรเนดา (St. George's)", timeZone: "America/Grenada" },
-    { name: "กัวเตมาลา (Guatemala City)", timeZone: "America/Guatemala" },
-    { name: "กินี (Conakry)", timeZone: "Africa/Conakry" },
-    { name: "กินี-บิสเซา (Bissau)", timeZone: "Africa/Bissau" },
-    { name: "กายอานา (Georgetown)", timeZone: "America/Guyana" },
-    { name: "เฮติ (Port-au-Prince)", timeZone: "America/Port-au-Prince" },
-    { name: "ฮอนดูรัส (Tegucigalpa)", timeZone: "America/Tegucigalpa" },
-    { name: "ฮังการี (Budapest)", timeZone: "Europe/Budapest" },
-    { name: "ไอซ์แลนด์ (Reykjavik)", timeZone: "Atlantic/Reykjavik" },
-    { name: "อินเดีย (Kolkata)", timeZone: "Asia/Kolkata" },
-    { name: "อินโดนีเซีย (Jakarta) - W", timeZone: "Asia/Jakarta" },
-    { name: "อิหร่าน (Tehran)", timeZone: "Asia/Tehran" },
-    { name: "อิรัก (Baghdad)", timeZone: "Asia/Baghdad" },
-    { name: "ไอร์แลนด์ (Dublin)", timeZone: "Europe/Dublin" },
-    { name: "อิสราเอล (Jerusalem)", timeZone: "Asia/Jerusalem" },
-    { name: "อิตาลี (Rome)", timeZone: "Europe/Rome" },
-    { name: "จาเมกา (Kingston)", timeZone: "America/Jamaica" },
-    { name: "ญี่ปุ่น (Tokyo)", timeZone: "Asia/Tokyo" },
-    { name: "จอร์แดน (Amman)", timeZone: "Asia/Amman" },
-    { name: "คาซัคสถาน (Almaty) - E", timeZone: "Asia/Almaty" },
-    { name: "เคนยา (Nairobi)", timeZone: "Africa/Nairobi" },
-    { name: "คิริบาส (Tarawa) - W", timeZone: "Pacific/Tarawa" },
-    { name: "โคโซโว (Pristina)", timeZone: "Europe/Belgrade" },
-    { name: "คูเวต (Kuwait)", timeZone: "Asia/Kuwait" },
-    { name: "คีร์กีซสถาน (Bishkek)", timeZone: "Asia/Bishkek" },
-    { name: "ลาว (Vientiane)", timeZone: "Asia/Vientiane" },
-    { name: "ลัตเวีย (Riga)", timeZone: "Europe/Riga" },
-    { name: "เลบานอน (Beirut)", timeZone: "Asia/Beirut" },
-    { name: "เลโซโท (Maseru)", timeZone: "Africa/Maseru" },
-    { name: "ไลบีเรีย (Monrovia)", timeZone: "Africa/Monrovia" },
-    { name: "ลิเบีย (Tripoli)", timeZone: "Africa/Tripoli" },
-    { name: "ลิกเตนสไตน์ (Vaduz)", timeZone: "Europe/Vaduz" },
-    { name: "ลิทัวเนีย (Vilnius)", timeZone: "Europe/Vilnius" },
-    { name: "ลักเซมเบิร์ก (Luxembourg)", timeZone: "Europe/Luxembourg" },
-    { name: "มาดากัสการ์ (Antananarivo)", timeZone: "Indian/Antananarivo" },
-    { name: "มาลาวี (Lilongwe)", timeZone: "Africa/Blantyre" },
-    { name: "มาเลเซีย (Kuala Lumpur)", timeZone: "Asia/Kuala_Lumpur" },
-    { name: "มัลดีฟส์ (Malé)", timeZone: "Indian/Maldives" },
-    { name: "มาลี (Bamako)", timeZone: "Africa/Bamako" },
-    { name: "มอลตา (Valletta)", timeZone: "Europe/Malta" },
-    { name: "หมู่เกาะมาร์แชลล์ (Majuro)", timeZone: "Pacific/Majuro" },
-    { name: "มอริเตเนีย (Nouakchott)", timeZone: "Africa/Nouakchott" },
-    { name: "มอริเชียส (Port Louis)", timeZone: "Indian/Mauritius" },
-    { name: "เม็กซิโก (Mexico City)", timeZone: "America/Mexico_City" },
-    { name: "ไมโครนีเซีย (Pohnpei) - E", timeZone: "Pacific/Pohnpei" },
-    { name: "มอลโดวา (Chisinau)", timeZone: "Europe/Chisinau" },
-    { name: "โมนาโก (Monaco)", timeZone: "Europe/Monaco" },
-    { name: "มองโกเลีย (Ulaanbaatar)", timeZone: "Asia/Ulaanbaatar" },
-    { name: "มอนเตเนโกร (Podgorica)", timeZone: "Europe/Podgorica" },
-    { name: "โมร็อกโก (Casablanca)", timeZone: "Africa/Casablanca" },
-    { name: "โมซัมบิก (Maputo)", timeZone: "Africa/Maputo" },
-    { name: "เมียนมา (Yangon)", timeZone: "Asia/Yangon" },
-    { name: "นามิเบีย (Windhoek)", timeZone: "Africa/Windhoek" },
-    { name: "นาอูรู (Yaren)", timeZone: "Pacific/Nauru" },
-    { name: "เนปาล (Kathmandu)", timeZone: "Asia/Kathmandu" },
-    { name: "เนเธอร์แลนด์ (Amsterdam)", timeZone: "Europe/Amsterdam" },
-    { name: "นิวซีแลนด์ (Auckland)", timeZone: "Pacific/Auckland" },
-    { name: "นิการากัว (Managua)", timeZone: "America/Managua" },
-    { name: "ไนเจอร์ (Niamey)", timeZone: "Africa/Niamey" },
-    { name: "ไนจีเรีย (Lagos)", timeZone: "Africa/Lagos" },
-    { name: "นอร์เวย์ (Oslo)", timeZone: "Europe/Oslo" },
-    { name: "โอมาน (Muscat)", timeZone: "Asia/Muscat" },
-    { name: "ปากีสถาน (Karachi)", timeZone: "Asia/Karachi" },
-    { name: "ปาเลา (Ngerulmud)", timeZone: "Pacific/Palau" },
-    { name: "ปานามา (Panama City)", timeZone: "America/Panama" },
-    { name: "ปาปัวนิวกินี (Port Moresby)", timeZone: "Pacific/Port_Moresby" },
-    { name: "ปารากวัย (Asuncion)", timeZone: "America/Asuncion" },
-    { name: "เปรู (Lima)", timeZone: "America/Lima" },
-    { name: "ฟิลิปปินส์ (Manila)", timeZone: "Asia/Manila" },
-    { name: "โปแลนด์ (Warsaw)", timeZone: "Europe/Warsaw" },
-    { name: "โปรตุเกส (Lisbon)", timeZone: "Europe/Lisbon" },
-    { name: "กาตาร์ (Doha)", timeZone: "Asia/Qatar" },
-    { name: "โรมาเนีย (Bucharest)", timeZone: "Europe/Bucharest" },
-    { name: "รัสเซีย (Moscow) - Zone 2", timeZone: "Europe/Moscow" },
-    { name: "รวันดา (Kigali)", timeZone: "Africa/Kigali" },
-    { name: "เซนต์คิตส์และเนวิส (Basseterre)", timeZone: "America/St_Kitts" },
-    { name: "เซนต์ลูเซีย (Castries)", timeZone: "America/St_Lucia" },
-    { name: "เซนต์วินเซนต์และเกรนาดีนส์ (Kingstown)", timeZone: "America/St_Vincent" },
-    { name: "ซามัว (Apia)", timeZone: "Pacific/Apia" },
-    { name: "ซานมารีโน (San Marino)", timeZone: "Europe/San_Marino" },
-    { name: "เซาตูเมและปรินซิปี (Sao Tome)", timeZone: "Africa/Sao_Tome" },
-    { name: "ซาอุดีอาระเบีย (Riyadh)", timeZone: "Asia/Riyadh" },
-    { name: "เซเนกัล (Dakar)", timeZone: "Africa/Dakar" },
-    { name: "เซอร์เบีย (Belgrade)", timeZone: "Europe/Belgrade" },
-    { name: "เซเชลส์ (Victoria)", timeZone: "Indian/Mahe" },
-    { name: "เซียร์ราลีโอน (Freetown)", timeZone: "Africa/Freetown" },
-    { name: "สิงคโปร์ (Singapore)", timeZone: "Asia/Singapore" },
-    { name: "สโลวาเกีย (Bratislava)", timeZone: "Europe/Bratislava" },
-    { name: "สโลวีเนีย (Ljubljana)", timeZone: "Europe/Ljubljana" },
-    { name: "หมู่เกาะโซโลมอน (Honiara)", timeZone: "Pacific/Guadalcanal" },
-    { name: "โซมาเลีย (Mogadishu)", timeZone: "Africa/Mogadishu" },
-    { name: "แอฟริกาใต้ (Johannesburg)", timeZone: "Africa/Johannesburg" },
-    { name: "เกาหลีใต้ (Seoul)", timeZone: "Asia/Seoul" },
-    { name: "ซูดานใต้ (Juba)", timeZone: "Africa/Juba" },
-    { name: "สเปน (Madrid)", timeZone: "Europe/Madrid" },
-    { name: "ศรีลังกา (Colombo)", timeZone: "Asia/Colombo" },
-    { name: "ซูดาน (Khartoum)", timeZone: "Africa/Khartoum" },
-    { name: "ซูรินาม (Paramaribo)", timeZone: "America/Paramaribo" },
-    { name: "สวีเดน (Stockholm)", timeZone: "Europe/Stockholm" },
-    { name: "สวิตเซอร์แลนด์ (Zurich)", timeZone: "Europe/Zurich" },
-    { name: "ซีเรีย (Damascus)", timeZone: "Asia/Damascus" },
-    { name: "ไต้หวัน (Taipei)", timeZone: "Asia/Taipei" },
-    { name: "ทาจิกิสถาน (Dushanbe)", timeZone: "Asia/Dushanbe" },
-    { name: "แทนซาเนีย (Dar es Salaam)", timeZone: "Africa/Dar_es_Salaam" },
-    { name: "ไทย (Bangkok)", timeZone: "Asia/Bangkok" },
-    { name: "โตโก (Lome)", timeZone: "Africa/Lome" }
-];
-
-const worldClocks = requestedWorldClocks.sort((a, b) => a.name.localeCompare(b.name));
-
-let clockInterval; 
+// =================================================================
+// 4. WORLD CLOCK FUNCTIONS
+// =================================================================
 
 function getThaiZodiacSign(date) {
-    // ราศีของไทยตามปฏิทินสุริยคติ
     const signs = [
         { name: "เมษ", start: [4, 13] }, { name: "พฤษภ", start: [5, 14] },
         { name: "เมถุน", start: [6, 14] }, { name: "กรกฎ", start: [7, 15] },
@@ -537,27 +418,21 @@ function getThaiZodiacSign(date) {
         { name: "กุมภ์", start: [2, 13] }, { name: "มีน", start: [3, 14] }
     ];
 
-    const month = date.getMonth() + 1; // 1-12
+    const month = date.getMonth() + 1;
     const day = date.getDate();
 
     for (let i = 0; i < signs.length; i++) {
-        const nextIndex = (i + 1) % signs.length;
-        const startMonth = signs[i].start[0];
-        const startDay = signs[i].start[1];
-        const endMonth = signs[nextIndex].start[0];
-        const endDay = signs[nextIndex].start[1] - 1;
-
-        if (month === startMonth && day >= startDay) {
-            return signs[i].name;
-        } else if (month === endMonth && day <= endDay) {
-            return signs[i].name;
+        const sign = signs[i];
+        if (month === sign.start[0] && day >= sign.start[1]) {
+            return sign.name;
         }
     }
-    // กรณีที่โค้ดลูปข้างบนคำนวณไม่ครอบคลุมช่วงรอยต่อปี (มังกร/กุมภ์)
-    if (month === 1 && day < 14) return "ธนู";
-    if (month === 3 && day < 14) return "กุมภ์";
-    
-    return "ไม่ทราบราศี";
+    // หากไม่เข้าเงื่อนไขใดเลย แสดงว่าเป็นราศีของเดือนถัดไปที่ยังไม่ถึงวันเริ่มต้น
+    const currentSignIndex = signs.findIndex(s => s.start[0] === month);
+    if (currentSignIndex === -1) return "ไม่ทราบราศี"; // should not happen
+
+    const previousSignIndex = (currentSignIndex - 1 + signs.length) % signs.length;
+    return signs[previousSignIndex].name;
 }
 
 function displayTimeDifference() {
@@ -565,19 +440,24 @@ function displayTimeDifference() {
     const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const now = new Date();
 
-    const thaiOffset = now.toLocaleString('en-US', { timeZone: thaiTimeZone, hourCycle: 'h24', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'shortOffset' }).match(/GMT([+-]\d+)/);
-    const localOffset = now.toLocaleString('en-US', { timeZone: localTimeZone, hourCycle: 'h24', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'shortOffset' }).match(/GMT([+-]\d+)/);
+    const getOffset = (timeZone) => {
+        const dateString = now.toLocaleString('en-US', { timeZone: timeZone, timeZoneName: 'shortOffset' });
+        const match = dateString.match(/GMT([+-]\d+)/);
+        if (match) return parseInt(match[1], 10);
+        return null;
+    };
+
+    const thaiHours = getOffset(thaiTimeZone);
+    const localHours = getOffset(localTimeZone);
+    const differenceDiv = document.getElementById('time-difference');
 
     let diffText = 'ไม่สามารถคำนวณความแตกต่างของเวลาได้';
     
-    if (thaiOffset && localOffset) {
-        const thaiHours = parseInt(thaiOffset[1], 10);
-        const localHours = parseInt(localOffset[1], 10);
-
+    if (thaiHours !== null && localHours !== null) {
         const diffHours = thaiHours - localHours;
 
         if (diffHours === 0) {
-            diffText = `⏰ เวลาท้องถิ่นของคุณ (${localTimeZone}) ตรงกับเวลาในประเทศไทย (UTC${thaiOffset[1]})`;
+            diffText = `⏰ เวลาท้องถิ่นของคุณ (${localTimeZone}) ตรงกับเวลาในประเทศไทย (UTC+0${thaiHours})`;
         } else if (diffHours > 0) {
             diffText = `⏰ เวลาท้องถิ่นของคุณ (${localTimeZone}) **ช้ากว่า** เวลาในประเทศไทย (${thaiTimeZone}) อยู่ **${Math.abs(diffHours)}** ชั่วโมง`;
         } else {
@@ -585,7 +465,6 @@ function displayTimeDifference() {
         }
     }
 
-    const differenceDiv = document.getElementById('time-difference');
     if (differenceDiv) {
         differenceDiv.innerHTML = `<p>${diffText}</p>`;
     }
@@ -603,8 +482,8 @@ function updateCurrentZodiac() {
 
 function updateAllClocks() {
     const now = new Date();
-    const thaiTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Bangkok" }));
-    const thaiHours = thaiTime.getHours();
+    const container = document.getElementById('clock-display-container');
+    if (!container) return; 
 
     worldClocks.forEach(clockData => {
         const timeZone = clockData.timeZone;
@@ -615,7 +494,7 @@ function updateAllClocks() {
                 const dateOptions = {
                     timeZone: timeZone,
                     hour: '2-digit', minute: '2-digit', second: '2-digit',
-                    hourCycle: 'h23' // ใช้รูปแบบ 24 ชม.
+                    hourCycle: 'h23'
                 };
                 const displayOptions = {
                     timeZone: timeZone,
@@ -625,15 +504,14 @@ function updateAllClocks() {
                 const timeString = now.toLocaleTimeString('th-TH', dateOptions);
                 const dateString = now.toLocaleDateString('th-TH', displayOptions);
                 
-                // ตรวจสอบว่าเป็นเวลากลางคืนหรือไม่ (เพื่อเปลี่ยนสีพื้นหลัง)
+                // ตรวจสอบว่าเป็นกลางคืนหรือไม่ (20:00 - 05:59)
                 const targetTime = new Date(now.toLocaleString("en-US", { timeZone: timeZone }));
                 const targetHours = targetTime.getHours();
-                const isNight = (targetHours >= 20 || targetHours < 6); // 20:00 - 05:59 น.
+                const isNight = (targetHours >= 20 || targetHours < 6);
 
                 clockElement.querySelector('.time').textContent = timeString;
                 clockElement.querySelector('.date-display').textContent = dateString;
                 
-                // อัปเดตโหมดกลางคืน
                 if (isNight) {
                     clockElement.classList.add('night-mode');
                 } else {
@@ -653,10 +531,13 @@ function initializeWorldClock() {
     const container = document.getElementById('clock-display-container');
     if (!container) return; 
 
-    // ล้างเนื้อหาเดิมก่อน (ถ้ามี)
+    if (clockInterval) {
+        clearInterval(clockInterval);
+    }
+
     container.innerHTML = ''; 
 
-    // สร้าง Header สำหรับตาราง 
+    // สร้าง Header
     const headerRow = document.createElement('div');
     headerRow.className = 'clock-table-header';
     headerRow.innerHTML = `
@@ -666,6 +547,7 @@ function initializeWorldClock() {
     `;
     container.appendChild(headerRow);
 
+    // สร้างแถวนาฬิกา
     worldClocks.forEach(clockData => {
         const clockDiv = document.createElement('div');
         clockDiv.className = 'clock-row'; 
@@ -678,6 +560,7 @@ function initializeWorldClock() {
         container.appendChild(clockDiv);
     });
 
+    // เริ่มอัปเดต
     updateAllClocks();
     clockInterval = setInterval(updateAllClocks, 1000);
     
@@ -685,28 +568,16 @@ function initializeWorldClock() {
     updateCurrentZodiac();
 }
 
-// ==============================================
-// 4. CONVERTER FUNCTIONS
-// ==============================================
-
-const exchangeRates = {
-    // อัตราจำลองสำหรับ THB เป็นสกุลอื่น
-    THB: { USD: 0.028, EUR: 0.025, JPY: 4.1, THB: 1 },
-    USD: { THB: 35.7, EUR: 0.92, JPY: 147.2, USD: 1 },
-    EUR: { THB: 38.8, USD: 1.08, JPY: 159.4, EUR: 1 },
-    JPY: { THB: 0.24, USD: 0.0068, EUR: 0.0063, JPY: 1 }
-};
-
-function initializeConverter() {
-    populateCurrencyOptions();
-    showConverterSection('currency'); // แสดงส่วนแปลงค่าเงินเมื่อโหลดหน้า
-}
+// =================================================================
+// 5. CONVERTER FUNCTIONS
+// =================================================================
 
 function populateCurrencyOptions() {
     const fromSelect = document.getElementById('currency-from');
     const toSelect = document.getElementById('currency-to');
     
-    // ล้างตัวเลือกเก่า
+    if (!fromSelect || !toSelect) return;
+
     fromSelect.innerHTML = '';
     toSelect.innerHTML = '';
 
@@ -727,7 +598,6 @@ function populateCurrencyOptions() {
         toSelect.appendChild(optionTo);
     });
     
-    // ตั้งค่าเริ่มต้น
     fromSelect.value = 'THB';
     toSelect.value = 'USD';
 }
@@ -736,9 +606,16 @@ function showConverterSection(type) {
     document.querySelectorAll('.converter-section').forEach(section => {
         section.style.display = 'none';
     });
+    document.querySelectorAll('.converter-tabs button').forEach(button => {
+        button.style.backgroundColor = 'var(--border-color)';
+        button.style.color = 'var(--text-color)';
+    });
+
     const selectedSection = document.getElementById(`${type}-section`);
     if (selectedSection) {
         selectedSection.style.display = 'block';
+        document.querySelector(`.converter-tabs button[onclick*="'${type}'"]`).style.backgroundColor = 'var(--primary-color)';
+        document.querySelector(`.converter-tabs button[onclick*="'${type}'"]`).style.color = 'white';
     }
 }
 
@@ -768,13 +645,6 @@ function convertCurrency() {
     `;
 }
 
-const unitConversions = {
-    // m (เมตร) เป็นฐาน
-    km: 1000,
-    m: 1,
-    cm: 0.01
-};
-
 function convertUnit() {
     const amount = parseFloat(document.getElementById('unit-amount').value);
     const fromUnit = document.getElementById('unit-from').value;
@@ -794,9 +664,7 @@ function convertUnit() {
         return;
     }
 
-    // แปลงหน่วยเริ่มต้นเป็นเมตรก่อน
     const valueInMeters = amount * fromFactor;
-    // แปลงจากเมตรเป็นหน่วยปลายทาง
     const result = valueInMeters / toFactor;
 
     resultDiv.innerHTML = `
@@ -812,7 +680,6 @@ function convertBase() {
     const toBase = parseInt(document.getElementById('base-to').value);
     const resultDiv = document.getElementById('base-result');
 
-    // ตรวจสอบความถูกต้องของ Input
     if (input === "") {
         resultDiv.innerHTML = '<p style="color:red;">❌ กรุณาป้อนตัวเลข</p>';
         return;
@@ -820,7 +687,6 @@ function convertBase() {
 
     let decimalValue;
     try {
-        // แปลงเป็นเลขฐาน 10 (Decimal)
         decimalValue = parseInt(input, fromBase);
         if (isNaN(decimalValue)) {
             throw new Error("Invalid input for base");
@@ -830,10 +696,8 @@ function convertBase() {
         return;
     }
 
-    // แปลงจากเลขฐาน 10 เป็นฐานปลายทาง
     const result = decimalValue.toString(toBase).toUpperCase();
 
-    // สร้างคำอธิบายวิธีทำ
     const tutorialHtml = `
         <div class="conversion-tutorial-box">
             <h4>📈 วิธีคำนวณ</h4>
@@ -853,41 +717,63 @@ function convertBase() {
     `;
 }
 
-// ==============================================
-// 5. QUIZ GAME FUNCTIONS
-// ==============================================
-
-const quizQuestions = [
-    { question: "แม่น้ำที่ยาวที่สุดในโลกคือแม่น้ำใด?", options: ["แอมะซอน", "ไนล์", "แยงซี", "มิสซิสซิปปี"], answer: "ไนล์" },
-    { question: "สิ่งมีชีวิตชนิดใดที่มีเซลล์สมองมากที่สุด?", options: ["ปลาวาฬ", "มนุษย์", "ช้าง", "โลมา"], answer: "ปลาวาฬ" },
-    { question: "แสงเดินทางเร็วแค่ไหน (กิโลเมตรต่อวินาที)?", options: ["150,000", "299,792", "380,000", "450,000"], answer: "299,792" },
-    { question: "ดาวเคราะห์ดวงใดในระบบสุริยะที่ร้อนที่สุด?", options: ["ดาวพุธ", "ดาวศุกร์", "ดาวอังคาร", "ดาวยูเรนัส"], answer: "ดาวศุกร์" },
-    { question: "ใครเป็นผู้คิดค้นทฤษฎีสัมพัทธภาพ (Relativity)?", options: ["ไอแซค นิวตัน", "อัลเบิร์ต ไอน์สไตน์", "กาลิเลโอ กาลิเลอี", "สตีเฟน ฮอว์คิง"], answer: "อัลเบิร์ต ไอน์สไตน์" }
-];
-
-let currentQuestionIndex = 0;
-let score = 0;
-let quizTimer;
-let startTime;
-const TIME_LIMIT = 60; // 60 วินาทีต่อเกม
-
-function initializeQuiz() {
-    document.getElementById('quiz-start-btn').onclick = startQuiz;
-    loadLeaderboard();
+function initializeConverter() {
+    populateCurrencyOptions();
+    showConverterSection('currency');
 }
 
-function startQuiz() {
-    currentQuestionIndex = 0;
-    score = 0;
-    document.getElementById('quiz-start-area').style.display = 'none';
-    document.getElementById('quiz-result-area').style.display = 'none';
-    document.getElementById('quiz-game-area').style.display = 'block';
+// =================================================================
+// 6. QUIZ GAME FUNCTIONS
+// =================================================================
 
-    startTime = Date.now();
-    updateQuizTimerDisplay();
-    quizTimer = setInterval(updateQuizTimerDisplay, 1000);
+// Utility function: Fisher-Yates shuffle
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
 
-    showQuestion();
+function saveScore(username, score, time) {
+    let leaderboard = JSON.parse(localStorage.getItem('quizLeaderboard')) || [];
+    const date = new Date().toLocaleDateString('th-TH');
+
+    leaderboard.push({ username, score, time, date });
+
+    // เรียงตามคะแนนมากไปน้อย ถ้าคะแนนเท่ากันเรียงตามเวลาที่ใช้น้อยไปมาก
+    leaderboard.sort((a, b) => {
+        if (b.score !== a.score) {
+            return b.score - a.score;
+        }
+        return a.time - b.time;
+    });
+
+    // เก็บแค่ 10 อันดับแรก
+    leaderboard = leaderboard.slice(0, 10);
+    localStorage.setItem('quizLeaderboard', JSON.stringify(leaderboard));
+}
+
+function loadLeaderboard() {
+    const leaderboard = JSON.parse(localStorage.getItem('quizLeaderboard')) || [];
+    const tbody = document.getElementById('leaderboard-body');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+
+    if (leaderboard.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">ยังไม่มีสถิติคะแนน</td></tr>';
+        return;
+    }
+
+    leaderboard.forEach((record, index) => {
+        const row = tbody.insertRow();
+        row.insertCell().textContent = index + 1;
+        row.insertCell().textContent = record.username;
+        row.insertCell().textContent = `${record.score} / ${quizQuestions.length > 0 ? quizQuestions.length : 10}`;
+        row.insertCell().textContent = `${record.time} วินาที`;
+        row.insertCell().textContent = record.date;
+    });
 }
 
 function showQuestion() {
@@ -903,7 +789,6 @@ function showQuestion() {
     const optionsContainer = document.getElementById('quiz-options');
     optionsContainer.innerHTML = '';
 
-    // สุ่มลำดับตัวเลือก
     const shuffledOptions = shuffleArray([...q.options]);
 
     shuffledOptions.forEach(option => {
@@ -916,29 +801,30 @@ function showQuestion() {
 }
 
 function checkAnswer(selectedOption, correctAnswer, button) {
-    // ปิดการใช้งานปุ่มทั้งหมดชั่วคราว
     document.querySelectorAll('.quiz-option-btn').forEach(btn => btn.disabled = true);
 
     if (selectedOption === correctAnswer) {
         score++;
-        button.style.backgroundColor = '#2ecc71'; // ถูกต้อง (เขียว)
+        button.style.backgroundColor = '#2ecc71'; // Correct: Green
+        button.style.color = 'white';
     } else {
-        button.style.backgroundColor = '#e74c3c'; // ผิด (แดง)
+        button.style.backgroundColor = '#e74c3c'; // Wrong: Red
+        button.style.color = 'white';
         // เน้นคำตอบที่ถูกต้อง
         document.querySelectorAll('.quiz-option-btn').forEach(btn => {
             if (btn.textContent === correctAnswer) {
                 btn.style.border = '2px solid #2ecc71';
+                btn.style.backgroundColor = '#d1e7dd';
+                btn.style.color = '#0f5132';
             }
         });
     }
 
     document.getElementById('quiz-score').textContent = `คะแนน: ${score} / ${quizQuestions.length}`;
 
-    // ไปคำถามถัดไปหลังจาก 1 วินาที
     setTimeout(() => {
         currentQuestionIndex++;
         showQuestion();
-        // เปิดการใช้งานปุ่มอีกครั้ง (จะถูกรีเซ็ตใน showQuestion)
         document.querySelectorAll('.quiz-option-btn').forEach(btn => btn.disabled = false);
     }, 1000);
 }
@@ -977,52 +863,70 @@ function endQuiz() {
     loadLeaderboard();
 }
 
-function saveScore(username, score, time) {
-    let leaderboard = JSON.parse(localStorage.getItem('quizLeaderboard')) || [];
-    const date = new Date().toLocaleDateString('th-TH');
-
-    leaderboard.push({ username, score, time, date });
-
-    // เรียงลำดับ: คะแนนสูงสุดก่อน, ถ้าคะแนนเท่ากัน ดูเวลาที่น้อยกว่า
-    leaderboard.sort((a, b) => {
-        if (b.score !== a.score) {
-            return b.score - a.score;
-        }
-        return a.time - b.time;
-    });
-
-    // เก็บเฉพาะ 10 อันดับแรก
-    leaderboard = leaderboard.slice(0, 10);
-    localStorage.setItem('quizLeaderboard', JSON.stringify(leaderboard));
-}
-
-function loadLeaderboard() {
-    const leaderboard = JSON.parse(localStorage.getItem('quizLeaderboard')) || [];
-    const tbody = document.getElementById('leaderboard-body');
-    if (!tbody) return;
+function startQuiz() {
+    // 1. สุ่มคำถาม 10 ข้อ
+    const shuffledQuestions = shuffleArray([...originalQuizQuestions]);
+    quizQuestions = shuffledQuestions.slice(0, 10);
     
-    tbody.innerHTML = '';
+    // 2. รีเซ็ตค่าและแสดงหน้าจอ
+    currentQuestionIndex = 0;
+    score = 0;
+    
+    document.getElementById('quiz-start-area').style.display = 'none';
+    document.getElementById('quiz-result-area').style.display = 'none';
+    document.getElementById('quiz-game-area').style.display = 'block';
 
-    if (leaderboard.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">ยังไม่มีสถิติคะแนน</td></tr>';
-        return;
+    // 3. เริ่ม Timer
+    if (quizTimer) {
+        clearInterval(quizTimer);
     }
+    startTime = Date.now();
+    updateQuizTimerDisplay();
+    quizTimer = setInterval(updateQuizTimerDisplay, 1000);
 
-    leaderboard.forEach((record, index) => {
-        const row = tbody.insertRow();
-        row.insertCell().textContent = index + 1;
-        row.insertCell().textContent = record.username;
-        row.insertCell().textContent = `${record.score} / ${quizQuestions.length}`;
-        row.insertCell().textContent = `${record.time} วินาที`;
-        row.insertCell().textContent = record.date;
-    });
+    // 4. เริ่มคำถามแรก
+    showQuestion();
 }
 
-// Utility function: Fisher-Yates shuffle
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+function initializeQuiz() {
+    const startButton = document.getElementById('quiz-start-btn');
+    if (startButton) {
+        startButton.onclick = startQuiz;
     }
-    return array;
+    loadLeaderboard();
 }
+
+
+// =================================================================
+// 7. INITIALIZATION (การเรียกใช้งานฟังก์ชันเมื่อโหลดหน้า)
+// =================================================================
+
+// กำหนดให้ฟังก์ชันสามารถเรียกใช้ได้จาก HTML โดยตรง (Global Scope)
+window.handleLogin = handleLogin;
+window.handleRegister = handleRegister;
+window.handleLogout = handleLogout;
+window.calculatePersonalInfo = calculatePersonalInfo;
+window.calculateNumerology = calculateNumerology;
+window.showConverterSection = showConverterSection;
+window.convertCurrency = convertCurrency;
+window.convertUnit = convertUnit;
+window.convertBase = convertBase;
+window.startQuiz = startQuiz; // สำหรับปุ่มเริ่มเกมใหม่ในหน้า Quiz
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. โหลดปุ่ม Login/Logout เสมอ
+    loadAuthButton();
+
+    // 2. เริ่มต้นฟังก์ชันตามหน้าที่ของแต่ละหน้า (โดยการตรวจหา Element หลัก)
+    if (document.getElementById('world-clock')) {
+        initializeWorldClock();
+    }
+    
+    if (document.getElementById('converter-suite')) {
+        initializeConverter();
+    }
+    
+    if (document.getElementById('quiz')) {
+        initializeQuiz();
+    }
+});
