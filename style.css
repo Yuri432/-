@@ -252,7 +252,7 @@ main h3 {
     border-bottom: 1px solid var(--border-color);
     align-items: center;
     transition: background-color 0.3s;
-    background-color: var(--card-background); /* ต้องมีเพื่อให้ night-mode ทำงาน */
+    background-color: var(--card-background);
 }
 
 .clock-row:nth-child(even) {
