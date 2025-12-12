@@ -99,7 +99,8 @@ nav a.active {
 }
 
 input[type="text"],
-input[type="number"] {
+input[type="number"],
+select {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -238,31 +239,28 @@ input[type="number"] {
 }
 
 /* ============================================== */
-/* 6. TIMER STYLES */
+/* 6. CONVERTER STYLES */
 /* ============================================== */
 
-.timer-display {
-    font-size: 4em;
-    font-weight: bold;
-    text-align: center;
-    margin: 30px 0;
-    padding: 20px;
-    background-color: #f0f8ff;
-    border: 3px solid #3498db;
-    border-radius: 10px;
-    color: #2c3e50;
+.converter-section h3 {
+    color: #e67e22;
+    border-bottom: 2px solid #f39c12;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
 }
 
 .input-timer {
     display: flex;
     justify-content: center;
     gap: 15px;
+    align-items: center;
     margin-bottom: 20px;
 }
 
-.input-timer input {
-    width: 80px;
-    text-align: center;
+.input-timer input, .input-timer select {
+    width: auto;
+    flex-grow: 1;
+    max-width: 180px;
 }
 
 /* ============================================== */
@@ -344,24 +342,107 @@ footer {
 }
 
 /* ============================================== */
-/* 9. ALERT BOX STYLES (สำหรับ Timer) */
+/* 9. ALERT BOX STYLES (Inline/Static Alerts) */
 /* ============================================== */
 
-.warning-alert {
+/* ใช้สำหรับกล่องแจ้งเตือนที่เป็นส่วนหนึ่งของเนื้อหา */
+.info-alert {
     padding: 15px 20px;
     margin-bottom: 25px;
-    border: 1px solid #f1c40f; /* สีเหลือง */
-    background-color: #fffbe6; /* พื้นหลังเหลืองอ่อนมาก */
-    color: #e67e22; /* สีข้อความส้ม/เหลือง */
+    border: 1px solid #3498db;
+    background-color: #f0f8ff;
+    color: #2980b9;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-.warning-alert h3 {
+.info-alert h3 {
     margin-top: 0;
     font-size: 1.2em;
-    color: #f39c12; /* ส้มเข้ม */
-    border-bottom: 1px dashed #f1c40f;
+    color: #3498db;
+    border-bottom: 1px dashed #3498db;
     padding-bottom: 5px;
     margin-bottom: 10px;
+}
+
+/* ============================================== */
+/* 10. MODAL/POP-UP STYLES (Based on User's image) */
+/* ============================================== */
+
+/* Overlay ที่จะบังหน้าจอทั้งหมด */
+.site-modal {
+    display: none; /* เริ่มต้นถูกซ่อนไว้ */
+    position: fixed; 
+    z-index: 1000; /* ให้อยู่เหนือทุกองค์ประกอบ */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7); /* พื้นหลังทึบแสง */
+    padding-top: 50px;
+    
+    /* Center content vertically and horizontally */
+    align-items: center;
+    justify-content: center;
+}
+
+/* กล่องเนื้อหา Modal */
+.modal-content-box {
+    background-color: #fefefe;
+    margin: auto; /* จัดกึ่งกลางแนวตั้งและแนวนอน */
+    padding: 20px;
+    border-radius: 12px;
+    width: 90%; 
+    max-width: 600px; /* จำกัดขนาดให้ดูเป็น pop-up */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    position: relative;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(-50px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+/* หัวข้อ modal ให้ดูโดดเด่น */
+.modal-content-box h2 {
+    text-align: center;
+    color: #c0392b; /* ใช้สีแดงเด่นตามภาพตัวอย่าง */
+    font-size: 1.5em;
+    margin-top: 0;
+    border-bottom: 2px solid #e74c3c;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* ปุ่มปิด (X) */
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    line-height: 20px;
+    margin-left: 10px;
+    transition: color 0.2s;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: #e74c3c;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* รูปแบบเนื้อหาภายใน modal ให้ดูเป็นระเบียบ (คล้าย info-box) */
+.modal-message-body {
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #bdc3c7;
+    background-color: #f9f9f9;
+    border-radius: 6px;
+}
+
+.modal-message-body p {
+    margin: 5px 0;
 }
