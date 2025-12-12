@@ -3,121 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyToolbox | หน้าหลัก</title>
-    <link rel="stylesheet" href="style.css"> 
-</head>
+    <title>หน้าหลัก | เครื่องมือคำนวณ</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script>
+        if (!localStorage.getItem('loggedInUser') && !window.location.pathname.includes('login.html') && !window.location.pathname.includes('register.html')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+    </head>
 <body>
+
     <header>
-        <div class="container">
-            <h1><a href="index.html">MyToolbox</a></h1>
-            <nav>
-                <a href="index.html" class="active">หน้าแรก</a>
-                <a href="personal.html">ข้อมูลส่วนตัว</a>
-                <a href="converter.html">ตัวแปลง</a>
-                <a href="worldclock.html">นาฬิกาโลก</a>
-                <a href="quiz.html">Quiz Game</a>
-                </nav>
-        </div>
-    </header>
-
-    <main class="container">
-        <h2 id="welcome-message">👋 ยินดีต้อนรับสู่ MyToolbox</h2> 
-
-        <section class="tool-card">
-            <h2>✨ เครื่องมือทั้งหมด</h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                <div class="tool-item" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
-                    <h3>🧍 ข้อมูลส่วนตัว</h3>
-                    <p>คำนวณอายุ, ราศี, ปีนักษัตร และผลรวมเลขศาสตร์จากชื่อ</p>
-                    <a href="personal.html" class="action-btn" style="background-color: #2ecc71;">ใช้งาน</a>
-                </div>
-                <div class="tool-item" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
-                    <h3>🔄 ตัวแปลงสารพัด</h3>
-                    <p>แปลงสกุลเงิน, หน่วยวัดความยาว และเลขฐานต่างๆ (Binary, Decimal, Hex)</p>
-                    <a href="converter.html" class="action-btn" style="background-color: #f39c12;">ใช้งาน</a>
-                </div>
-                <div class="tool-item" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
-                    <h3>🌍 นาฬิกาโลก</h3>
-                    <p>ติดตามเวลาและวันที่ปัจจุบันของเมืองสำคัญทั่วโลก</p>
-                    <a href="worldclock.html" class="action-btn" style="background-color: #3498db;">ใช้งาน</a>
-                </div>
-                <div class="tool-item" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
-                    <h3>🧠 Quiz Game</h3>
-                    <p>ทดสอบความรู้รอบตัว 10 ข้อ พร้อมจัดอันดับ Leaderboard</p>
-                    <a href="quiz.html" class="action-btn" style="background-color: #9b59b6;">ใช้งาน</a>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <p id="footer-text">© 2025 MyToolbox Project. All rights reserved.</p>
-    </footer>
-
-    <script src="script.js"></script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyToolbox | ข้อมูลส่วนตัว</title>
-    <link rel="stylesheet" href="style.css"> 
-</head>
-<body>
-    <header>
-        <div class="container">
-            <h1><a href="index.html">MyToolbox</a></h1>
-            <nav>
-                <a href="index.html">หน้าแรก</a>
-                <a href="personal.html" class="active">ข้อมูลส่วนตัว</a>
-                <a href="converter.html">ตัวแปลง</a>
-                <a href="worldclock.html">นาฬิกาโลก</a>
-                <a href="quiz.html">Quiz Game</a>
+        <h1>เครื่องมือคำนวณและเกมความรู้รอบตัว</h1>
+        <nav>
+            <a href="index.html" class="active">🎂 ข้อมูลส่วนบุคคล</a>
+            <a href="worldclock.html">🌎 นาฬิกาโลก</a>
+            <a href="converter.html">🔄 เครื่องมือแปลงค่า</a>
+            <a href="quiz.html">🧠 Quiz Game</a>
             </nav>
-        </div>
     </header>
 
     <main class="container">
-        <h2 id="welcome-message">👋 ยินดีต้อนรับสู่ MyToolbox</h2>
         
-        <div id="main-message-box" class="message-box message-warning"></div> 
-
-        <section class="tool-card">
-            <h3>🎂 คำนวณอายุ, ราศี และ ปีนักษัตร</h3>
+        <div id="personal-info" class="main-section">
+            <h2>🎂 ข้อมูลส่วนบุคคลและโหราศาสตร์เบื้องต้น</h2>
+            <p>กรุณากรอกข้อมูลวันเดือนปีเกิดเพื่อเริ่มคำนวณอายุและราศี</p>
             <div class="input-group">
-                <label for="birthdate-input">วันเดือนปีเกิด (DD/MM/YYYY หรือ DD/MM/BBBB):</label>
-                <input type="text" id="birthdate-input" placeholder="เช่น 01/05/2530">
+                <label for="birthdate-input">วันเดือนปีเกิด (ค.ศ. หรือ พ.ศ.):</label>
+                <input type="text" id="birthdate-input" placeholder="DD/MM/YYYY หรือ DD/MM/BBBB เช่น 13/02/2552">
             </div>
-            <button onclick="calculatePersonalInfo()" class="action-btn">คำนวณ</button>
-            
-            <div id="personal-result" class="conversion-result">
-                <p>ผลการคำนวณจะแสดงที่นี่</p>
-            </div>
-        </section>
-
-        <section class="tool-card">
-            <h3>🔮 คำนวณผลรวมเลขศาสตร์ (Numerology)</h3>
             <div class="input-group">
                 <label for="name-input">ชื่อ (ภาษาไทย):</label>
-                <input type="text" id="name-input" placeholder="เช่น สมชาย">
+                <input type="text" id="name-input" placeholder="ชื่อ">
             </div>
             <div class="input-group">
                 <label for="surname-input">นามสกุล (ภาษาไทย):</label>
-                <input type="text" id="surname-input" placeholder="เช่น ใจดี">
+                <input type="text" id="surname-input" placeholder="นามสกุล">
             </div>
-            <button onclick="calculateNumerology()" class="action-btn">ทำนายเลขศาสตร์</button>
-
-            <div id="numerology-result" class="conversion-result">
-                <p>ผลการทำนายเลขศาสตร์จะแสดงที่นี่</p>
+            
+            <div class="action-buttons-group">
+                <button onclick="calculatePersonalInfo()" class="action-btn">คำนวณอายุและราศี</button>
+                <button onclick="calculateNumerology()" class="action-btn secondary-btn">ทำนายชื่อ (เลขศาสตร์/ทักษา)</button>
             </div>
-        </section>
+            
+            <div id="personal-result" class="result-area">
+                </div>
+            
+            <div id="numerology-result" class="result-area" style="margin-top: 20px;">
+                </div>
+        </div>
         
     </main>
 
     <footer>
-        <p id="footer-text">© 2025 MyToolbox Project. All rights reserved.</p>
+        <div class="footer-links">
+            <p>ติดตามช่องทางต่างๆ:</p>
+            <a href="https://www.youtube.com/channel/UCnhhMJrPVY3ILErkK5PClnQ" target="_blank">📺 ช่อง YouTube (YU RI)</a>
+            <a href="https://www.tiktok.com/@ayu_9i?is_from_webapp=1&sender_device=pc" target="_blank">🎵 TikTok (@ayu_9i)</a>
+        </div>
+        <p>&copy; 2025 AI Tools - Data is stored locally on your browser.</p>
     </footer>
 
     <script src="script.js"></script>
