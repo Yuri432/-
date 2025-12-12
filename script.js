@@ -1,725 +1,641 @@
-// ข้อมูล Time Zones
-const TIMEZONES = {
-    thai: { id: 'Asia/Bangkok', name: '🇹🇭 กรุงเทพฯ, ประเทศไทย', offset: 7, city: 'ไทย' },
-    japan: { id: 'Asia/Tokyo', name: '🇯🇵 โตเกียว, ญี่ปุ่น', offset: 9, city: 'ญี่ปุ่น' },
-    sydney: { id: 'Australia/Sydney', name: '🇦🇺 ซิดนีย์, ออสเตรเลีย', offset: 11, city: 'ซิดนีย์' } 
+document.addEventListener('DOMContentLoaded', () => {
+    // โหลดฟังก์ชันตามหน้าปัจจุบัน
+    if (document.getElementById('personal-info')) {
+        // initializePersonalInfo(); // ไม่มีฟังก์ชันเริ่มต้นที่จำเป็น
+    } else if (document.getElementById('world-clock')) {
+        // ตรวจสอบว่าหน้าไม่ได้อยู่ในโหมดปิดใช้งานชั่วคราวหรือไม่
+        if (document.getElementById('clock-display-container').style.display !== 'none') {
+             initializeWorldClock();
+        }
+    } else if (document.getElementById('timer')) {
+        initializeTimer();
+    } else if (document.getElementById('quiz')) {
+        initializeQuiz();
+    }
+});
+
+
+// ==============================================
+// 1. PERSONAL INFO & NUMEROLOGY FUNCTIONS
+// ==============================================
+
+function getZodiacSign(day, month) {
+    // 19/04 - 18/05 : ราศีเมษ
+    if ((month === 4 && day >= 19) || (month === 5 && day <= 18)) return "ราศีเมษ (Aries) ♈";
+    // 19/05 - 18/06 : ราศีพฤษภ
+    if ((month === 5 && day >= 19) || (month === 6 && day <= 18)) return "ราศีพฤษภ (Taurus) ♉";
+    // 19/06 - 19/07 : ราศีเมถุน
+    if ((month === 6 && day >= 19) || (month === 7 && day <= 19)) return "ราศีเมถุน (Gemini) ♊";
+    // 20/07 - 16/08 : ราศีกรกฎ
+    if ((month === 7 && day >= 20) || (month === 8 && day <= 16)) return "ราศีกรกฎ (Cancer) ♋";
+    // 17/08 - 16/09 : ราศีสิงห์
+    if ((month === 8 && day >= 17) || (month === 9 && day <= 16)) return "ราศีสิงห์ (Leo) ♌";
+    // 17/09 - 16/10 : ราศีกันย์
+    if ((month === 9 && day >= 17) || (month === 10 && day <= 16)) return "ราศีกันย์ (Virgo) ♍";
+    // 17/10 - 15/11 : ราศีตุลย์
+    if ((month === 10 && day >= 17) || (month === 11 && day <= 15)) return "ราศีตุลย์ (Libra) ♎";
+    // 16/11 - 15/12 : ราศีพิจิก
+    if ((month === 11 && day >= 16) || (month === 12 && day <= 15)) return "ราศีพิจิก (Scorpio) ♏";
+    // 16/12 - 14/01 : ราศีธนู
+    if ((month === 12 && day >= 16) || (month === 1) || (month === 1 && day <= 14)) return "ราศีธนู (Sagittarius) ♐";
+    // 15/01 - 12/02 : ราศีมังกร
+    if ((month === 1 && day >= 15) || (month === 2 && day <= 12)) return "ราศีมังกร (Capricorn) ♑";
+    // 13/02 - 14/03 : ราศีกุมภ์
+    if ((month === 2 && day >= 13) || (month === 3 && day <= 14)) return "ราศีกุมภ์ (Aquarius) ♒";
+    // 15/03 - 18/04 : ราศีมีน
+    if ((month === 3 && day >= 15) || (month === 4 && day <= 18)) return "ราศีมีน (Pisces) ♓";
+    return "ไม่พบข้อมูลราศี";
+}
+
+function calculatePersonalInfo() {
+    const birthdateInput = document.getElementById('birthdate-input').value;
+    const resultDiv = document.getElementById('personal-result');
+    resultDiv.innerHTML = '';
+    resultDiv.style.borderLeftColor = '#3498db';
+
+    const dateParts = birthdateInput.split('/');
+    if (dateParts.length !== 3) {
+        resultDiv.innerHTML = '<p style="color:red;">กรุณากรอกวันเดือนปีเกิดในรูปแบบ DD/MM/YYYY หรือ DD/MM/BBBB</p>';
+        return;
+    }
+
+    let day = parseInt(dateParts[0]);
+    let month = parseInt(dateParts[1]);
+    let year = parseInt(dateParts[2]);
+
+    if (isNaN(day) || isNaN(month) || isNaN(year) || day > 31 || month > 12) {
+        resultDiv.innerHTML = '<p style="color:red;">ข้อมูลวันที่ไม่ถูกต้อง กรุณาตรวจสอบ</p>';
+        return;
+    }
+
+    // แปลง พ.ศ. เป็น ค.ศ. หากปีมากกว่า 2500
+    if (year > 2500) {
+        year -= 543;
+    }
+    
+    const birthDate = new Date(year, month - 1, day);
+    const today = new Date();
+
+    if (birthDate > today) {
+        resultDiv.innerHTML = '<p style="color:red;">วันเกิดไม่สามารถเป็นอนาคตได้ กรุณาตรวจสอบปี</p>';
+        return;
+    }
+
+    // คำนวณอายุ
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    
+    // คำนวณวันเกิดที่ใกล้จะถึง (วันเกิดในปีปัจจุบัน)
+    let nextBirthday = new Date(today.getFullYear(), month - 1, day);
+    if (nextBirthday < today) {
+        nextBirthday.setFullYear(today.getFullYear() + 1);
+    }
+    
+    const timeDiff = nextBirthday.getTime() - today.getTime();
+    const daysUntilBirthday = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+    // คำนวณราศี
+    const zodiac = getZodiacSign(day, month);
+
+    resultDiv.innerHTML = `
+        <h3>✅ ผลการคำนวณข้อมูลส่วนบุคคล</h3>
+        <p><strong>วันเกิดของคุณ:</strong> ${day} / ${month} / ${year + 543} (พ.ศ. ${year + 543})</p>
+        <p><strong>ราศีของคุณ:</strong> ${zodiac}</p>
+        <p><strong>อายุ:</strong> ${age} ปี</p>
+        <p><strong>วันเกิดที่ใกล้จะถึง:</strong> เหลืออีก ${daysUntilBirthday} วัน</p>
+    `;
+}
+
+// Map ตัวอักษรไทยไปสู่ตัวเลขเลขศาสตร์ (1-8)
+const numerologyMap = {
+    'ก': 1, 'ด': 1, 'ถ': 1, 'ภ': 1, 'ฤ': 1, 'า': 1,
+    'ข': 2, 'ช': 2, 'บ': 2, 'ป': 2, 'ง': 2, 'ฝ': 2, 'แ': 2, 'ใ': 2, 'ไ': 2,
+    'ค': 3, 'ต': 3, 'จ': 3, 'ร': 3, 'ว': 3, 'ษ': 3,
+    'ฆ': 4, 'ฑ': 4, 'ธ': 4, 'น': 4, 'ย': 4, 'ศ': 4, 'ส': 4, 'ห': 4, 'ฬ': 4, 'อ': 4,
+    'ต': 5, 'ฌ': 5, 'ณ': 5, 'ม': 5, 'ฮ': 5, 'เ': 5, 'โ': 5, 'ฯ': 5,
+    'ฉ': 6, 'ท': 6, 'ผ': 6, 'พ': 6, 'ฟ': 6, 'ห': 6, 'อ': 6,
+    'ซ': 7, 'ซี': 7, 'ญ': 7, 'ร': 7,
+    'ฏ': 8, 'ฐ': 8, 'ย': 8, 'ล': 8, 'ว': 8,
+    // สระที่ไม่มีค่าตัวเลข (ถือว่าเป็น 0 หรือไม่นำมาคิด)
+    'ะ': 0, 'ิ': 0, 'ี': 0, 'ึ': 0, 'ื': 0, 'ุ': 0, 'ู': 0, '็': 0, '์': 0, 'ำ': 0, 'ๆ': 0,
+    'ไม้หันอากาศ': 0, 'ไม้ไต่คู้': 0, 'วรรณยุกต์': 0
 };
 
-// ฐานข้อมูลปีนักษัตร
-const CHINESE_ZODIACS = [
-    "ชวด (หนู)", "ฉลู (วัว)", "ขาล (เสือ)", "เถาะ (กระต่าย)", 
-    "มะโรง (งูใหญ่/มังกร)", "มะเส็ง (งูเล็ก)", "มะเมีย (ม้า)", "มะแม (แพะ)", 
-    "วอก (ลิง)", "ระกา (ไก่)", "จอ (สุนัข)", "กุน (หมู)"
+function getNumerologyValue(text) {
+    if (!text) return 0;
+    
+    let total = 0;
+    const cleanText = text.trim().toLowerCase();
+
+    // 1. นำตัวอักษรมาเทียบค่า
+    for (const char of cleanText) {
+        if (numerologyMap[char] !== undefined) {
+            total += numerologyMap[char];
+        } else {
+            // กรณีเป็นสระหรือตัวที่ไม่ระบุใน map (อาจต้องปรับตามหลักเลขศาสตร์ที่ใช้)
+            // สำหรับความเรียบง่าย จะข้ามตัวที่ไม่พบไป
+        }
+    }
+    return total;
+}
+
+function reduceNumber(num) {
+    while (num > 9) {
+        num = String(num).split('').reduce((sum, digit) => sum + parseInt(digit), 0);
+    }
+    return num;
+}
+
+function calculateNumerology() {
+    const nameInput = document.getElementById('name-input').value;
+    const surnameInput = document.getElementById('surname-input').value;
+    const resultDiv = document.getElementById('numerology-result');
+    resultDiv.innerHTML = '';
+
+    if (!nameInput && !surnameInput) {
+        resultDiv.innerHTML = '<p style="color:red;">กรุณากรอกชื่อและนามสกุล (ภาษาไทย) เพื่อคำนวณเลขศาสตร์</p>';
+        return;
+    }
+
+    const nameValue = getNumerologyValue(nameInput);
+    const surnameValue = getNumerologyValue(surnameInput);
+    const totalValue = nameValue + surnameValue;
+    
+    // เลขเดี่ยวที่ลดทอนแล้ว
+    const reducedTotal = reduceNumber(totalValue);
+
+    resultDiv.innerHTML = `
+        <h3>✨ ผลการทำนายเลขศาสตร์เบื้องต้น</h3>
+        <p><strong>ค่าเลขศาสตร์ชื่อ:</strong> ${nameValue}</p>
+        <p><strong>ค่าเลขศาสตร์นามสกุล:</strong> ${surnameValue}</p>
+        <hr style="border-top: 1px dashed #ccc; margin: 10px 0;">
+        <p><strong>ผลรวมค่าเลขศาสตร์ (ชื่อ+นามสกุล):</strong> <strong>${totalValue}</strong></p>
+        <p><strong>เลขเดี่ยวพลังงานหลัก:</strong> <strong>${reducedTotal}</strong></p>
+        <div style="margin-top: 15px; padding: 10px; background-color: #f0f8ff; border-radius: 4px;">
+            <p style="margin: 0;">*การทำนายนี้เป็นเพียงการคำนวณเบื้องต้นตามหลักเลขศาสตร์ ตัวเลขมีผลทางจิตวิทยาเท่านั้น</p>
+        </div>
+    `;
+    resultDiv.style.borderLeftColor = '#27ae60';
+}
+
+
+// ==============================================
+// 2. WORLD CLOCK FUNCTIONS (อัปเดต TimeZone ID)
+// ==============================================
+
+// ตัวแปรที่เก็บรายการนาฬิกาโลก
+const worldClocks = [
+    { name: "ไทย (Bangkok)", timeZone: "Asia/Bangkok" },
+    { name: "จีน (Shanghai)", timeZone: "Asia/Shanghai" },
+    { name: "ญี่ปุ่น (Tokyo)", timeZone: "Asia/Tokyo" },
+    { name: "เกาหลีใต้ (Seoul)", timeZone: "Asia/Seoul" },
+    { name: "อินเดีย (Kolkata)", timeZone: "Asia/Kolkata" },
+    { name: "อินโดนีเซีย (Jakarta)", timeZone: "Asia/Jakarta" },
+    { name: "บังกลาเทศ (Dhaka)", timeZone: "Asia/Dhaka" },
+    { name: "ปากีสถาน (Karachi)", timeZone: "Asia/Karachi" },
+    { name: "ออสเตรเลีย (Sydney)", timeZone: "Australia/Sydney" },
+    { name: "คาซัคสถาน (Almaty)", timeZone: "Asia/Almaty" },
+
+    // โซนยุโรป
+    { name: "รัสเซีย (Moscow)", timeZone: "Europe/Moscow" },
+    { name: "รัสเซีย (Yekaterinburg)", timeZone: "Asia/Yekaterinburg" },
+    { name: "สหราชอาณาจักร (London)", timeZone: "Europe/London" },
+    { name: "ฝรั่งเศส (Paris)", timeZone: "Europe/Paris" },
+    { name: "เยอรมนี (Berlin)", timeZone: "Europe/Berlin" },
+    { name: "อิตาลี (Rome)", timeZone: "Europe/Rome" },
+    { name: "สเปน (Madrid)", timeZone: "Europe/Madrid" },
+    { name: "สวิตเซอร์แลนด์ (Zurich)", timeZone: "Europe/Zurich" },
+    { name: "เนเธอร์แลนด์ (Amsterdam)", timeZone: "Europe/Amsterdam" },
+    { name: "สวีเดน (Stockholm)", timeZone: "Europe/Stockholm" },
+    { name: "เดนมาร์ก (Copenhagen)", timeZone: "Europe/Copenhagen" },
+    { name: "ฟินแลนด์ (Helsinki)", timeZone: "Europe/Helsinki" },
+    { name: "เบลเยียม (Brussels)", timeZone: "Europe/Brussels" },
+    { name: "นอร์เวย์ (Oslo)", timeZone: "Europe/Oslo" },
+    { name: "ออสเตรีย (Vienna)", timeZone: "Europe/Vienna" },
+    
+    // โซนอเมริกา/แอฟริกา
+    { name: "สหรัฐอเมริกา (New York)", timeZone: "America/New_York" },
+    { name: "สหรัฐอเมริกา (Los Angeles)", timeZone: "America/Los_Angeles" },
+    { name: "แคนาดา (Toronto)", timeZone: "America/Toronto" },
+    { name: "เม็กซิโก (Mexico City)", timeZone: "America/Mexico_City" },
+    { name: "บราซิล (Sao Paulo)", timeZone: "America/Sao_Paulo" },
+    { name: "อาร์เจนตินา (Buenos Aires)", timeZone: "America/Argentina/Buenos_Aires" },
+    { name: "ไนจีเรีย (Lagos)", timeZone: "Africa/Lagos" },
+    { name: "แอลจีเรีย (Algiers)", timeZone: "Africa/Algiers" },
 ];
 
-const isNight = (hour) => hour >= 19 || hour < 6;
 
-// ==============================================
-// 🛠️ ฟังก์ชันช่วยเหลือ: แปลงรูปแบบวันที่
-// ==============================================
+let clockInterval;
 
-function parseDate(dateString) {
-    const parts = dateString.split('/');
-    if (parts.length !== 3) return null;
-
-    let day = parseInt(parts[0]);
-    let month = parseInt(parts[1]) - 1; 
-    let year = parseInt(parts[2]);
-
-    const currentCEYear = new Date().getFullYear();
-    if (year > currentCEYear + 10) { 
-        year = year - 543; // แปลง พ.ศ. เป็น ค.ศ.
-    }
-
-    const date = new Date(year, month, day);
-
-    if (date.getFullYear() !== year || date.getMonth() !== month || date.getDate() !== day) {
-        return null;
-    }
-
-    return date;
+function getThaiZodiacSign(date) {
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // 1-12
+    return getZodiacSign(day, month); // ใช้ฟังก์ชันราศีจากส่วนที่ 1
 }
 
+function displayTimeDifference() {
+    const timeDiffDiv = document.getElementById('time-difference');
+    if (!timeDiffDiv) return;
 
-// ==============================================
-// 🔮 ข้อมูลฐานระบบทำนายชื่อ (ทักษา และ เลขศาสตร์)
-// ==============================================
-
-const TAKSA_RULES = {
-    0: { day: "วันอาทิตย์", rules: ["อห", "กขคฆง", "จฉชซฌญ", "ฎฏฐฑฒณ", "ตถทธน", "บปผฝพฟภม", "ยรลว", "ศษสหฬฮ"], vowels: "ะาิีึืุูเแอโอไอใ", kala: "ศษสหฬฮ" },
-    1: { day: "วันจันทร์", rules: ["กขคฆง", "จฉชซฌญ", "ฎฏฐฑฒณ", "ตถทธน", "บปผฝพฟภม", "ยรลว", "ศษสหฬฮ", "อห"], vowels: "ะาิีึืุูเแอโอไอใ", kala: "อะอาอิอีอุอูเแอโอไอใ" },
-    2: { day: "วันอังคาร", rules: ["จฉชซฌญ", "ฎฏฐฑฒณ", "ตถทธน", "บปผฝพฟภม", "ยรลว", "ศษสหฬฮ", "อห", "กขคฆง"], kala: "กขคฆง" },
-    3: { day: "วันพุธ (กลางวัน)", rules: ["ฎฏฐฑฒณ", "ตถทธน", "บปผฝพฟภม", "ยรลว", "ศษสหฬฮ", "อห", "กขคฆง", "จฉชซฌญ"], kala: "จฉชซฌญ" },
-    4: { day: "วันพฤหัสบดี", rules: ["ตถทธน", "บปผฝพฟภม", "ยรลว", "ศษสหฬฮ", "อห", "กขคฆง", "จฉชซฌญ", "ฎฏฐฑฒณ"], kala: "ฎฏฐฑฒณ" },
-    5: { day: "วันศุกร์", rules: ["บปผฝพฟภม", "ยรลว", "ศษสหฬฮ", "อห", "กขคฆง", "จฉชซฌญ", "ฎฏฐฑฒณ", "ตถทธน"], kala: "ตถทธน" },
-    6: { day: "วันเสาร์", rules: ["ยรลว", "ศษสหฬฮ", "อห", "กขคฆง", "จฉชซฌญ", "ฎฏฐฑฒณ", "ตถทธน", "บปผฝพฟภม"], kala: "บปผฝพฟภม" },
-    7: { day: "วันพุธ (กลางคืน/ราหู)", rules: ["ศษสหฬฮ", "อห", "กขคฆง", "จฉชซฌญ", "ฎฏฐฑฒณ", "ตถทธน", "บปผฝพฟภม", "ยรลว"], kala: "ยรลว" },
-};
-const TAKSA_NAMES = ["บริวาร (ผู้คนรอบตัว)", "อายุ (สุขภาพ)", "เดช (อำนาจ/บารมี)", "ศรี (สิริมงคล/โชคลาภ)", "มูละ (ทรัพย์สิน/การเงิน)", "อุตสาหะ (ความพยายาม/ผลสำเร็จ)", "มนตรี (ผู้อุปถัมภ์/ผู้ใหญ่)", "กาลกิณี (อับโชค/ความขัดแย้ง)"];
-const THAI_NUMEROLOGY_VALUES = {
-    'ก': 1, 'ด': 1, 'ถ': 1, 'ท': 1, 'ภ': 1, 'อ': 1, 'ะ': 1, 'า': 1, 'ั': 6, 'ำ': 1, 'ฤ': 1,
-    'ข': 2, 'ช': 2, 'บ': 2, 'ป': 2, 'ง': 2, 'เ': 2, 'แ': 2, 'ใ': 2, 'ไ': 2, '่': 2, '้': 2, '๊': 2, '๋': 2,
-    'จ': 3, 'ร': 3, 'ย': 3, 'ว': 3, 'ี': 3, 'ึ': 3, 'ื': 3, 'โ': 5,
-    'ต': 4, 'น': 4, 'ธ': 4, 'ซ': 4, 'ศ': 4, 'ษ': 4, 'ณ': 4, 'ฒ': 4, 'ุ': 4, 'ู': 4, '็': 4, '์': 0, 'ฯ': 0, ' ': 0,
-    'ฆ': 5, 'ค': 5, 'ฉ': 5, 'ฑ': 5, 'ม': 5, 'ห': 5, 'ฮ': 5,
-    'ผ': 6, 'พ': 6, 'ฝ': 6, 'ฟ': 6, 'ม': 6, 'ย': 6, 'ศ': 6, 'ส': 6,
-    'ซ': 7, 'ฐ': 7, 'ฑ': 7, 'ฒ': 7, 'ร': 7, 'ิ': 4,
-    'ฎ': 9, 'ล': 9,
-};
-const NUMEROLOGY_MEANINGS = { 19: { title: "19: ดาวจันทร์คู่ดาวอาทิตย์ (ความสำเร็จสูง)", detail: "เป็นเลขดีมาก มักนำมาซึ่งความสำเร็จ โชคลาภ..." }, 22: { title: "22: จันทร์คู่ (ความอ่อนไหว/ขาดความแน่นอน)", detail: "เป็นเลขที่ไม่ดี มักประสบปัญหาในชีวิตคู่..." }, 24: { title: "24: โชคลาภและความอุดมสมบูรณ์", detail: "เป็นเลขดีมาก มักมีชีวิตที่สุขสบาย..." }, 29: { title: "29: ความก้าวหน้าอย่างรวดเร็ว (ความสามารถรอบด้าน)", detail: "เป็นเลขดีมาก มีความสามารถรอบด้าน..." },};
-
-function getDayOfWeek(date) {
-    const dayIndex = date.getDay(); 
-    const hour = date.getHours();
-    if (dayIndex === 3 && hour >= 18) return 7;
-    return dayIndex; 
-}
-function analyzeTaksā(birthDate, name, surname) {
-    const fullName = (name + surname).replace(/\s+/g, '');
-    const birthDayIndex = getDayOfWeek(birthDate);
-    const taksaData = TAKSA_RULES[birthDayIndex];
-    let kalaCharacters = [];
-    let characterBreakdown = {};
-    if (!taksaData) return { error: 'ไม่สามารถระบุหลักทักษาได้', day: 'ไม่ทราบ' };
-    const kalaSet = taksaData.kala;
-    for (const char of fullName) {
-        let category = 'ไม่จัดประเภท';
-        let isKala = false;
-        if (kalaSet.includes(char)) { kalaCharacters.push(char); category = 'กาลกิณี'; isKala = true; } 
-        if (!isKala) {
-            for(let i=0; i<taksaData.rules.length; i++) {
-                if (taksaData.rules[i].includes(char)) { category = TAKSA_NAMES[i]; break; }
-            }
-            if (category === 'ไม่จัดประเภท') category = 'สระ/วรรณยุกต์';
-        }
-        if (!characterBreakdown[category]) characterBreakdown[category] = [];
-        characterBreakdown[category].push(char);
-    }
-    return { day: taksaData.day, isKala: kalaCharacters.length > 0, kalaCharacters, breakdown: characterBreakdown };
-}
-function getNumerologySum(text) {
-    if (!text) return 0;
-    let sum = 0;
-    const cleanText = text.trim();
-    for (let i = 0; i < cleanText.length; i++) {
-        const char = cleanText[i];
-        if (THAI_NUMEROLOGY_VALUES.hasOwnProperty(char)) {
-            sum += THAI_NUMEROLOGY_VALUES[char];
-        }
-    }
-    return sum;
-}
-window.calculateNumerology = function() {
-    const name = document.getElementById('name-input').value;
-    const surname = document.getElementById('surname-input').value;
-    const dateValue = document.getElementById('birthdate-input').value;
-    const resultDiv = document.getElementById('numerology-result');
-    if (!name && !surname) { resultDiv.innerHTML = '<p style="color:red;">⚠️ กรุณาป้อนชื่อและ/หรือนามสกุล (ภาษาไทย)</p>'; return; }
-    if (!dateValue) { resultDiv.innerHTML = '<p style="color:red;">⚠️ กรุณาป้อนวันเกิดของคุณในส่วนด้านบนก่อนทำนายหลักทักษา</p>'; return; }
-    const birthDate = parseDate(dateValue);
-    if (!birthDate) { resultDiv.innerHTML = '<p style="color:red;">⚠️ รูปแบบวันที่ไม่ถูกต้อง กรุณาใช้ DD/MM/YYYY (เช่น 13/02/2552)</p>'; return; }
-
-    const nameSum = getNumerologySum(name);
-    const surnameSum = getNumerologySum(surname);
-    const totalSum = nameSum + surnameSum;
-    const meaning = NUMEROLOGY_MEANINGS[totalSum] || { title: `เลข ${totalSum}: คำทำนายโดยรวม`, detail: `ผลรวมเลขศาสตร์ ${totalSum} เป็นการบ่งชี้ถึงแนวโน้มชีวิต...` };
-    let singleSum = totalSum;
-    if (singleSum > 9) singleSum = (totalSum - 1) % 9 + 1; 
-    const taksaResult = analyzeTaksā(birthDate, name, surname);
+    const bangkokTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Bangkok" });
+    const localTime = new Date();
     
-    let taksaHtml = taksaResult.isKala 
-        ? `<p style="color:#e74c3c; font-weight:bold;">❌ คำเตือน: ชื่อนี้มีอักขระกาลกิณี (${taksaResult.kalaCharacters.join(', ')})</p><p style="font-size: 0.9em;">(อักขระที่ห้ามใช้ตามหลักทักษาสำหรับคนเกิด${taksaResult.day})</p>`
-        : `<p style="color:#28a745; font-weight:bold;">✅ ชื่อนี้ไม่มีอักขระกาลกิณี</p>`;
+    const bangkokOffset = new Date(bangkokTime).getTimezoneOffset();
+    const localOffset = localTime.getTimezoneOffset();
+    const offsetDiffMinutes = localOffset - bangkokOffset;
 
-    let breakdownHtml = `<h4>การวิเคราะห์อักษร (ตามหลักทักษา):</h4><ul style="list-style-type: none; padding-left: 0;">`;
-    const displayOrder = TAKSA_NAMES.slice(0, 7).concat(['กาลกิณี', 'สระ/วรรณยุกต์', 'ไม่จัดประเภท']);
-    displayOrder.forEach(category => {
-        if (taksaResult.breakdown[category]) {
-            const chars = taksaResult.breakdown[category].join(', ');
-            let color = category === 'กาลกิณี' ? '#e74c3c' : (category === TAKSA_NAMES[3] ? '#28a745' : '#34495e'); 
-            breakdownHtml += `<li><span style="color:${color}; font-weight:bold;">${category}:</span> ${chars}</li>`;
-        }
-    });
-    breakdownHtml += `</ul>`;
-
-    resultDiv.innerHTML = `
-        <h3>📜 ผลการทำนายชื่อ-นามสกุล (แบบสมบูรณ์)</h3>
-        <div class="result-box numerology-meaning" style="border-left-color: ${taksaResult.isKala ? '#e74c3c' : '#28a745'};">
-            <h4>🌟 โหราศาสตร์ (หลักทักษา) - สำหรับคนเกิด${taksaResult.day}:</h4>
-            ${taksaHtml}
-        </div>
-        <div class="result-box numerology-result-total">
-            <h4>✨ เลขศาสตร์ (ผลรวมชื่อ+นามสกุล): <span style="font-size: 1.5em; color: #e74c3c;">${totalSum}</span></h4>
-            <p><strong>ผลรวมเลขเดี่ยว:</strong> ${singleSum} (ใช้ทำนายแนวโน้มชีวิต)</p>
-            <p><strong>คำทำนาย:</strong> ${meaning.title}</p>
-            <p style="font-size: 0.9em;">${meaning.detail}</p>
-        </div>
-        <div class="result-box numerology-breakdown">${breakdownHtml}</div>
-    `;
-};
-
-
-// ==============================================
-// 🆕 ฟังก์ชันคำนวณอายุ & ราศี
-// ==============================================
-
-function calculateDetailedAge(birthDate) {
-    const now = new Date();
-    const diffMs = now.getTime() - birthDate.getTime();
-    if (diffMs < 0) return "ยังไม่เกิด";
-    let years = now.getFullYear() - birthDate.getFullYear();
-    let months = now.getMonth() - birthDate.getMonth();
-    let days = now.getDate() - birthDate.getDate();
-    if (days < 0) { months--; days += new Date(now.getFullYear(), now.getMonth(), 0).getDate(); }
-    if (months < 0) { years--; months += 12; }
-    const totalSeconds = Math.floor(diffMs / 1000);
-    const hours = Math.floor(totalSeconds / 3600) % 24;
-    const minutes = Math.floor(totalSeconds / 60) % 60;
-    const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    return { years, months, days, hours, minutes, totalDays };
-}
-
-function getThaiZodiacSign(birthDate) {
-    const month = birthDate.getMonth() + 1; 
-    const day = birthDate.getDate();
-    const dates = [
-        { name: "เมษ (Aries)", start: [4, 13] }, { name: "พฤษภ (Taurus)", start: [5, 14] }, { name: "เมถุน (Gemini)", start: [6, 14] },
-        { name: "กรกฎ (Cancer)", start: [7, 15] }, { name: "สิงห์ (Leo)", start: [8, 15] }, { name: "กันย์ (Virgo)", start: [9, 15] },
-        { name: "ตุลย์ (Libra)", start: [10, 15] }, { name: "พิจิก (Scorpio)", start: [11, 14] }, { name: "ธนู (Sagittarius)", start: [12, 15] },
-        { name: "มังกร (Capricorn)", start: [1, 15] }, { name: "กุมภ์ (Aquarius)", start: [2, 13] }, { name: "มีน (Pisces)", start: [3, 14] },
-    ];
-    let zodiac = "ไม่ทราบ";
-    for (let i = 0; i < dates.length; i++) {
-        const nextIndex = (i + 1) % dates.length;
-        const current = dates[i];
-        const next = dates[nextIndex];
-        if (month === current.start[0] && day >= current.start[1]) { zodiac = current.name; break; }
-        if (month === next.start[0] && day < next.start[1]) { zodiac = current.name; break; }
-        if (current.start[0] < next.start[0] && month > current.start[0] && month < next.start[0]) { zodiac = current.name; break; }
-        if (current.start[0] === 12 && next.start[0] === 1 && (month === 12 && day >= current.start[1] || month === 1 && day < next.start[1])) { zodiac = current.name; break; }
+    let message;
+    if (offsetDiffMinutes === 0) {
+        message = "เวลาในเขตพื้นที่ของคุณตรงกับเวลาในประเทศไทย (Bangkok)";
+    } else {
+        const diffHours = Math.abs(Math.floor(offsetDiffMinutes / 60));
+        const diffMinutes = Math.abs(offsetDiffMinutes % 60);
+        const sign = offsetDiffMinutes > 0 ? "ช้ากว่า" : "เร็วกว่า";
+        
+        message = `เวลาในเขตพื้นที่ของคุณ ${sign} เวลาประเทศไทย ${diffHours} ชั่วโมง ${diffMinutes} นาที`;
     }
-    return zodiac; 
+    timeDiffDiv.textContent = `[ ${message} ]`;
 }
 
-function getWesternZodiacSign(birthDate) {
-    const month = birthDate.getMonth(); 
-    const day = birthDate.getDate();
-    if ((month === 11 && day >= 22) || (month === 0 && day < 20)) return "มังกร (Capricorn)";
-    else if ((month === 0 && day >= 20) || (month === 1 && day < 19)) return "กุมภ์ (Aquarius)";
-    else if ((month === 1 && day >= 19) || (month === 2 && day < 21)) return "มีน (Pisces)";
-    else if ((month === 2 && day >= 21) || (month === 3 && day < 20)) return "เมษ (Aries)";
-    else if ((month === 3 && day >= 20) || (month === 4 && day < 21)) return "พฤษภ (Taurus)";
-    else if ((month === 4 && day >= 21) || (month === 5 && day < 21)) return "เมถุน (Gemini)";
-    else if ((month === 5 && day >= 21) || (month === 6 && day < 23)) return "กรกฎ (Cancer)";
-    else if ((month === 6 && day >= 23) || (month === 7 && day < 23)) return "สิงห์ (Leo)";
-    else if ((month === 7 && day >= 23) || (month === 8 && day < 23)) return "กันย์ (Virgo)";
-    else if ((month === 8 && day >= 23) || (month === 9 && day < 23)) return "ตุลย์ (Libra)";
-    else if ((month === 9 && day >= 23) || (month === 10 && day < 23)) return "พิจิก (Scorpio)";
-    else if ((month === 10 && day >= 23) || (month === 11 && day < 22)) return "ธนู (Sagittarius)";
-    return 'ไม่ทราบ';
+function updateCurrentZodiac() {
+    const zodiacDiv = document.getElementById('current-zodiac');
+    if (!zodiacDiv) return;
+    
+    const nowInBangkok = new Date().toLocaleString("en-US", { timeZone: "Asia/Bangkok" });
+    const bangkokDate = new Date(nowInBangkok);
+    const zodiac = getThaiZodiacSign(bangkokDate);
+    
+    zodiacDiv.textContent = `ราศีปัจจุบันในประเทศไทย: ${zodiac}`;
 }
 
-function getLunarZodiac(birthDate, system = 'thai') {
-    const birthYearCE = birthDate.getFullYear();
-    const month = birthDate.getMonth(); 
-    const day = birthDate.getDate();
-    let yearToCalculate = birthYearCE;
-    if (system === 'thai' && (month < 3 || (month === 3 && day < 13))) { 
-        yearToCalculate--;
-    } 
-    const index = (yearToCalculate + 8) % 12; 
-    return CHINESE_ZODIACS[index];
+
+function initializeWorldClock() {
+    const container = document.getElementById('clock-display-container');
+    if (!container) return; 
+
+    // สร้าง Element นาฬิกาเริ่มต้น
+    worldClocks.forEach(clockData => {
+        const clockDiv = document.createElement('div');
+        clockDiv.className = 'clock';
+        // ใช้ regular expression เพื่อแทนที่ / ด้วย - เพื่อให้ ID ถูกต้องตาม HTML
+        clockDiv.id = `clock-${clockData.timeZone.replace(/\//g, '-')}`; 
+        clockDiv.innerHTML = `
+            <h2>${clockData.name}</h2>
+            <div class="time">--:--:--</div>
+            <div class="date-display">--/--/----</div>
+        `;
+        container.appendChild(clockDiv);
+    });
+
+    // เริ่มอัปเดตทุกวินาที
+    updateAllClocks();
+    clockInterval = setInterval(updateAllClocks, 1000);
+    
+    // แสดงเวลาที่ต่างกัน
+    displayTimeDifference();
+    updateCurrentZodiac();
 }
 
-window.calculatePersonalInfo = function() {
-    const inputElement = document.getElementById('birthdate-input');
-    const resultDiv = document.getElementById('personal-result');
-    if (!inputElement.value) { resultDiv.innerHTML = '<p style="color:red;">⚠️ กรุณาป้อนวันเดือนปีเกิด</p>'; return; }
-    const birthDate = parseDate(inputElement.value); 
-    if (!birthDate) { resultDiv.innerHTML = '<p style="color:red;">⚠️ รูปแบบวันที่ไม่ถูกต้อง กรุณาใช้ DD/MM/YYYY (เช่น 13/02/2552)</p>'; return; }
+function updateAllClocks() {
+    const now = new Date();
 
-    const ageData = calculateDetailedAge(birthDate);
-    const westernZodiac = getWesternZodiacSign(birthDate); 
-    const thaiZodiac = getThaiZodiacSign(birthDate); 
-    const lunarZodiacThai = getLunarZodiac(birthDate, 'thai'); 
-    const lunarZodiacJapan = getLunarZodiac(birthDate, 'japan');
-    const birthYearCE = birthDate.getFullYear();
-    const birthYearBE = birthYearCE + 543;
-    const birthDayText = birthDate.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+    worldClocks.forEach(clockData => {
+        const clockElement = document.getElementById(`clock-${clockData.timeZone.replace(/\//g, '-')}`);
+        if (!clockElement) return;
 
-    resultDiv.innerHTML = `
-        <h3>✅ ข้อมูลที่คำนวณได้:</h3>
-        <div class="result-box age-details">
-            <p><strong>วันเกิดที่ป้อน:</strong> ${birthDayText} พ.ศ. ${birthYearBE} (ค.ศ. ${birthYearCE})</p>
-            <h4>⏱️ อายุปัจจุบัน (ละเอียด):</h4>
-            <p style="font-size: 1.1em; font-weight: bold; color: #e74c3c;">
-                ${ageData.years} ปี ${ageData.months} เดือน ${ageData.days} วัน
-            </p>
-            <p style="font-size: 0.9em;">(ประมาณ ${ageData.totalDays} วัน / ${ageData.hours} ชั่วโมง ${ageData.minutes} นาที)</p>
-        </div>
-        <div class="result-box">
-            <h4>🇹🇭 ราศีไทย (ตามหลักโหราศาสตร์):</h4>
-            <p><strong>ราศีตามเดือนเกิด:</strong> <span style="font-weight: bold;">${thaiZodiac}</span></p>
-            <p style="font-size: 0.8em; color: #7f8c8d;">(ราศีตามการโคจรของดวงอาทิตย์)</p>
-        </div>
-        <div class="result-box">
-            <h4>🌟 ราศีตะวันตก (สากล):</h4>
-            <p><strong>ราศีตามเดือนเกิด:</strong> ${westernZodiac}</p>
-        </div>
-        <div class="result-box">
-            <h4>🧧 ปีนักษัตร (ราศีตะวันออก):</h4>
-            <p><strong>🇹🇭 ระบบไทย:</strong> ${lunarZodiacThai} (นับเปลี่ยนปีหลังสงกรานต์)</p>
-            <p><strong>🇯🇵 ระบบสากล/ญี่ปุ่น:</strong> ${lunarZodiacJapan} (นับเปลี่ยนปี 1 ม.ค.)</p>
-        </div>
-    `;
-};
+        const options = {
+            timeZone: clockData.timeZone,
+            hour: '2-digit', minute: '2-digit', second: '2-digit',
+            hour12: false
+        };
+        const dateOptions = {
+            timeZone: clockData.timeZone,
+            year: 'numeric', month: 'short', day: 'numeric'
+        };
+
+        const timeString = new Intl.DateTimeFormat('th-TH', options).format(now);
+        const dateString = new Intl.DateTimeFormat('th-TH', dateOptions).format(now);
+        
+        // สำหรับ Night Mode
+        const localHour = parseInt(new Intl.DateTimeFormat('th-TH', { 
+            timeZone: clockData.timeZone, 
+            hour: '2-digit', hourCycle: 'h23' 
+        }).format(now));
+
+        // ตรวจสอบกลางวัน/กลางคืน (19:00 - 05:59 คือกลางคืน)
+        if (localHour >= 19 || localHour < 6) {
+            clockElement.classList.add('night-mode');
+        } else {
+            clockElement.classList.remove('night-mode');
+        }
+
+        clockElement.querySelector('.time').textContent = timeString;
+        clockElement.querySelector('.date-display').textContent = dateString;
+    });
+
+    // อัปเดตราศีปัจจุบัน (ถ้ามีฟังก์ชัน)
+    updateCurrentZodiac();
+}
 
 
 // ==============================================
-// ฟังก์ชันระบบจับเวลา (สำหรับ timer.html)
+// 3. TIMER FUNCTIONS
 // ==============================================
 
-let timerIntervalId;
-let isTimerRunning = false;
-let timerTotalSeconds = 0;
-let alarmSound; 
+let countdownInterval;
+let totalSeconds;
+let isPaused = false;
+let isRunning = false;
+const timerDisplay = document.getElementById('timer-display');
+const startButton = document.getElementById('start-button');
+const pauseButton = document.getElementById('pause-button');
+const alarmSound = document.getElementById('alarm-sound');
+
+function initializeTimer() {
+    // กำหนดค่าเริ่มต้นเมื่อโหลดหน้า
+    if (timerDisplay) {
+        timerDisplay.textContent = formatTime(5 * 60);
+    }
+}
 
 function formatTime(seconds) {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    const min = Math.floor(seconds / 60);
+    const sec = seconds % 60;
+    return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
 }
 
-function resetTimerDisplay() {
-    const display = document.getElementById('timer-display');
-    const minutes = document.getElementById('timer-minutes') ? document.getElementById('timer-minutes').value : 5;
-    const seconds = document.getElementById('timer-seconds') ? document.getElementById('timer-seconds').value : 0;
-    const initialTime = parseInt(minutes) * 60 + parseInt(seconds);
-    if (display) display.textContent = formatTime(initialTime);
-}
+function startTimer() {
+    const minutes = parseInt(document.getElementById('timer-minutes').value) || 0;
+    const seconds = parseInt(document.getElementById('timer-seconds').value) || 0;
 
-function initTimer() {
-    alarmSound = document.getElementById('alarm-sound');
-    resetTimerDisplay();
-}
+    if (!isRunning && !isPaused) {
+        // เริ่มต้นใหม่
+        totalSeconds = (minutes * 60) + seconds;
+        if (totalSeconds <= 0) {
+            alert("กรุณาตั้งเวลาให้มากกว่า 0!");
+            return;
+        }
+    }
 
-window.startTimer = function() {
-    if (isTimerRunning) return;
-    const inputMinutes = parseInt(document.getElementById('timer-minutes').value) || 0;
-    const inputSeconds = parseInt(document.getElementById('timer-seconds').value) || 0;
-    if (timerTotalSeconds <= 0) { timerTotalSeconds = inputMinutes * 60 + inputSeconds; }
-    if (timerTotalSeconds <= 0) { alert("กรุณาตั้งเวลาอย่างน้อย 1 วินาที!"); return; }
-
-    document.getElementById('timer-input-container').style.display = 'none';
-    document.getElementById('start-button').style.display = 'none';
-    document.getElementById('pause-button').style.display = 'inline-block';
-
-    isTimerRunning = true;
+    isRunning = true;
+    isPaused = false;
     
-    timerIntervalId = setInterval(() => {
-        timerTotalSeconds--;
-        document.getElementById('timer-display').textContent = formatTime(timerTotalSeconds);
+    // ซ่อน input
+    document.getElementById('timer-input-container').style.display = 'none';
+    startButton.style.display = 'none';
+    pauseButton.style.display = 'inline-block';
 
-        if (timerTotalSeconds <= 0) {
-            clearInterval(timerIntervalId);
-            isTimerRunning = false;
-            if(alarmSound) { alarmSound.play().catch(e => console.error("Error playing sound.")); }
-            document.getElementById('timer-display').textContent = "🚨 หมดเวลา! 🚨";
-            document.getElementById('start-button').textContent = '▶️ เริ่มจับเวลาใหม่';
-            document.getElementById('start-button').style.display = 'inline-block';
-            document.getElementById('pause-button').style.display = 'none';
-            document.getElementById('timer-input-container').style.display = 'flex';
+    countdownInterval = setInterval(() => {
+        if (!isPaused && totalSeconds > 0) {
+            totalSeconds--;
+            timerDisplay.textContent = formatTime(totalSeconds);
+            
+            if (totalSeconds === 0) {
+                clearInterval(countdownInterval);
+                isRunning = false;
+                pauseButton.style.display = 'none';
+                startButton.style.display = 'inline-block';
+                document.getElementById('timer-input-container').style.display = 'flex';
+                timerDisplay.textContent = formatTime(0);
+                alarmSound.play();
+                alert("หมดเวลาแล้ว!");
+            }
         }
     }, 1000);
 }
 
-window.pauseTimer = function() {
-    if (!isTimerRunning) return;
-    clearInterval(timerIntervalId);
-    isTimerRunning = false;
-    document.getElementById('start-button').textContent = '▶️ ดำเนินการต่อ';
-    document.getElementById('start-button').style.display = 'inline-block';
-    document.getElementById('pause-button').style.display = 'none';
+function pauseTimer() {
+    isPaused = true;
+    isRunning = false;
+    clearInterval(countdownInterval);
+    startButton.style.display = 'inline-block';
+    startButton.textContent = '▶️ เล่นต่อ';
+    pauseButton.style.display = 'none';
 }
 
-window.resetTimer = function() {
-    clearInterval(timerIntervalId);
-    isTimerRunning = false;
-    timerTotalSeconds = 0; 
-    if(alarmSound) { alarmSound.pause(); alarmSound.currentTime = 0; }
-    document.getElementById('timer-input-container').style.display = 'flex';
-    document.getElementById('start-button').textContent = '▶️ เริ่มจับเวลา';
-    document.getElementById('start-button').style.display = 'inline-block';
-    document.getElementById('pause-button').style.display = 'none';
-    resetTimerDisplay();
-}
-
-
-// ==============================================
-// ฟังก์ชันสำหรับนาฬิกาโลก (สำหรับ worldclock.html)
-// ==============================================
-
-function displayCurrentZodiacYear() {
-    const currentCEYear = new Date().getFullYear(); 
-    const currentBEYear = currentCEYear + 543;
-    const zodiacs = CHINESE_ZODIACS;
-    const zodiacIndex = (currentBEYear + 9) % 12;
-    const currentZodiac = zodiacs[zodiacIndex];
-    const elem = document.getElementById('current-zodiac');
-    if (elem) elem.textContent = `ปีนักษัตรปัจจุบัน: ${currentZodiac}`;
-}
-
-function createClockElements() {
-    const container = document.getElementById('clock-display-container');
-    if (!container) return; 
-    container.innerHTML = ''; 
-    for (const key in TIMEZONES) {
-        const zone = TIMEZONES[key];
-        const clockHTML = `
-            <div class="clock" id="${key}-clock">
-                <h2>${zone.name}</h2>
-                <div class="date-display" id="${key}-date">---</div>
-                <div class="time" id="${key}-time">--:--:--</div>
-                <div class="timezone">เวลามาตรฐาน: ${zone.id.split('/').pop()} (UTC+${zone.offset})</div>
-            </div>
-        `;
-        container.innerHTML += clockHTML;
-    }
-}
-
-function updateClocks() {
-    if (!document.getElementById('clock-display-container')) return; 
-    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    let thaiOffset = 0;
-    let japanOffset = 0; 
-    for (const key in TIMEZONES) {
-        const zone = TIMEZONES[key];
-        const date = new Date();
-        const timeString = date.toLocaleTimeString('th-TH', { timeZone: zone.id, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-        const dateString = date.toLocaleDateString('th-TH', { timeZone: zone.id, ...dateOptions });
-        const hourNumeric = parseInt(date.toLocaleTimeString('en-US', { timeZone: zone.id, hour: 'numeric', hour12: false }));
-
-        const timeElement = document.getElementById(`${key}-time`);
-        const dateElement = document.getElementById(`${key}-date`);
-        const clockElement = document.getElementById(`${key}-clock`);
-
-        if (timeElement) timeElement.textContent = timeString;
-        if (dateElement) dateElement.textContent = dateString;
-        if (clockElement) {
-            if (isNight(hourNumeric)) {
-                clockElement.classList.add('night-mode');
-            } else {
-                clockElement.classList.remove('night-mode');
-            }
-        }
-        if (key === 'thai') thaiOffset = zone.offset;
-        if (key === 'japan') japanOffset = zone.offset;
-    }
-
-    const diffHours = japanOffset - thaiOffset; 
-    const diffMinutes = Math.abs(diffHours * 60);
-    const diffDisplayElement = document.getElementById('time-difference');
+function resetTimer() {
+    clearInterval(countdownInterval);
+    isRunning = false;
+    isPaused = false;
+    totalSeconds = 5 * 60; // กลับไปค่าเริ่มต้นที่ 5 นาที
     
-    if (diffDisplayElement) {
-        if (diffHours > 0) {
-            diffDisplayElement.innerHTML = `ญี่ปุ่นเร็วกว่าไทย <span style="color:#e74c3c;">${diffHours} ชั่วโมง</span> (${diffMinutes} นาที)`;
-        } else if (diffHours < 0) {
-            diffDisplayElement.innerHTML = `ไทยเร็วกว่าญี่ปุ่น <span style="color:#e74c3c;">${Math.abs(diffHours)} ชั่วโมง</span> (${diffMinutes} นาที)`;
-        } else {
-            diffDisplayElement.innerHTML = `เวลาเท่ากัน`;
-        }
-    }
+    document.getElementById('timer-minutes').value = 5;
+    document.getElementById('timer-seconds').value = 0;
+    
+    timerDisplay.textContent = formatTime(totalSeconds);
+    document.getElementById('timer-input-container').style.display = 'flex';
+    startButton.textContent = '▶️ เริ่มจับเวลา';
+    startButton.style.display = 'inline-block';
+    pauseButton.style.display = 'none';
 }
 
 
 // ==============================================
-// 🧠 ฐานข้อมูลคำถาม & ตัวแปร Quiz Game
+// 4. QUIZ GAME FUNCTIONS
 // ==============================================
 
-const QUIZ_QUESTIONS = [
-    { question: "1. (พีทาโกรัส ม.2) ด้านประกอบมุมฉาก 6 ซม. และ 8 ซม. ความยาวด้านตรงข้ามมุมฉากคือ?", options: ["9 ซม.", "10 ซม.", "12 ซม.", "14 ซม."], answer: "10 ซม.", difficulty: "ยาก" },
-    { question: "2. (พีทาโกรัสประยุกต์) บันไดพิงกำแพงสูง 12 ม. ห่างฐาน 5 ม. ความยาวบันไดคือ?", options: ["12.5 ม.", "13 ม.", "13.5 ม.", "17 ม."], answer: "13 ม.", difficulty: "ยาก" },
-    { question: "3. (สายส่ง/อิมพีแดนซ์) สายส่ง 50 Ω ส่วนสายอากาศ 50 Ω ค่า VSWR ใกล้เคียงเท่าใด?", options: ["1.0", "1.5", "2", "3"], answer: "1.0", difficulty: "ยาก" },
-    { question: "4. (สายส่ง—สัมประสิทธิ์การสะท้อน) สายส่ง 50 Ω สายอากาศ 75 Ω สัมประสิทธิ์การสะท้อน |Γ| ใกล้เคียงข้อใด", options: ["0.2", "0.25", "0.33", "0.5"], answer: "0.2", difficulty: "ยาก" },
-    { question: "5. (คำนวณอัตราส่วน) ถ้าแรงดันในสายอากาศ 20 V และกระแส 0.4 A อิมพีแดนซ์เท่าไร?", options: ["20 Ω", "40 Ω", "50 Ω", "80 Ω"], answer: "50 Ω", difficulty: "ยาก" },
-    { question: "6. น้ำเดือดที่อุณหภูมิประมาณกี่องศาเซลเซียส (ที่ความดันปกติ)?", options: ["90°C", "100°C", "120°C", "80°C"], answer: "100°C", difficulty: "กลาง" },
-    { question: "7. ดาวเคราะห์ดวงใดอยู่ใกล้ดวงอาทิตย์ที่สุด?", options: ["ดาวศุกร์", "ดาวพุธ", "โลก", "ดาวอังคาร"], answer: "ดาวพุธ", difficulty: "กลาง" },
-    { question: "8. สารใดต่อไปนี้เป็นโลหะ?", options: ["ซัลเฟอร์", "เหล็ก", "ไฮโดรเจน", "ออกซิเจน"], answer: "เหล็ก", difficulty: "กลาง" },
-    { question: "9. พลังงานไฟฟ้าในบ้านเราใช้หน่วยอะไรในการคิดค่าไฟ?", options: ["วัตต์", "โวลต์", "กิโลวัตต์ชั่วโมง", "แอมแปร์"], answer: "กิโลวัตต์ชั่วโมง", difficulty: "กลาง" },
-    { question: "10. เลือดส่วนใดที่ทำหน้าที่ลำเลียงออกซิเจน?", options: ["เม็ดเลือดขาว", "เม็ดเลือดแดง", "เกล็ดเลือด", "พลาสมา"], answer: "เม็ดเลือดแดง", difficulty: "กลาง" },
-    { question: "11. ประเทศที่มีประชากรมากที่สุดในโลกคือประเทศอะไร? (อ้างอิงข้อมูลล่าสุด)", options: ["จีน", "อินเดีย", "สหรัฐอเมริกา", "อินโดนีเซีย"], answer: "อินเดีย", difficulty: "กลาง" },
-    { question: "12. เมืองใดเป็นเมืองหลวงของญี่ปุ่น?", options: ["โอซาก้า", "โตเกียว", "ฮอกไกโด", "เกียวโต"], answer: "โตเกียว", difficulty: "กลาง" },
-    { question: "13. สัตว์ประจำชาติของออสเตรเลียคือข้อใด?", options: ["โคอาล่า", "จิงโจ้", "นกอีมู", "วอมแบต"], answer: "จิงโจ้", difficulty: "กลาง" },
-    { question: "14. ทวีปใดมีขนาดพื้นที่ใหญ่ที่สุดในโลก?", options: ["แอฟริกา", "เอเชีย", "อเมริกาเหนือ", "ยุโรป"], answer: "เอเชีย", difficulty: "กลาง" },
-    { question: "15. ทะเลทรายซาฮาราอยู่ในทวีปใด?", options: ["เอเชีย", "แอฟริกา", "อเมริกาใต้", "ออสเตรเลีย"], answer: "แอฟริกา", difficulty: "กลาง" },
-    { question: "16. ผลลัพธ์ของ 8,400 – 2,750 คือ?", options: ["5,550", "5,650", "5,700", "6,050"], answer: "5,650", difficulty: "ง่าย" },
-    { question: "17. ผลลัพธ์ของ 125 × 24 คือ?", options: ["2,500", "2,800", "3,000", "3,250"], answer: "3,000", difficulty: "ง่าย" },
-    { question: "18. ผลลัพธ์ของ 4,320 ÷ 12 คือ?", options: ["320", "340", "360", "380"], answer: "360", difficulty: "ง่าย" },
-    { question: "19. (พีทาโกรัสย้อนกลับ) ด้านตรงข้ามมุมฉาก 25, ด้านหนึ่ง 7 อีกด้านยาวเท่าไร?", options: ["18", "20", "21", "24"], answer: "24", difficulty: "ง่าย" },
-    { question: "20. ถ้าใช้สายส่ง 75 Ω ต่อกับสายอากาศ 50 Ω ควรเกิดอะไรขึ้น?", options: ["สอดคล้องดี", "ไม่แมทช์ มีการสะท้อน", "กำลังเพิ่มขึ้น", "รับได้ไกลขึ้น"], answer: "ไม่แมทช์ มีการสะท้อน", difficulty: "ง่าย" },
-    { question: "21. แม่น้ำไนล์อยู่ในทวีปอะไร?", options: ["แอฟริกา", "เอเชีย", "ยุโรป", "อเมริกา"], answer: "แอฟริกา", difficulty: "ง่าย" },
-    { question: "22. ประเทศที่มีรูปทรงคล้ายรองเท้าบูทคือประเทศใด?", options: ["สเปน", "อิตาลี", "กรีซ", "โปรตุเกส"], answer: "อิตาลี", difficulty: "ง่าย" },
-    { question: "23. ภูเขาที่สูงที่สุดในโลกคือ?", options: ["เอเวอเรสต์", "คิลิมันจาโร", "ฟูจิ", "K2"], answer: "เอเวอเรสต์", difficulty: "ง่าย" },
-    { question: "24. ประเทศใดมีพื้นที่ใหญ่ที่สุดในโลก?", options: ["แคนาดา", "รัสเซีย", "จีน", "สหรัฐอเมริกา"], answer: "รัสเซีย", difficulty: "ง่าย" },
-    { question: "25. ปราสาทนอยชวานสไตน์ (ต้นแบบดิสนีย์) อยู่ประเทศอะไร?", options: ["ฝรั่งเศส", "เยอรมนี", "ออสเตรีย", "สวิตเซอร์แลนด์"], answer: "เยอรมนี", difficulty: "ง่าย" },
-    { question: "26. แหล่งพลังงานหลักของโลกคืออะไร?", options: ["ดวงจันทร์", "ลม", "ดวงอาทิตย์", "ความร้อนใต้พิภพ"], answer: "ดวงอาทิตย์", difficulty: "ง่าย" },
-    { question: "27. ข้อใดคือสถานะของสสาร?", options: ["ของแข็ง ของเหลว ก๊าซ", "น้ำ ไฟ ดิน", "แข็ง–เย็น–ร้อน", "ร้อน เย็น อุ่น"], answer: "ของแข็ง ของเหลว ก๊าซ", difficulty: "ง่าย" },
-    { question: "28. สิ่งมีชีวิตใดต่อไปนี้จัดเป็นสัตว์เลี้ยงลูกด้วยนม?", options: ["จระเข้", "ปลาวาฬ", "เต่า", "งู"], answer: "ปลาวาฬ", difficulty: "ง่าย" },
-    { question: "29. พืชหายใจเข้าอะไรตอนกลางวัน?", options: ["ออกซิเจน", "คาร์บอนไดออกไซด์", "ไนโตรเจน", "ฮีเลียม"], answer: "ออกซิเจน", difficulty: "ง่าย" },
-    { question: "30. เสียงเดินทางได้ดีที่สุดในสื่อใด?", options: ["อากาศ", "น้ำ", "ของแข็ง", "สุญญากาศ"], answer: "ของแข็ง", difficulty: "ง่าย" },
+const quizQuestions = [
+    { question: "แม่น้ำที่ยาวที่สุดในโลกคือแม่น้ำอะไร?", options: ["แอมะซอน", "ไนล์", "แยงซี", "มิสซิสซิปปี"], answer: "ไนล์", difficulty: "easy" },
+    { question: "ประเทศไทยมีกี่จังหวัดในปัจจุบัน (ไม่รวมกรุงเทพมหานคร)?", options: ["76", "77", "75", "78"], answer: "76", difficulty: "medium" },
+    { question: "ใครเป็นผู้คิดค้นหลอดไฟฟ้า?", options: ["นิโคลา เทสลา", "อัลเบิร์ต ไอน์สไตน์", "โทมัส เอดิสัน", "กาลิเลโอ กาลิเลอี"], answer: "โทมัส เอดิสัน", difficulty: "easy" },
+    { question: "ธาตุที่มีสัญลักษณ์ทางเคมีว่า 'Au' คือธาตุใด?", options: ["เงิน", "เหล็ก", "ทองคำ", "ปรอท"], answer: "ทองคำ", difficulty: "medium" },
+    { question: "องค์กรสหประชาชาติ (UN) ก่อตั้งขึ้นเมื่อปี ค.ศ. ใด?", options: ["1939", "1945", "1950", "1929"], answer: "1945", difficulty: "hard" },
+    { question: "สิ่งมีชีวิตใดที่สามารถอยู่ได้โดยไม่ต้องดื่มน้ำเลยตลอดชีวิต?", options: ["อูฐ", "จิงโจ้", "หนูจิงโจ้", "งู"], answer: "หนูจิงโจ้", difficulty: "hard" },
+    { question: "ดาวเคราะห์ดวงใดในระบบสุริยะมีวงแหวนที่โดดเด่นที่สุด?", options: ["พฤหัสบดี", "อังคาร", "เสาร์", "ยูเรนัส"], answer: "เสาร์", difficulty: "easy" },
+    { question: "ใครคือนักเขียนบทละครที่มีชื่อเสียงจากเรื่อง 'Romeo and Juliet'?", options: ["เจน ออสเตน", "ชาร์ลส์ ดิคเกนส์", "วิลเลียม เชกสเปียร์", "มาร์ค ทเวน"], answer: "วิลเลียม เชกสเปียร์", difficulty: "easy" },
+    { question: "ก๊าซชนิดใดที่พืชใช้ในการสังเคราะห์แสง?", options: ["ออกซิเจน", "ไนโตรเจน", "คาร์บอนไดออกไซด์", "มีเทน"], answer: "คาร์บอนไดออกไซด์", difficulty: "easy" },
+    { question: "หอคอยเอนที่เมืองปิซา (Leaning Tower of Pisa) อยู่ในประเทศใด?", options: ["ฝรั่งเศส", "อิตาลี", "สเปน", "เยอรมนี"], answer: "อิตาลี", difficulty: "easy" }
 ];
 
-const DIFFICULTY_TIME = {
-    "ง่าย": 30,   
-    "กลาง": 45,  
-    "ยาก": 60    
-};
-
-let quizQuestions = [];
 let currentQuestionIndex = 0;
 let score = 0;
-let timeLimit = 0;
-let timerInterval;
-let totalTimeTaken = 0; 
-const LEADERBOARD_KEY = 'quiz_leaderboard'; 
+let quizTimeStart;
+let quizTimerInterval;
+let quizCountdownTimer;
 
+const TIME_LIMITS = {
+    easy: 30,
+    medium: 45,
+    hard: 60
+};
 
-// ... (ฟังก์ชัน shuffleArray, startQuiz, displayQuestion, startTimer, checkAnswer เหมือนเดิม)
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
+function initializeQuiz() {
+    document.getElementById('quiz-start-btn').addEventListener('click', startQuiz);
+    loadLeaderboard();
 }
 
 function startQuiz() {
-    shuffleArray(QUIZ_QUESTIONS);
-    quizQuestions = QUIZ_QUESTIONS.slice(0, 10);
-    
     currentQuestionIndex = 0;
     score = 0;
-    totalTimeTaken = 0; 
     
     document.getElementById('quiz-start-area').style.display = 'none';
     document.getElementById('quiz-game-area').style.display = 'block';
     document.getElementById('quiz-result-area').style.display = 'none';
-    document.getElementById('quiz-leaderboard-area').style.display = 'none'; 
+    document.getElementById('quiz-leaderboard-area').style.display = 'block';
 
-    displayQuestion();
+    quizTimeStart = new Date();
+    showQuestion(quizQuestions[currentQuestionIndex]);
 }
 
-function displayQuestion() {
-    clearInterval(timerInterval); 
+function showQuestion(q) {
+    document.getElementById('quiz-question').textContent = `คำถามที่ ${currentQuestionIndex + 1} (${q.difficulty.toUpperCase()}): ${q.question}`;
+    const optionsContainer = document.getElementById('quiz-options');
+    optionsContainer.innerHTML = '';
     
-    if (currentQuestionIndex >= quizQuestions.length) {
-        showQuizResult();
-        return;
-    }
-
-    const qData = quizQuestions[currentQuestionIndex];
-    const questionElement = document.getElementById('quiz-question');
-    const optionsElement = document.getElementById('quiz-options');
-    const timerElement = document.getElementById('quiz-timer');
-
-    questionElement.textContent = `${currentQuestionIndex + 1}. ${qData.question}`;
-    optionsElement.innerHTML = '';
+    // ตั้งเวลาจับเวลาตามความยาก
+    clearInterval(quizCountdownTimer);
+    let timeLeft = TIME_LIMITS[q.difficulty];
+    document.getElementById('quiz-timer').textContent = `⏳ เวลา: ${timeLeft} วินาที (${q.difficulty.toUpperCase()})`;
     
-    timeLimit = DIFFICULTY_TIME[qData.difficulty] || 45; 
-    timerElement.textContent = `⏳ เวลา: ${timeLimit} วินาที (${qData.difficulty})`;
-
-    const options = [...qData.options];
-    shuffleArray(options); 
-
-    options.forEach(option => {
-        const button = document.createElement('button');
-        button.textContent = option;
-        button.classList.add('quiz-option-btn');
-        button.onclick = () => checkAnswer(button, option, qData.answer);
-        optionsElement.appendChild(button);
-    });
-
-    startTimerQuiz();
-}
-
-function startTimerQuiz() {
-    const timerElement = document.getElementById('quiz-timer');
-    
-    timerInterval = setInterval(() => {
-        timeLimit--;
-        timerElement.textContent = `⏳ เวลา: ${timeLimit} วินาที (${quizQuestions[currentQuestionIndex].difficulty})`;
-
-        if (timeLimit <= 10) {
-            timerElement.style.color = '#e74c3c'; 
-        } else {
-             timerElement.style.color = '#3498db';
-        }
-
-        if (timeLimit <= 0) {
-            clearInterval(timerInterval);
-            checkAnswer(null, null, quizQuestions[currentQuestionIndex].answer); 
+    quizCountdownTimer = setInterval(() => {
+        timeLeft--;
+        document.getElementById('quiz-timer').textContent = `⏳ เวลา: ${timeLeft} วินาที (${q.difficulty.toUpperCase()})`;
+        
+        if (timeLeft <= 0) {
+            clearInterval(quizCountdownTimer);
+            handleAnswer(null); // หมดเวลาถือว่าตอบผิด
         }
     }, 1000);
+
+    q.options.forEach(option => {
+        const button = document.createElement('button');
+        button.className = 'quiz-option-btn';
+        button.textContent = option;
+        button.onclick = () => handleAnswer(option, q.answer);
+        optionsContainer.appendChild(button);
+    });
 }
 
-
-function checkAnswer(selectedButton, selectedOption, correctAnswer) {
-    clearInterval(timerInterval); 
-
-    const timeSpentOnThisQuestion = (DIFFICULTY_TIME[quizQuestions[currentQuestionIndex].difficulty] || 45) - timeLimit;
-    totalTimeTaken += timeSpentOnThisQuestion; 
-
-    const optionsDiv = document.getElementById('quiz-options');
-    optionsDiv.querySelectorAll('button').forEach(btn => {
-        btn.disabled = true; 
-        if (btn.textContent === correctAnswer) {
-            btn.style.backgroundColor = '#28a745'; 
-        }
-    });
+function handleAnswer(selectedOption, correctAnswer) {
+    clearInterval(quizCountdownTimer);
+    const optionsButtons = document.querySelectorAll('.quiz-option-btn');
+    optionsButtons.forEach(btn => btn.disabled = true); // ปิดปุ่มทั้งหมดหลังการตอบ
 
     if (selectedOption === correctAnswer) {
         score++;
-        if (selectedButton) selectedButton.style.backgroundColor = '#28a745'; 
+        // เน้นสีเขียวสำหรับคำตอบที่ถูกต้อง
+        optionsButtons.forEach(btn => {
+            if (btn.textContent === correctAnswer) {
+                btn.style.backgroundColor = '#2ecc71';
+                btn.style.color = 'white';
+            }
+        });
     } else {
-        if (selectedButton) selectedButton.style.backgroundColor = '#e74c3c'; 
+        // เน้นสีแดงสำหรับคำตอบที่ผิด และสีเขียวสำหรับคำตอบที่ถูกต้อง
+        optionsButtons.forEach(btn => {
+            if (btn.textContent === selectedOption) {
+                btn.style.backgroundColor = '#e74c3c';
+                btn.style.color = 'white';
+            }
+            if (btn.textContent === correctAnswer) {
+                btn.style.backgroundColor = '#f1c40f'; // สีเหลืองเตือน
+                btn.style.color = 'black';
+            }
+        });
     }
     
     document.getElementById('quiz-score').textContent = `คะแนน: ${score} / ${currentQuestionIndex + 1}`;
 
+    // หน่วงเวลา 1.5 วินาที ก่อนไปคำถามถัดไป
     setTimeout(() => {
         currentQuestionIndex++;
-        document.getElementById('quiz-timer').style.color = '#3498db'; 
-        displayQuestion();
-    }, 2000); 
+        if (currentQuestionIndex < quizQuestions.length) {
+            showQuestion(quizQuestions[currentQuestionIndex]);
+        } else {
+            endQuiz();
+        }
+    }, 1500);
 }
 
-// ==============================================
-// 🏆 ฟังก์ชัน Leaderboard
-// ==============================================
+function endQuiz() {
+    const quizTimeEnd = new Date();
+    const totalTimeMs = quizTimeEnd.getTime() - quizTimeStart.getTime();
+    const totalTimeSeconds = Math.round(totalTimeMs / 1000);
+    const timeFormat = formatTime(totalTimeSeconds);
 
-function loadLeaderboard() {
-    try {
-        const leaderboardJson = localStorage.getItem(LEADERBOARD_KEY);
-        return leaderboardJson ? JSON.parse(leaderboardJson) : [];
-    } catch (e) {
-        console.error("Error loading leaderboard from localStorage", e);
-        return [];
-    }
-}
+    document.getElementById('quiz-game-area').style.display = 'none';
+    document.getElementById('quiz-result-area').style.display = 'block';
 
-function saveToLeaderboard(score, timeTaken, playerName) {
-    let leaderboard = loadLeaderboard();
+    const resultHTML = `
+        <h3>🎉 จบเกมแล้ว!</h3>
+        <p style="font-size: 1.5em; font-weight: bold;">คะแนนรวม: ${score} / ${quizQuestions.length}</p>
+        <p>เวลาที่ใช้ทั้งหมด: ${timeFormat}</p>
+    `;
+    document.getElementById('quiz-final-result').innerHTML = resultHTML;
     
-    const newEntry = {
-        name: playerName || 'ผู้กล้าไร้นาม',
-        score: score,
-        timeTaken: timeTaken, 
-        date: new Date().toLocaleDateString('th-TH'),
-    };
+    // จัดการ Top Score
+    promptForScore(score, totalTimeSeconds, timeFormat);
+    
+    // แสดงปุ่มเริ่มใหม่
+    document.getElementById('quiz-start-area').style.display = 'block';
+    document.getElementById('quiz-start-btn').textContent = '▶️ เริ่มเกมใหม่';
+}
 
+function promptForScore(score, totalTimeSeconds, timeFormat) {
+    const playerName = prompt("คุณทำคะแนนได้ดี! กรุณากรอกชื่อย่อเพื่อบันทึกสถิติ (3-10 ตัวอักษร):") || 'Anon';
+    
+    saveScore(score, totalTimeSeconds, timeFormat, playerName.substring(0, 10)); // ตัดชื่อให้ไม่เกิน 10 ตัว
+}
+
+// ==============================================
+// 5. LEADERBOARD FUNCTIONS
+// ==============================================
+
+function saveScore(score, totalTimeSeconds, timeFormat, playerName) {
+    const leaderboard = getLeaderboard();
+    const newEntry = {
+        name: playerName,
+        score: score,
+        timeSeconds: totalTimeSeconds,
+        timeFormat: timeFormat,
+        date: new Date().toLocaleDateString('th-TH')
+    };
+    
     leaderboard.push(newEntry);
     
+    // เรียงลำดับ: คะแนนมาก่อน, เวลาใช้น้อยมาก่อน (เฉพาะกรณีคะแนนเท่ากัน)
     leaderboard.sort((a, b) => {
         if (b.score !== a.score) {
-            return b.score - a.score; 
+            return b.score - a.score; // คะแนนมาก่อน
         }
-        return a.timeTaken - b.timeTaken; 
+        return a.timeSeconds - b.timeSeconds; // เวลาใช้น้อยมาก่อน (เร็วกว่า)
     });
+
+    // เก็บแค่ 10 อันดับแรก
+    const top10 = leaderboard.slice(0, 10);
+    localStorage.setItem('quizLeaderboard', JSON.stringify(top10));
     
-    leaderboard = leaderboard.slice(0, 10);
-    
-    try {
-        localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(leaderboard));
-    } catch (e) {
-        console.error("Error saving leaderboard to localStorage", e);
-    }
-    
-    return leaderboard;
+    loadLeaderboard();
 }
 
-function displayLeaderboard(leaderboard) {
-    const tableBody = document.getElementById('leaderboard-body');
-    if (!tableBody) return;
+function getLeaderboard() {
+    const leaderboardJson = localStorage.getItem('quizLeaderboard');
+    return leaderboardJson ? JSON.parse(leaderboardJson) : [];
+}
 
-    tableBody.innerHTML = '';
-    
+function loadLeaderboard() {
+    const leaderboard = getLeaderboard();
+    const tbody = document.getElementById('leaderboard-body');
+    if (!tbody) return; 
+
+    tbody.innerHTML = '';
+    document.getElementById('quiz-leaderboard-area').style.display = 'block';
+
     if (leaderboard.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">ยังไม่มีผู้เล่นทำคะแนนสูงสุด</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5">ยังไม่มีสถิติการเล่น</td></tr>';
         return;
     }
 
     leaderboard.forEach((entry, index) => {
-        const timeFormat = `${Math.floor(entry.timeTaken / 60)}:${String(entry.timeTaken % 60).padStart(2, '0')}`;
-        const row = tableBody.insertRow();
-        
-        row.innerHTML = `
-            <td>${index + 1}</td>
-            <td style="font-weight: bold;">${entry.name}</td>
-            <td>${entry.score} / 10</td>
-            <td>${timeFormat}</td>
-            <td>${entry.date}</td>
-        `;
+        const row = tbody.insertRow();
+        row.insertCell().textContent = index + 1;
+        row.insertCell().textContent = entry.name;
+        row.insertCell().textContent = `${entry.score} / ${quizQuestions.length}`;
+        row.insertCell().textContent = entry.timeFormat;
+        row.insertCell().textContent = entry.date;
     });
-    
-    document.getElementById('quiz-leaderboard-area').style.display = 'block';
 }
-
-
-function showQuizResult() {
-    const resultElement = document.getElementById('quiz-final-result');
-    const totalQuestions = quizQuestions.length;
-    let message = '';
-    
-    if (score >= totalQuestions * 0.8) {
-        message = '🏆 ยอดเยี่ยม! คุณคืออัจฉริยะ!';
-    } else if (score >= totalQuestions * 0.5) {
-        message = '👍 ดีมาก! ความรู้รอบตัวของคุณแน่นมาก';
-    } else {
-        message = '🤔 ลองใหม่นะครับ! เพิ่มเติมความรู้รอบตัวอีกนิด';
-    }
-    
-    let playerName = prompt(`🎉 ยินดีด้วย! คุณทำได้ ${score} คะแนน ใช้เวลา ${totalTimeTaken} วินาที\nกรุณาใส่ชื่อของคุณเพื่อบันทึกสถิติ:`, "ผู้เล่น");
-    if (!playerName || playerName.trim() === '') {
-        playerName = 'ผู้กล้าไร้นาม';
-    }
-    
-    const updatedLeaderboard = saveToLeaderboard(score, totalTimeTaken, playerName.substring(0, 20)); 
-
-    resultElement.innerHTML = `
-        <h3 style="color:#2980b9;">🎉 จบเกมตอบคำถาม 🎉</h3>
-        <p>คุณทำได้ **${score}** คะแนน จากทั้งหมด **${totalQuestions}** ข้อ</p>
-        <p>ใช้เวลาตอบทั้งหมด: <strong>${Math.floor(totalTimeTaken / 60)} นาที ${String(totalTimeTaken % 60).padStart(2, '0')} วินาที</strong></p>
-        <p style="font-size: 1.2em; font-weight: bold;">${message}</p>
-    `;
-    
-    document.getElementById('quiz-game-area').style.display = 'none';
-    document.getElementById('quiz-result-area').style.display = 'block';
-    document.getElementById('quiz-start-area').style.display = 'block';
-    document.getElementById('quiz-start-btn').textContent = 'เริ่มเล่นใหม่';
-    
-    displayLeaderboard(updatedLeaderboard);
-}
-
-// -----------------------------------------------------
-// --- การเริ่มต้น (Entry Point) ---
-// -----------------------------------------------------
-
-document.addEventListener('DOMContentLoaded', () => {
-    
-    if (document.getElementById('clock-display-container')) {
-        createClockElements();
-        displayCurrentZodiacYear();
-        updateClocks();
-        setInterval(updateClocks, 1000); 
-    }
-
-    if (document.getElementById('timer-display')) {
-        initTimer(); 
-    }
-
-    const startBtn = document.getElementById('quiz-start-btn');
-    if (startBtn) {
-        startBtn.onclick = startQuiz;
-        const initialLeaderboard = loadLeaderboard();
-        displayLeaderboard(initialLeaderboard);
-    }
-});
