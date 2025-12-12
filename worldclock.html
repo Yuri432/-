@@ -3,43 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyToolbox | นาฬิกาโลก</title>
-    <link rel="stylesheet" href="style.css"> 
-</head>
+    <title>นาฬิกาโลก | เครื่องมือคำนวณ</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script>
+        if (!localStorage.getItem('loggedInUser') && !window.location.pathname.includes('login.html') && !window.location.pathname.includes('register.html')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+    </head>
 <body>
+
     <header>
-        <div class="container">
-            <h1><a href="index.html">MyToolbox</a></h1>
-            <nav>
-                <a href="index.html">หน้าแรก</a>
-                <a href="personal.html">ข้อมูลส่วนตัว</a>
-                <a href="converter.html">ตัวแปลง</a>
-                <a href="worldclock.html" class="active">นาฬิกาโลก</a>
-                <a href="quiz.html">Quiz Game</a>
-                </nav>
-        </div>
+        <h1>เครื่องมือคำนวณและเกมความรู้รอบตัว</h1>
+        <nav>
+            <a href="index.html">🎂 ข้อมูลส่วนบุคคล</a>
+            <a href="worldclock.html" class="active">🌎 นาฬิกาโลก</a>
+            <a href="converter.html">🔄 เครื่องมือแปลงค่า</a>
+            <a href="quiz.html">🧠 Quiz Game</a>
+            </nav>
     </header>
 
     <main class="container">
-        <h2 id="welcome-message">👋 ยินดีต้อนรับสู่ MyToolbox</h2>
-
-        <section id="world-clock" class="tool-card"> 
-            <h2>🌍 นาฬิกาโลกและข้อมูลเวลา (อัปเดตอัตโนมัติ)</h2>
-            <p>แสดงเขตเวลาของประเทศที่คุณร้องขอทั้งหมดในรูปแบบตาราง</p>
+        
+        <div id="world-clock" class="main-section">
+            <h2>🌎 นาฬิกาโลกและข้อมูลเวลา (100+ ประเทศ)</h2>
             
-            <div id="world-clock-container" class="clock-table">
-                <p style="text-align: center;">กำลังโหลดเวลาทั่วโลก...</p>
-            </div>
+            <div class="info-box" id="time-difference">
+                </div>
             
-            <div class="tip-box">
-                💡 **Tips:** พื้นหลังแถบจะเปลี่ยนเป็นสีเข้ม เมื่อเป็นเวลากลางคืน (18:00 - 06:00) ในเขตเวลานั้นๆ
-            </div>
-        </section>
+            <div class="info-box" id="current-zodiac" style="background-color: #fff9e6; border-left-color: #f39c12;">
+                 </div>
 
+            <h3>📍 เวลาในเขตสำคัญ</h3>
+            
+            <div id="clock-display-container" class="clock-table-container">
+                </div>
+
+        </div>
+        
     </main>
 
     <footer>
-        <p id="footer-text">© 2025 MyToolbox Project. All rights reserved.</p>
+        <div class="footer-links">
+            <p>ติดตามช่องทางต่างๆ:</p>
+            <a href="https://www.youtube.com/channel/UCnhhMJrPVY3ILErkK5PClnQ" target="_blank">📺 ช่อง YouTube (YU RI)</a>
+            <a href="https://www.tiktok.com/@ayu_9i?is_from_webapp=1&sender_device=pc" target="_blank">🎵 TikTok (@ayu_9i)</a>
+        </div>
+        <p>&copy; 2025 AI Tools - Data is stored locally on your browser.</p>
     </footer>
 
     <script src="script.js"></script>
