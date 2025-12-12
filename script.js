@@ -3,10 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('personal-info')) {
         // initializePersonalInfo(); // ไม่มีฟังก์ชันเริ่มต้นที่จำเป็น
     } else if (document.getElementById('world-clock')) {
-        // *** แก้ไขแล้ว: เรียกใช้ฟังก์ชันทันทีที่พบ ID ของหน้า ***
         initializeWorldClock();
-    } else if (document.getElementById('timer')) {
-        initializeTimer();
+    } else if (document.getElementById('converter-suite')) { // *** เปลี่ยนจาก timer เป็น converter ***
+        initializeConverter();
     } else if (document.getElementById('quiz')) {
         initializeQuiz();
     }
@@ -182,7 +181,7 @@ function calculateNumerology() {
 
 
 // ==============================================
-// 2. WORLD CLOCK FUNCTIONS (อัปเดต TimeZone ID)
+// 2. WORLD CLOCK FUNCTIONS (ไม่เปลี่ยนแปลง)
 // ==============================================
 
 // ตัวแปรที่เก็บรายการนาฬิกาโลก
@@ -342,94 +341,142 @@ function updateAllClocks() {
 
 
 // ==============================================
-// 3. TIMER FUNCTIONS (ไม่เปลี่ยนแปลง)
+// 3. CONVERTER SUITE FUNCTIONS (NEW!)
 // ==============================================
 
-let countdownInterval;
-let totalSeconds;
-let isPaused = false;
-let isRunning = false;
-const timerDisplay = document.getElementById('timer-display');
-const startButton = document.getElementById('start-button');
-const pauseButton = document.getElementById('pause-button');
-const alarmSound = document.getElementById('alarm-sound');
+const currencyRates = {
+    // อัตราแลกเปลี่ยนเทียบกับ 1 USD (ค่าจำลอง)
+    USD: 1.0,
+    THB: 35.0,
+    EUR: 0.92,
+    JPY: 145.0,
+    CNY: 7.2,
+    GBP: 0.81
+};
 
-function initializeTimer() {
-    // กำหนดค่าเริ่มต้นเมื่อโหลดหน้า
-    if (timerDisplay) {
-        timerDisplay.textContent = formatTime(5 * 60);
+const unitConversionFactors = {
+    // แปลงหน่วยความยาวเป็น เมตร (m)
+    m: 1,
+    km: 1000,
+    cm: 0.01
+};
+
+function initializeConverter() {
+    // 1. โหลดตัวเลือกสกุลเงิน
+    const fromSelect = document.getElementById('currency-from');
+    const toSelect = document.getElementById('currency-to');
+    
+    if (fromSelect && toSelect) {
+        for (const code in currencyRates) {
+            const name = code;
+            fromSelect.add(new Option(name, code));
+            toSelect.add(new Option(name, code));
+        }
+        // ตั้งค่าเริ่มต้น
+        fromSelect.value = 'USD';
+        toSelect.value = 'THB';
     }
+    
+    // ตั้งค่าเริ่มต้นให้แสดง Currency
+    showConverterSection('currency');
 }
 
-function formatTime(seconds) {
-    const min = Math.floor(seconds / 60);
-    const sec = seconds % 60;
-    return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+function showConverterSection(type) {
+    const sections = ['currency', 'unit', 'base'];
+    sections.forEach(sec => {
+        const element = document.getElementById(`${sec}-section`);
+        if (element) {
+            element.style.display = (sec === type) ? 'block' : 'none';
+        }
+    });
 }
 
-function startTimer() {
-    const minutes = parseInt(document.getElementById('timer-minutes').value) || 0;
-    const seconds = parseInt(document.getElementById('timer-seconds').value) || 0;
+function convertCurrency() {
+    const amount = parseFloat(document.getElementById('currency-amount').value);
+    const from = document.getElementById('currency-from').value;
+    const to = document.getElementById('currency-to').value;
+    const resultDiv = document.getElementById('currency-result');
 
-    if (!isRunning && !isPaused) {
-        // เริ่มต้นใหม่
-        totalSeconds = (minutes * 60) + seconds;
-        if (totalSeconds <= 0) {
-            alert("กรุณาตั้งเวลาให้มากกว่า 0!");
+    if (isNaN(amount) || amount <= 0 || !currencyRates[from] || !currencyRates[to]) {
+        resultDiv.innerHTML = '<p style="color:red;">กรุณาป้อนจำนวนเงินที่ถูกต้อง</p>';
+        return;
+    }
+
+    // แปลงจากสกุลเงินต้นทาง เป็น USD ก่อน (Base conversion to USD)
+    const amountInUSD = amount / currencyRates[from];
+
+    // แปลงจาก USD เป็นสกุลเงินปลายทาง
+    const finalAmount = amountInUSD * currencyRates[to];
+    
+    resultDiv.innerHTML = `
+        <p><strong>ผลลัพธ์:</strong> ${amount.toLocaleString()} ${from} = 
+        <strong>${finalAmount.toFixed(4).toLocaleString()} ${to}</strong></p>
+    `;
+}
+
+function convertUnit() {
+    const amount = parseFloat(document.getElementById('unit-amount').value);
+    const from = document.getElementById('unit-from').value;
+    const to = document.getElementById('unit-to').value;
+    const resultDiv = document.getElementById('unit-result');
+
+    if (isNaN(amount) || amount < 0 || !unitConversionFactors[from] || !unitConversionFactors[to]) {
+        resultDiv.innerHTML = '<p style="color:red;">กรุณาป้อนจำนวนที่ถูกต้อง</p>';
+        return;
+    }
+
+    // แปลงจากหน่วยต้นทาง เป็น เมตร (Base conversion to Meter)
+    const amountInMeter = amount * unitConversionFactors[from];
+
+    // แปลงจาก เมตร เป็นหน่วยปลายทาง
+    const finalAmount = amountInMeter / unitConversionFactors[to];
+
+    const unitNameMap = {
+        m: 'เมตร', km: 'กิโลเมตร', cm: 'เซนติเมตร'
+    };
+
+    resultDiv.innerHTML = `
+        <p><strong>ผลลัพธ์:</strong> ${amount.toLocaleString()} ${unitNameMap[from]} = 
+        <strong>${finalAmount.toFixed(4).toLocaleString()} ${unitNameMap[to]}</strong></p>
+    `;
+}
+
+function convertBase() {
+    const inputStr = document.getElementById('base-input').value.trim();
+    const fromBase = parseInt(document.getElementById('base-from').value);
+    const toBase = parseInt(document.getElementById('base-to').value);
+    const resultDiv = document.getElementById('base-result');
+
+    if (inputStr === "") {
+        resultDiv.innerHTML = '<p style="color:red;">กรุณาป้อนตัวเลข</p>';
+        return;
+    }
+
+    try {
+        // 1. แปลงฐานต้นทางเป็นฐาน 10 (Decimal) ก่อน
+        const decimalValue = parseInt(inputStr, fromBase);
+
+        if (isNaN(decimalValue)) {
+            resultDiv.innerHTML = '<p style="color:red;">รูปแบบตัวเลขฐานต้นทางไม่ถูกต้อง</p>';
             return;
         }
+
+        // 2. แปลงฐาน 10 เป็นฐานปลายทาง
+        const finalResult = decimalValue.toString(toBase).toUpperCase();
+
+        const baseNameMap = {
+            10: 'Decimal', 2: 'Binary', 16: 'Hexadecimal'
+        };
+
+        resultDiv.innerHTML = `
+            <p><strong>ผลลัพธ์:</strong> 
+            (${inputStr})<sub>${fromBase}</sub> = 
+            <strong>(${finalResult})<sub>${toBase}</sub></strong>
+            </p>
+        `;
+    } catch (e) {
+        resultDiv.innerHTML = '<p style="color:red;">เกิดข้อผิดพลาดในการแปลง: ตรวจสอบตัวเลขและฐานให้ถูกต้อง</p>';
     }
-
-    isRunning = true;
-    isPaused = false;
-    
-    // ซ่อน input
-    document.getElementById('timer-input-container').style.display = 'none';
-    startButton.style.display = 'none';
-    pauseButton.style.display = 'inline-block';
-
-    countdownInterval = setInterval(() => {
-        if (!isPaused && totalSeconds > 0) {
-            totalSeconds--;
-            timerDisplay.textContent = formatTime(totalSeconds);
-            
-            if (totalSeconds === 0) {
-                clearInterval(countdownInterval);
-                isRunning = false;
-                pauseButton.style.display = 'none';
-                startButton.style.display = 'inline-block';
-                document.getElementById('timer-input-container').style.display = 'flex';
-                timerDisplay.textContent = formatTime(0);
-                alarmSound.play();
-                alert("หมดเวลาแล้ว!");
-            }
-        }
-    }, 1000);
-}
-
-function pauseTimer() {
-    isPaused = true;
-    isRunning = false;
-    clearInterval(countdownInterval);
-    startButton.style.display = 'inline-block';
-    startButton.textContent = '▶️ เล่นต่อ';
-    pauseButton.style.display = 'none';
-}
-
-function resetTimer() {
-    clearInterval(countdownInterval);
-    isRunning = false;
-    isPaused = false;
-    totalSeconds = 5 * 60; // กลับไปค่าเริ่มต้นที่ 5 นาที
-    
-    document.getElementById('timer-minutes').value = 5;
-    document.getElementById('timer-seconds').value = 0;
-    
-    timerDisplay.textContent = formatTime(totalSeconds);
-    document.getElementById('timer-input-container').style.display = 'flex';
-    startButton.textContent = '▶️ เริ่มจับเวลา';
-    startButton.style.display = 'inline-block';
-    pauseButton.style.display = 'none';
 }
 
 
