@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เข้าสู่ระบบ | เครื่องมือคำนวณ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main class="container" style="max-width: 450px; margin-top: 100px;">
+        <div id="login-area" class="main-section">
+            <h2 style="text-align: center; border-bottom: none;">🔒 เข้าสู่ระบบ</h2>
+            
+            <div class="input-group">
+                <label for="username">ชื่อผู้ใช้ (Username):</label>
+                <input type="text" id="username" placeholder="เช่น user_test" value="testuser"> </div>
+            
+            <div class="input-group">
+                <label for="password">รหัสผ่าน (Password):</label>
+                <input type="password" id="password" placeholder="เช่น password123" value="123456"> </div>
+            
+            <p id="login-message" style="color: red; text-align: center; font-weight: bold;"></p>
+            
+            <button onclick="handleLogin()" class="action-btn" style="width: 100%;">เข้าสู่ระบบ</button>
+            <p style="text-align: center; margin-top: 15px; font-size: 0.9em;">
+                <a href="register.html">ยังไม่มีบัญชี? สร้างบัญชีใหม่</a>
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 AI Tools - Data is stored locally on your browser.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
