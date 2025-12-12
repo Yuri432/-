@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>นาฬิกาโลก | เครื่องมือคำนวณ</title>
     <link rel="stylesheet" href="style.css">
-</head>
+    
+    <script>
+        if (!localStorage.getItem('loggedInUser') && !window.location.pathname.includes('login.html') && !window.location.pathname.includes('register.html')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+    </head>
 <body>
 
     <header>
@@ -13,17 +19,23 @@
         <nav>
             <a href="index.html">🎂 ข้อมูลส่วนบุคคล</a>
             <a href="worldclock.html" class="active">🌎 นาฬิกาโลก</a>
-            <a href="timer.html">⏱️ ตัวจับเวลา</a>
+            <a href="converter.html">🔄 เครื่องมือแปลงค่า</a>
             <a href="quiz.html">🧠 Quiz Game</a>
-        </nav>
+            </nav>
     </header>
 
     <main class="container">
         
         <div id="world-clock" class="main-section">
-            <h2>🌎 นาฬิกาโลก</h2>
-            <div id="time-difference" class="info-box"></div>
-            <div id="current-zodiac" class="info-box" style="margin-top: 10px;"></div>
+            <h2>🌎 นาฬิกาโลกและข้อมูลเวลา</h2>
+            
+            <div class="info-box" id="time-difference">
+                </div>
+            
+            <div class="info-box" id="current-zodiac" style="background-color: #fff9e6; border-left-color: #f39c12;">
+                 </div>
+
+            <h3>📍 เวลาในเขตสำคัญ</h3>
             <div id="clock-display-container">
                 </div>
         </div>
