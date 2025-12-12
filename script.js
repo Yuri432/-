@@ -21,27 +21,15 @@ const unitConversions = {
 
 // ข้อมูลสำหรับ World Clock: เวลาหลักทั่วโลก
 const requestedWorldClocks = [
-    { name: "อัฟกานิสถาน (Kabul)", timeZone: "Asia/Kabul" },
-    { name: "ออสเตรเลีย (Sydney)", timeZone: "Australia/Sydney" }, 
-    { name: "บราซิล (Sao Paulo)", timeZone: "America/Sao_Paulo" }, 
-    { name: "แคนาดา (Toronto)", timeZone: "America/Toronto" }, 
-    { name: "จีน (Shanghai)", timeZone: "Asia/Shanghai" },
-    { name: "ฝรั่งเศส (Paris)", timeZone: "Europe/Paris" },
-    { name: "เยอรมนี (Berlin)", timeZone: "Europe/Berlin" },
-    { name: "อินเดีย (Kolkata)", timeZone: "Asia/Kolkata" },
-    { name: "อินโดนีเซีย (Jakarta)", timeZone: "Asia/Jakarta" },
-    { name: "ญี่ปุ่น (Tokyo)", timeZone: "Asia/Tokyo" },
-    { name: "เกาหลีใต้ (Seoul)", timeZone: "Asia/Seoul" },
-    { name: "มาเลเซีย (Kuala Lumpur)", timeZone: "Asia/Kuala_Lumpur" },
-    { name: "นิวซีแลนด์ (Auckland)", timeZone: "Pacific/Auckland" },
-    { name: "ฟิลิปปินส์ (Manila)", timeZone: "Asia/Manila" },
-    { name: "รัสเซีย (Moscow)", timeZone: "Europe/Moscow" },
-    { name: "สิงคโปร์ (Singapore)", timeZone: "Asia/Singapore" },
-    { name: "แอฟริกาใต้ (Johannesburg)", timeZone: "Africa/Johannesburg" },
-    { name: "สเปน (Madrid)", timeZone: "Europe/Madrid" },
     { name: "ไทย (Bangkok)", timeZone: "Asia/Bangkok" },
     { name: "สหรัฐอเมริกา (New York)", timeZone: "America/New_York" },
     { name: "สหราชอาณาจักร (London)", timeZone: "Europe/London" },
+    { name: "ญี่ปุ่น (Tokyo)", timeZone: "Asia/Tokyo" },
+    { name: "จีน (Shanghai)", timeZone: "Asia/Shanghai" },
+    { name: "ออสเตรเลีย (Sydney)", timeZone: "Australia/Sydney" },
+    { name: "เยอรมนี (Berlin)", timeZone: "Europe/Berlin" },
+    { name: "อินเดีย (Kolkata)", timeZone: "Asia/Kolkata" },
+    { name: "มาเลเซีย (Kuala Lumpur)", timeZone: "Asia/Kuala_Lumpur" },
 ];
 const worldClocks = requestedWorldClocks.sort((a, b) => a.name.localeCompare(b.name));
 let clockInterval; 
@@ -62,38 +50,33 @@ const numerologyMap = {
 };
 
 
-// ข้อมูลสำหรับ Quiz Game: คำถาม 30 ข้อ
+// ข้อมูลสำหรับ Quiz Game: คำถาม 30 ข้อ (ใช้เพื่อสุ่ม 10 ข้อ)
 const originalQuizQuestions = [
     { question: "แม่น้ำที่ยาวที่สุดในโลกคือแม่น้ำใด?", options: ["แอมะซอน", "ไนล์", "แยงซี", "มิสซิสซิปปี"], answer: "ไนล์" },
     { question: "สิ่งมีชีวิตชนิดใดที่มีเซลล์สมองมากที่สุด?", options: ["ปลาวาฬ", "มนุษย์", "ช้าง", "โลมา"], answer: "ปลาวาฬ" },
     { question: "แสงเดินทางเร็วแค่ไหน (กิโลเมตรต่อวินาที)?", options: ["150,000", "299,792", "380,000", "450,000"], answer: "299,792" },
     { question: "ดาวเคราะห์ดวงใดในระบบสุริยะที่ร้อนที่สุด?", options: ["ดาวพุธ", "ดาวศุกร์", "ดาวอังคาร", "ดาวยูเรนัส"], answer: "ดาวศุกร์" },
     { question: "ใครเป็นผู้คิดค้นทฤษฎีสัมพัทธภาพ?", options: ["ไอแซค นิวตัน", "อัลเบิร์ต ไอน์สไตน์", "กาลิเลโอ กาลิเลอี", "สตีเฟน ฮอว์คิง"], answer: "อัลเบิร์ต ไอน์สไตน์" },
-    
     { question: "ประเทศใดมีจำนวนประชากรมากที่สุดในโลก?", options: ["อินเดีย", "จีน", "สหรัฐอเมริกา", "อินโดนีเซีย"], answer: "อินเดีย" },
     { question: "องค์ประกอบทางเคมีที่เบาที่สุดคืออะไร?", options: ["ออกซิเจน", "คาร์บอน", "ไฮโดรเจน", "ฮีเลียม"], answer: "ไฮโดรเจน" },
     { question: "กีฬาโอลิมปิกสมัยใหม่เริ่มขึ้นในปีใด?", options: ["1896", "1900", "1924", "1948"], answer: "1896" },
     { question: "หัวใจมนุษย์มีกี่ห้อง?", options: ["2", "3", "4", "5"], answer: "4" },
     { question: "ใครวาดภาพ 'Mona Lisa'?", options: ["แวน โก๊ะ", "ปิกัสโซ่", "เลโอนาร์โด ดา วินชี", "มิเคลันเจโล"], answer: "เลโอนาร์โด ดา วินชี" },
-
     { question: "เมืองหลวงของประเทศแคนาดาคือที่ใด?", options: ["โตรอนโต", "แวนคูเวอร์", "มอนทรีออล", "ออตตาวา"], answer: "ออตตาวา" },
     { question: "ทวีปที่ใหญ่ที่สุดในโลกคือทวีปใด?", options: ["แอฟริกา", "ยุโรป", "เอเชีย", "อเมริกาเหนือ"], answer: "เอเชีย" },
     { question: "อวัยวะใดทำหน้าที่ปั๊มเลือดทั่วร่างกาย?", options: ["ปอด", "ตับ", "ไต", "หัวใจ"], answer: "หัวใจ" },
     { question: "อะไรคือหน่วยวัดความต้านทานไฟฟ้า?", options: ["แอมแปร์", "โวลต์", "โอห์ม", "วัตต์"], answer: "โอห์ม" },
     { question: "ใครเขียนบทละคร 'Romeo and Juliet'?", options: ["เชคสเปียร์", "เจน ออสติน", "ชาร์ลส์ ดิกคินส์", "มาร์ค ทเวน"], answer: "เชคสเปียร์" },
-    
     { question: "น้ำเดือดที่อุณหภูมิเท่าไหร่ที่ระดับน้ำทะเล (เซลเซียส)?", options: ["90°C", "100°C", "110°C", "120°C"], answer: "100°C" },
     { question: "ธาตุที่มีสัญลักษณ์ 'Au' คืออะไร?", options: ["เงิน", "ทองคำ", "เหล็ก", "ทองแดง"], answer: "ทองคำ" },
     { question: "ปีแสงคือหน่วยวัดอะไร?", options: ["ความเร็ว", "ระยะทาง", "เวลา", "มวล"], answer: "ระยะทาง" },
     { question: "สัตว์เลี้ยงลูกด้วยนมชนิดใดที่บินได้?", options: ["นก", "ค้างคาว", "กระรอกบิน", "เพนกวิน"], answer: "ค้างคาว" },
     { question: "เมืองหลวงของประเทศอียิปต์คือที่ใด?", options: ["อเล็กซานเดรีย", "ลักซอร์", "ไคโร", "กิซ่า"], answer: "ไคโร" },
-    
     { question: "ประเทศใดเป็นที่ตั้งของหอไอเฟล?", options: ["อิตาลี", "สเปน", "ฝรั่งเศส", "เยอรมนี"], answer: "ฝรั่งเศส" },
     { question: "ใครคือประธานาธิบดีคนแรกของสหรัฐอเมริกา?", options: ["โธมัส เจฟเฟอร์สัน", "จอห์น อดัมส์", "จอร์จ วอชิงตัน", "อับราฮัม ลินคอล์น"], answer: "จอร์จ วอชิงตัน" },
     { question: "ทะเลทรายที่ใหญ่ที่สุดในโลกคือที่ใด?", options: ["โกบี", "คาราฮารี", "ซาฮารา", "แอนตาร์กติก"], answer: "แอนตาร์กติก" },
     { question: "ปีใดที่มนุษย์เหยียบดวงจันทร์เป็นครั้งแรก?", options: ["1965", "1969", "1971", "1975"], answer: "1969" },
     { question: "อะไรคือพืชที่สามารถผลิตไฟฟ้าได้?", options: ["ต้นกระบองเพชร", "สาหร่าย", "ไม่สามารถผลิตได้", "ต้นไม้ทุกชนิด"], answer: "สาหร่าย" },
-
     { question: "การปฏิวัติอุตสาหกรรมเริ่มขึ้นในประเทศใด?", options: ["ฝรั่งเศส", "สหรัฐอเมริกา", "เยอรมนี", "สหราชอาณาจักร"], answer: "สหราชอาณาจักร" },
     { question: "แบคทีเรียถูกค้นพบโดยใคร?", options: ["หลุยส์ ปาสเตอร์", "โรเบิร์ต คอค", "แอนโทนี ฟาน เลเวนฮุก", "ชาลส์ ดาร์วิน"], answer: "แอนโทนี ฟาน เลเวนฮุก" },
     { question: "สีผสมหลักในการพิมพ์ (CMYK) คืออะไรบ้าง?", options: ["แดง เขียว น้ำเงิน ดำ", "ฟ้า ม่วง เหลือง ดำ", "แดง เหลือง น้ำเงิน", "ไซอัน มาเจนต้า เหลือง ดำ"], answer: "ไซอัน มาเจนต้า เหลือง ดำ" },
@@ -108,19 +91,47 @@ let startTime;
 const TIME_LIMIT = 60; // 60 วินาที
 
 // =================================================================
-// 2. AUTHENTICATION FUNCTIONS (Login, Register, Logout)
+// 2. MESSAGE HANDLER (กล่องข้อความแจ้งเตือน) - ปรับปรุง
+// =================================================================
+
+/**
+ * แสดงกล่องข้อความแจ้งเตือนในตำแหน่งที่กำหนด
+ * @param {string} type - 'success', 'error', 'warning'
+ * @param {string} message - ข้อความที่ต้องการแสดง
+ * @param {string} elementId - ID ของกล่องข้อความที่ต้องการอัปเดต (เช่น 'login-message', 'main-message-box')
+ */
+function displayMessage(type, message, elementId) {
+    const box = document.getElementById(elementId);
+    if (!box) return;
+
+    box.style.display = 'block';
+    
+    // ลบคลาสเดิมทั้งหมด
+    box.classList.remove('message-success', 'message-error', 'message-warning', 'message-area');
+
+    if (elementId === 'login-message' || elementId === 'register-message') {
+        // ใช้ message-area สำหรับ Auth Page (ใช้สี Text-color ที่กำหนดใน CSS)
+        box.classList.add('message-area');
+        box.innerHTML = `<p style="color: ${type === 'success' ? '#2ecc71' : '#e74c3c'};">${message}</p>`; 
+    } else {
+        // ใช้ Message Box style สำหรับหน้าอื่น ๆ (กล่องสีเต็ม)
+        box.classList.add('message-box', `message-${type}`);
+        box.innerHTML = `<p>${message}</p>`;
+    }
+}
+
+// =================================================================
+// 3. AUTHENTICATION FUNCTIONS (Login, Register, Logout) - ปรับปรุงการใช้ Message
 // =================================================================
 
 function handleLogin() {
     const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
-    const message = document.getElementById('login-message');
-
     const username = usernameInput ? usernameInput.value.trim() : '';
     const password = passwordInput ? passwordInput.value.trim() : '';
 
     if (!username || !password) {
-        message.textContent = 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน';
+        displayMessage('error', 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน', 'login-message');
         return;
     }
 
@@ -129,15 +140,13 @@ function handleLogin() {
 
     if (user) {
         localStorage.setItem('loggedInUser', username);
-        message.textContent = 'เข้าสู่ระบบสำเร็จ! กำลังนำทาง...';
-        message.style.color = '#2ecc71';
+        displayMessage('success', 'เข้าสู่ระบบสำเร็จ! กำลังนำทาง...', 'login-message');
         
         setTimeout(() => {
             window.location.href = 'index.html';
         }, 1000);
     } else {
-        message.textContent = 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
-        message.style.color = '#e74c3c';
+        displayMessage('error', 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง', 'login-message');
     }
 }
 
@@ -145,34 +154,32 @@ function handleRegister() {
     const username = document.getElementById('reg-username').value.trim();
     const password = document.getElementById('reg-password').value.trim();
     const confirmPassword = document.getElementById('reg-confirm-password').value.trim();
-    const message = document.getElementById('register-message');
 
     if (!username || !password || !confirmPassword) {
-        message.textContent = 'กรุณากรอกข้อมูลให้ครบถ้วน';
+        displayMessage('error', 'กรุณากรอกข้อมูลให้ครบถ้วน', 'register-message');
         return;
     }
 
     if (password !== confirmPassword) {
-        message.textContent = 'รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน';
+        displayMessage('error', 'รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน', 'register-message');
         return;
     }
 
     if (password.length < 6) {
-        message.textContent = 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร';
+        displayMessage('error', 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร', 'register-message');
         return;
     }
 
     let users = JSON.parse(localStorage.getItem('users')) || [];
 
     if (users.find(u => u.username === username)) {
-        message.textContent = 'ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว กรุณาเลือกชื่ออื่น';
+        displayMessage('error', 'ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว กรุณาเลือกชื่ออื่น', 'register-message');
         return;
     }
 
     users.push({ username, password });
     localStorage.setItem('users', JSON.stringify(users));
-    message.textContent = 'ลงทะเบียนสำเร็จ! กำลังนำไปหน้าล็อกอิน...';
-    message.style.color = '#2ecc71';
+    displayMessage('success', 'ลงทะเบียนสำเร็จ! กำลังนำไปหน้าล็อกอิน...', 'register-message');
 
     setTimeout(() => {
         window.location.href = 'login.html';
@@ -182,7 +189,8 @@ function handleRegister() {
 function handleLogout(event) {
     event.preventDefault();
     localStorage.removeItem('loggedInUser');
-    alert('ออกจากระบบสำเร็จ');
+    // ใช้ Alert เพราะ Logout อาจเกิดบนหน้าใดก็ได้
+    alert('ออกจากระบบสำเร็จ'); 
     window.location.href = 'login.html';
 }
 
@@ -222,13 +230,13 @@ function loadAuthButton() {
     const welcomeMessage = document.getElementById('welcome-message');
     if (welcomeMessage) {
         welcomeMessage.innerHTML = isLoggedIn 
-            ? `👋 ยินดีต้อนรับกลับ ${isLoggedIn}!` 
+            ? `👋 ยินดีต้อนรับกลับ **${isLoggedIn}**!` 
             : `👋 ยินดีต้อนรับสู่ MyToolbox`;
     }
 }
 
 // =================================================================
-// 3. PERSONAL INFO & NUMEROLOGY FUNCTIONS
+// 4. PERSONAL INFO & NUMEROLOGY FUNCTIONS - ปรับปรุงการใช้ Message
 // =================================================================
 
 function parseBirthdate(dateString) {
@@ -239,7 +247,6 @@ function parseBirthdate(dateString) {
     let month = parseInt(parts[1], 10);
     let year = parseInt(parts[2], 10);
 
-    // แปลง พ.ศ. ให้เป็น ค.ศ. หากปีมากกว่า 2500 (สมมติว่าเป็นปี พ.ศ.)
     if (year > 2500) {
         year -= 543;
     }
@@ -249,10 +256,8 @@ function parseBirthdate(dateString) {
         return null;
     }
 
-    // สร้าง Date object
     const date = new Date(year, month - 1, day);
 
-    // ตรวจสอบความถูกต้องของวัน-เดือน-ปี เช่น 30 ก.พ.
     if (date.getDate() !== day || date.getMonth() !== month - 1 || date.getFullYear() !== year) {
         return null;
     }
@@ -282,7 +287,6 @@ function calculateZodiacSign(birthdate) {
         const startMonth = sign.start[0];
         const startDay = sign.start[1];
         
-        // Month + 1 เนื่องจาก getMonth() คืนค่า 0-11
         const currentMonth = birthMonth + 1;
 
         if (currentMonth === startMonth && birthDay >= startDay) {
@@ -290,14 +294,13 @@ function calculateZodiacSign(birthdate) {
             break;
         }
         
-        // สำหรับราศีที่ข้ามปี (มังกร ธนู)
         if (currentMonth === (nextSign.start[0] - 1 + 12) % 12 + 1 && birthDay < nextSign.start[1]) {
             zodiac = sign.name;
             break;
         }
     }
     
-    // แก้ไขขอบเขตธนู/มังกร (เนื่องจากวนลูปไม่ครอบคลุมช่วงสิ้นปี)
+    // Special handling for the Jan/Dec wrap-around
     if (birthMonth === 11 && birthDay >= 22) { zodiac = "ธนู (Sagittarius)"; }
     if (birthMonth === 0 && birthDay < 20) { zodiac = "มังกร (Capricorn)"; }
 
@@ -312,9 +315,12 @@ function calculatePersonalInfo() {
     const birthdate = parseBirthdate(dateString);
 
     if (!birthdate) {
-        resultDiv.innerHTML = '<p style="color:red;">❌ รูปแบบวันเดือนปีเกิดไม่ถูกต้อง หรือไม่สมเหตุสมผล (ใช้ DD/MM/YYYY หรือ DD/MM/BBBB)</p>';
+        displayMessage('error', '❌ รูปแบบวันเดือนปีเกิดไม่ถูกต้อง หรือไม่สมเหตุสมผล (ใช้ DD/MM/YYYY หรือ DD/MM/BBBB)', 'main-message-box');
         return;
     }
+    
+    // ซ่อนกล่องข้อความเมื่อสำเร็จ
+    document.getElementById('main-message-box').style.display = 'none';
 
     const now = new Date();
     const birthYear = birthdate.getFullYear();
@@ -325,7 +331,6 @@ function calculatePersonalInfo() {
     let months = now.getMonth() - birthMonth;
     let days = now.getDate() - birthDay;
 
-    // ปรับวันและเดือน
     if (days < 0) {
         months--;
         const lastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
@@ -338,7 +343,6 @@ function calculatePersonalInfo() {
 
     const zodiac = calculateZodiacSign(birthdate);
 
-    // นับวันถึงวันเกิดถัดไป
     let nextBirthday = new Date(now.getFullYear(), birthMonth, birthDay);
     if (nextBirthday < now) {
         nextBirthday.setFullYear(now.getFullYear() + 1);
@@ -346,7 +350,6 @@ function calculatePersonalInfo() {
     const diffTime = Math.abs(nextBirthday.getTime() - now.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
-    // การแสดงผล
     const birthdateAD = birthdate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     const birthdateBE = (birthYear + 543) + '/' + (birthMonth + 1).toString().padStart(2, '0') + '/' + birthDay.toString().padStart(2, '0');
 
@@ -379,9 +382,12 @@ function calculateNumerology() {
     resultDiv.innerHTML = '';
     
     if (!name && !surname) {
-        resultDiv.innerHTML = '<p style="color:red;">❌ กรุณากรอกชื่อ หรือ นามสกุล เพื่อทำนายเลขศาสตร์</p>';
+        displayMessage('error', '❌ กรุณากรอกชื่อ หรือ นามสกุล เพื่อทำนายเลขศาสตร์', 'main-message-box');
         return;
     }
+    
+    // ซ่อนกล่องข้อความเมื่อสำเร็จ
+    document.getElementById('main-message-box').style.display = 'none';
 
     let nameTotal = calculateNameValue(name);
     let surnameTotal = calculateNameValue(surname);
@@ -405,219 +411,8 @@ function calculateNumerology() {
 }
 
 // =================================================================
-// 4. WORLD CLOCK FUNCTIONS
-// =================================================================
-
-function getThaiZodiacSign(date) {
-    const signs = [
-        { name: "เมษ", start: [4, 13] }, { name: "พฤษภ", start: [5, 14] },
-        { name: "เมถุน", start: [6, 14] }, { name: "กรกฎ", start: [7, 15] },
-        { name: "สิงห์", start: [8, 15] }, { name: "กันย์", start: [9, 15] },
-        { name: "ตุล", start: [10, 15] }, { name: "พิจิก", start: [11, 14] },
-        { name: "ธนู", start: [12, 14] }, { name: "มังกร", start: [1, 14] },
-        { name: "กุมภ์", start: [2, 13] }, { name: "มีน", start: [3, 14] }
-    ];
-
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-
-    for (let i = 0; i < signs.length; i++) {
-        const sign = signs[i];
-        if (month === sign.start[0] && day >= sign.start[1]) {
-            return sign.name;
-        }
-    }
-    // หากไม่เข้าเงื่อนไขใดเลย แสดงว่าเป็นราศีของเดือนถัดไปที่ยังไม่ถึงวันเริ่มต้น
-    const currentSignIndex = signs.findIndex(s => s.start[0] === month);
-    if (currentSignIndex === -1) return "ไม่ทราบราศี"; // should not happen
-
-    const previousSignIndex = (currentSignIndex - 1 + signs.length) % signs.length;
-    return signs[previousSignIndex].name;
-}
-
-function displayTimeDifference() {
-    const thaiTimeZone = 'Asia/Bangkok';
-    const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const now = new Date();
-
-    const getOffset = (timeZone) => {
-        const dateString = now.toLocaleString('en-US', { timeZone: timeZone, timeZoneName: 'shortOffset' });
-        const match = dateString.match(/GMT([+-]\d+)/);
-        if (match) return parseInt(match[1], 10);
-        return null;
-    };
-
-    const thaiHours = getOffset(thaiTimeZone);
-    const localHours = getOffset(localTimeZone);
-    const differenceDiv = document.getElementById('time-difference');
-
-    let diffText = 'ไม่สามารถคำนวณความแตกต่างของเวลาได้';
-    
-    if (thaiHours !== null && localHours !== null) {
-        const diffHours = thaiHours - localHours;
-
-        if (diffHours === 0) {
-            diffText = `⏰ เวลาท้องถิ่นของคุณ (${localTimeZone}) ตรงกับเวลาในประเทศไทย (UTC+0${thaiHours})`;
-        } else if (diffHours > 0) {
-            diffText = `⏰ เวลาท้องถิ่นของคุณ (${localTimeZone}) **ช้ากว่า** เวลาในประเทศไทย (${thaiTimeZone}) อยู่ **${Math.abs(diffHours)}** ชั่วโมง`;
-        } else {
-            diffText = `⏰ เวลาท้องถิ่นของคุณ (${localTimeZone}) **เร็วกว่า** เวลาในประเทศไทย (${thaiTimeZone}) อยู่ **${Math.abs(diffHours)}** ชั่วโมง`;
-        }
-    }
-
-    if (differenceDiv) {
-        differenceDiv.innerHTML = `<p>${diffText}</p>`;
-    }
-}
-
-function updateCurrentZodiac() {
-    const now = new Date();
-    const thaiZodiac = getThaiZodiacSign(now);
-
-    const currentZodiacDiv = document.getElementById('current-zodiac');
-    if (currentZodiacDiv) {
-        currentZodiacDiv.innerHTML = `<p>✨ **ราศีปัจจุบันในประเทศไทย (สุริยคติ):** **${thaiZodiac}**</p>`;
-    }
-}
-
-function updateAllClocks() {
-    const now = new Date();
-    const container = document.getElementById('clock-display-container');
-    if (!container) return; 
-
-    worldClocks.forEach(clockData => {
-        const timeZone = clockData.timeZone;
-        const clockElement = document.getElementById(`clock-${timeZone.replace(/\//g, '-')}`);
-
-        if (clockElement) {
-            try {
-                const dateOptions = {
-                    timeZone: timeZone,
-                    hour: '2-digit', minute: '2-digit', second: '2-digit',
-                    hourCycle: 'h23'
-                };
-                const displayOptions = {
-                    timeZone: timeZone,
-                    year: 'numeric', month: 'short', day: 'numeric',
-                };
-
-                const timeString = now.toLocaleTimeString('th-TH', dateOptions);
-                const dateString = now.toLocaleDateString('th-TH', displayOptions);
-                
-                // ตรวจสอบว่าเป็นกลางคืนหรือไม่ (20:00 - 05:59)
-                const targetTime = new Date(now.toLocaleString("en-US", { timeZone: timeZone }));
-                const targetHours = targetTime.getHours();
-                const isNight = (targetHours >= 20 || targetHours < 6);
-
-                clockElement.querySelector('.time').textContent = timeString;
-                clockElement.querySelector('.date-display').textContent = dateString;
-                
-                if (isNight) {
-                    clockElement.classList.add('night-mode');
-                } else {
-                    clockElement.classList.remove('night-mode');
-                }
-
-            } catch (error) {
-                clockElement.querySelector('.time').textContent = 'Error';
-                clockElement.querySelector('.date-display').textContent = 'Error';
-                console.error(`Error updating clock for ${timeZone}:`, error);
-            }
-        }
-    });
-}
-
-function initializeWorldClock() {
-    const container = document.getElementById('clock-display-container');
-    if (!container) return; 
-
-    if (clockInterval) {
-        clearInterval(clockInterval);
-    }
-
-    container.innerHTML = ''; 
-
-    // สร้าง Header
-    const headerRow = document.createElement('div');
-    headerRow.className = 'clock-table-header';
-    headerRow.innerHTML = `
-        <div class="header-name">ประเทศ</div>
-        <div class="header-time">เวลา</div>
-        <div class="header-date">วันที่</div>
-    `;
-    container.appendChild(headerRow);
-
-    // สร้างแถวนาฬิกา
-    worldClocks.forEach(clockData => {
-        const clockDiv = document.createElement('div');
-        clockDiv.className = 'clock-row'; 
-        clockDiv.id = `clock-${clockData.timeZone.replace(/\//g, '-')}`; 
-        clockDiv.innerHTML = `
-            <div class="clock-name">${clockData.name}</div>
-            <div class="time">--:--:--</div>
-            <div class="date-display">--/--/----</div>
-        `;
-        container.appendChild(clockDiv);
-    });
-
-    // เริ่มอัปเดต
-    updateAllClocks();
-    clockInterval = setInterval(updateAllClocks, 1000);
-    
-    displayTimeDifference();
-    updateCurrentZodiac();
-}
-
-// =================================================================
 // 5. CONVERTER FUNCTIONS
 // =================================================================
-
-function populateCurrencyOptions() {
-    const fromSelect = document.getElementById('currency-from');
-    const toSelect = document.getElementById('currency-to');
-    
-    if (!fromSelect || !toSelect) return;
-
-    fromSelect.innerHTML = '';
-    toSelect.innerHTML = '';
-
-    const currencies = [
-        { code: 'THB', name: 'THB - บาทไทย' },
-        { code: 'USD', name: 'USD - ดอลลาร์สหรัฐ' },
-        { code: 'EUR', name: 'EUR - ยูโร' },
-        { code: 'JPY', name: 'JPY - เยนญี่ปุ่น' }
-    ];
-
-    currencies.forEach(currency => {
-        const optionFrom = document.createElement('option');
-        optionFrom.value = currency.code;
-        optionFrom.textContent = currency.name;
-        fromSelect.appendChild(optionFrom);
-
-        const optionTo = optionFrom.cloneNode(true);
-        toSelect.appendChild(optionTo);
-    });
-    
-    fromSelect.value = 'THB';
-    toSelect.value = 'USD';
-}
-
-function showConverterSection(type) {
-    document.querySelectorAll('.converter-section').forEach(section => {
-        section.style.display = 'none';
-    });
-    document.querySelectorAll('.converter-tabs button').forEach(button => {
-        button.style.backgroundColor = 'var(--border-color)';
-        button.style.color = 'var(--text-color)';
-    });
-
-    const selectedSection = document.getElementById(`${type}-section`);
-    if (selectedSection) {
-        selectedSection.style.display = 'block';
-        document.querySelector(`.converter-tabs button[onclick*="'${type}'"]`).style.backgroundColor = 'var(--primary-color)';
-        document.querySelector(`.converter-tabs button[onclick*="'${type}'"]`).style.color = 'white';
-    }
-}
 
 function convertCurrency() {
     const amount = parseFloat(document.getElementById('currency-amount').value);
@@ -718,15 +513,100 @@ function convertBase() {
 }
 
 function initializeConverter() {
-    populateCurrencyOptions();
-    showConverterSection('currency');
+    // กำหนดให้แท็บแรกเป็น Current (ตัวอย่าง: Currency)
+    showConverterTab('currency'); 
+}
+
+function showConverterTab(tabName) {
+    // ซ่อนเนื้อหาทั้งหมด
+    document.querySelectorAll('.converter-content').forEach(content => {
+        content.style.display = 'none';
+    });
+    // แสดงเนื้อหาที่เลือก
+    document.getElementById(`${tabName}-converter`).style.display = 'block';
+
+    // อัปเดตปุ่ม
+    document.querySelectorAll('.converter-tabs button').forEach(button => {
+        button.style.backgroundColor = ''; // ลบสีเดิม
+        button.style.color = 'var(--text-color)';
+    });
+
+    const activeTab = document.getElementById(`${tabName}-tab`);
+    if (activeTab) {
+        activeTab.style.backgroundColor = 'var(--primary-color)';
+        activeTab.style.color = 'white';
+    }
 }
 
 // =================================================================
-// 6. QUIZ GAME FUNCTIONS
+// 6. WORLD CLOCK FUNCTIONS
 // =================================================================
 
-// Utility function: Fisher-Yates shuffle
+function updateWorldClocks() {
+    const container = document.getElementById('world-clock-container');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    // Header
+    const header = document.createElement('div');
+    header.className = 'clock-table-header';
+    header.innerHTML = '<div>เมือง</div><div>เวลา</div><div>วันที่</div>';
+    container.appendChild(header);
+
+    const now = new Date();
+
+    worldClocks.forEach(clock => {
+        try {
+            const timeOptions = { 
+                timeZone: clock.timeZone, 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit', 
+                hour12: false 
+            };
+            const dateOptions = { 
+                timeZone: clock.timeZone, 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            };
+
+            const localTime = now.toLocaleTimeString('th-TH', timeOptions);
+            const localDate = now.toLocaleDateString('th-TH', dateOptions);
+
+            // Determine if it's night time (for styling)
+            const hour = parseInt(localTime.substring(0, 2), 10);
+            const isNight = hour < 6 || hour >= 18; // Before 6 AM or after 6 PM
+
+            const row = document.createElement('div');
+            row.className = `clock-row ${isNight ? 'night-mode' : ''}`;
+            row.innerHTML = `
+                <div class="clock-name">${clock.name}</div>
+                <div class="time">${localTime}</div>
+                <div class="date-display">${localDate}</div>
+            `;
+            container.appendChild(row);
+
+        } catch (error) {
+            console.error(`Error updating time for ${clock.name}:`, error);
+        }
+    });
+}
+
+function initializeWorldClock() {
+    const container = document.getElementById('world-clock');
+    if (container) {
+        updateWorldClocks();
+        // อัปเดตทุกวินาที
+        clockInterval = setInterval(updateWorldClocks, 1000); 
+    }
+}
+
+// =================================================================
+// 7. QUIZ GAME FUNCTIONS
+// =================================================================
+
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -735,198 +615,205 @@ function shuffleArray(array) {
     return array;
 }
 
-function saveScore(username, score, time) {
+function startQuiz() {
+    // 1. สุ่ม 10 คำถามจากชุดคำถามทั้งหมด
+    quizQuestions = shuffleArray([...originalQuizQuestions]).slice(0, 10);
+    currentQuestionIndex = 0;
+    score = 0;
+    
+    document.getElementById('quiz-start-area').style.display = 'none';
+    document.getElementById('quiz-game-area').style.display = 'block';
+    
+    // เริ่มนับเวลา
+    clearInterval(quizTimer);
+    startTime = Date.now();
+    quizTimer = setInterval(updateTimer, 1000);
+
+    displayQuestion();
+}
+
+function updateTimer() {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const remaining = TIME_LIMIT - elapsed;
+    const timerElement = document.getElementById('quiz-timer');
+    
+    if (remaining <= 0) {
+        clearInterval(quizTimer);
+        endQuiz('หมดเวลา!');
+        timerElement.textContent = `⏰ หมดเวลา!`;
+    } else {
+        timerElement.textContent = `⏰ เหลือเวลา: ${remaining} วินาที`;
+    }
+}
+
+function displayQuestion() {
+    const questionData = quizQuestions[currentQuestionIndex];
+    if (!questionData) {
+        endQuiz();
+        return;
+    }
+
+    document.getElementById('quiz-question').textContent = `${currentQuestionIndex + 1}. ${questionData.question}`;
+    const optionsContainer = document.getElementById('quiz-options');
+    optionsContainer.innerHTML = '';
+    
+    // สุ่มตัวเลือก
+    const shuffledOptions = shuffleArray([...questionData.options]);
+
+    shuffledOptions.forEach(option => {
+        const button = document.createElement('button');
+        button.className = 'quiz-option-btn';
+        button.textContent = option;
+        button.onclick = () => checkAnswer(option, questionData.answer, button);
+        optionsContainer.appendChild(button);
+    });
+
+    document.getElementById('quiz-score').textContent = `คะแนน: ${score}`;
+    document.getElementById('quiz-question-number').textContent = `คำถามที่: ${currentQuestionIndex + 1} / ${quizQuestions.length}`;
+}
+
+function checkAnswer(selectedOption, correctAnswer, button) {
+    // ปิดการคลิกตัวเลือกอื่น ๆ ทันที
+    document.querySelectorAll('.quiz-option-btn').forEach(btn => btn.disabled = true);
+    
+    if (selectedOption === correctAnswer) {
+        score++;
+        button.style.backgroundColor = 'var(--secondary-color)'; // Green
+        button.style.color = 'white';
+    } else {
+        button.style.backgroundColor = 'var(--error-color)'; // Red
+        button.style.color = 'white';
+        
+        // เน้นคำตอบที่ถูกต้อง
+        document.querySelectorAll('.quiz-option-btn').forEach(btn => {
+            if (btn.textContent === correctAnswer) {
+                btn.style.backgroundColor = 'var(--warning-color)'; // Yellow/Orange
+            }
+        });
+    }
+
+    // ไปสู่คำถามถัดไปหลังจากดีเลย์
+    setTimeout(() => {
+        currentQuestionIndex++;
+        displayQuestion();
+    }, 1000); 
+}
+
+function endQuiz(reason = 'จบคำถามทั้งหมด') {
+    clearInterval(quizTimer);
+    const finalTime = Math.floor((Date.now() - startTime) / 1000);
+
+    // 1. บันทึกคะแนน
+    saveScore(score, finalTime);
+    
+    // 2. แสดงผลลัพธ์
+    document.getElementById('quiz-game-area').style.display = 'none';
+    const resultArea = document.getElementById('quiz-result-area');
+    resultArea.style.display = 'block';
+
+    let message = `<h2>${reason}!</h2>`;
+    message += `<p>คุณทำได้: **${score}** คะแนน จาก ${quizQuestions.length} ข้อ</p>`;
+    message += `<p>ใช้เวลาไป: **${finalTime}** วินาที</p>`;
+    message += `<button onclick="restartQuiz()" class="action-btn" style="background-color: var(--secondary-color);">เล่นอีกครั้ง</button>`;
+    
+    resultArea.innerHTML = message;
+
+    // 3. อัปเดต Leaderboard
+    loadLeaderboard();
+}
+
+function restartQuiz() {
+    document.getElementById('quiz-result-area').style.display = 'none';
+    document.getElementById('quiz-start-area').style.display = 'block';
+    // Clear timer display
+    document.getElementById('quiz-timer').textContent = `⏰ เหลือเวลา: ${TIME_LIMIT} วินาที`;
+}
+
+function saveScore(finalScore, finalTime) {
+    const playerName = localStorage.getItem('loggedInUser') || 'Guest';
     let leaderboard = JSON.parse(localStorage.getItem('quizLeaderboard')) || [];
-    const date = new Date().toLocaleDateString('th-TH');
-
-    leaderboard.push({ username, score, time, date });
-
-    // เรียงตามคะแนนมากไปน้อย ถ้าคะแนนเท่ากันเรียงตามเวลาที่ใช้น้อยไปมาก
+    
+    leaderboard.push({ name: playerName, score: finalScore, time: finalTime, date: new Date().toLocaleDateString('th-TH') });
+    
+    // เรียงลำดับ: คะแนนมาก่อน, เวลาน้อยตามมา
     leaderboard.sort((a, b) => {
         if (b.score !== a.score) {
             return b.score - a.score;
         }
         return a.time - b.time;
     });
-
+    
     // เก็บแค่ 10 อันดับแรก
     leaderboard = leaderboard.slice(0, 10);
+    
     localStorage.setItem('quizLeaderboard', JSON.stringify(leaderboard));
 }
 
 function loadLeaderboard() {
     const leaderboard = JSON.parse(localStorage.getItem('quizLeaderboard')) || [];
-    const tbody = document.getElementById('leaderboard-body');
-    if (!tbody) return;
+    const leaderboardBody = document.getElementById('leaderboard-body');
+    if (!leaderboardBody) return;
+
+    leaderboardBody.innerHTML = '';
     
-    tbody.innerHTML = '';
-
-    if (leaderboard.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">ยังไม่มีสถิติคะแนน</td></tr>';
-        return;
-    }
-
     leaderboard.forEach((record, index) => {
-        const row = tbody.insertRow();
-        row.insertCell().textContent = index + 1;
-        row.insertCell().textContent = record.username;
-        row.insertCell().textContent = `${record.score} / ${quizQuestions.length > 0 ? quizQuestions.length : 10}`;
-        row.insertCell().textContent = `${record.time} วินาที`;
-        row.insertCell().textContent = record.date;
+        const row = leaderboardBody.insertRow();
+        row.insertCell(0).textContent = index + 1;
+        row.insertCell(1).textContent = record.name;
+        row.insertCell(2).textContent = `${record.score} / ${quizQuestions.length}`;
+        row.insertCell(3).textContent = `${record.time} วินาที`;
+        row.insertCell(4).textContent = record.date;
     });
-}
-
-function showQuestion() {
-    if (currentQuestionIndex >= quizQuestions.length) {
-        endQuiz();
-        return;
-    }
-
-    const q = quizQuestions[currentQuestionIndex];
-    document.getElementById('quiz-question').textContent = `คำถามที่ ${currentQuestionIndex + 1}: ${q.question}`;
-    document.getElementById('quiz-score').textContent = `คะแนน: ${score} / ${quizQuestions.length}`;
-
-    const optionsContainer = document.getElementById('quiz-options');
-    optionsContainer.innerHTML = '';
-
-    const shuffledOptions = shuffleArray([...q.options]);
-
-    shuffledOptions.forEach(option => {
-        const button = document.createElement('button');
-        button.className = 'quiz-option-btn';
-        button.textContent = option;
-        button.onclick = () => checkAnswer(option, q.answer, button);
-        optionsContainer.appendChild(button);
-    });
-}
-
-function checkAnswer(selectedOption, correctAnswer, button) {
-    document.querySelectorAll('.quiz-option-btn').forEach(btn => btn.disabled = true);
-
-    if (selectedOption === correctAnswer) {
-        score++;
-        button.style.backgroundColor = '#2ecc71'; // Correct: Green
-        button.style.color = 'white';
-    } else {
-        button.style.backgroundColor = '#e74c3c'; // Wrong: Red
-        button.style.color = 'white';
-        // เน้นคำตอบที่ถูกต้อง
-        document.querySelectorAll('.quiz-option-btn').forEach(btn => {
-            if (btn.textContent === correctAnswer) {
-                btn.style.border = '2px solid #2ecc71';
-                btn.style.backgroundColor = '#d1e7dd';
-                btn.style.color = '#0f5132';
-            }
-        });
-    }
-
-    document.getElementById('quiz-score').textContent = `คะแนน: ${score} / ${quizQuestions.length}`;
-
-    setTimeout(() => {
-        currentQuestionIndex++;
-        showQuestion();
-        document.querySelectorAll('.quiz-option-btn').forEach(btn => btn.disabled = false);
-    }, 1000);
-}
-
-function updateQuizTimerDisplay() {
-    const elapsed = Math.floor((Date.now() - startTime) / 1000);
-    const remaining = TIME_LIMIT - elapsed;
-    const timerDisplay = document.getElementById('quiz-timer');
-
-    if (remaining <= 0) {
-        timerDisplay.textContent = '⏳ เวลา: หมดเวลา!';
-        endQuiz();
-    } else {
-        timerDisplay.textContent = `⏳ เวลา: ${remaining} วินาที`;
-    }
-}
-
-function endQuiz() {
-    clearInterval(quizTimer);
-    const totalTime = TIME_LIMIT - Math.max(0, TIME_LIMIT - Math.floor((Date.now() - startTime) / 1000));
-    const finalResultDiv = document.getElementById('quiz-final-result');
-    const username = localStorage.getItem('loggedInUser') || 'Guest';
-
-    document.getElementById('quiz-game-area').style.display = 'none';
-    document.getElementById('quiz-result-area').style.display = 'block';
-
-    finalResultDiv.innerHTML = `
-        <h3>เกมจบลงแล้ว!</h3>
-        <p style="font-size: 1.5em; color: #2ecc71; font-weight: bold;">คะแนนของคุณ: **${score}** / ${quizQuestions.length}</p>
-        <p>ใช้เวลาไปทั้งหมด: **${totalTime}** วินาที</p>
-        <p>บันทึกสถิติในชื่อ: **${username}**</p>
-        <button onclick="startQuiz()" class="action-btn" style="margin-top: 20px;">เริ่มเกมใหม่</button>
-    `;
-    
-    saveScore(username, score, totalTime);
-    loadLeaderboard();
-}
-
-function startQuiz() {
-    // 1. สุ่มคำถาม 10 ข้อ
-    const shuffledQuestions = shuffleArray([...originalQuizQuestions]);
-    quizQuestions = shuffledQuestions.slice(0, 10);
-    
-    // 2. รีเซ็ตค่าและแสดงหน้าจอ
-    currentQuestionIndex = 0;
-    score = 0;
-    
-    document.getElementById('quiz-start-area').style.display = 'none';
-    document.getElementById('quiz-result-area').style.display = 'none';
-    document.getElementById('quiz-game-area').style.display = 'block';
-
-    // 3. เริ่ม Timer
-    if (quizTimer) {
-        clearInterval(quizTimer);
-    }
-    startTime = Date.now();
-    updateQuizTimerDisplay();
-    quizTimer = setInterval(updateQuizTimerDisplay, 1000);
-
-    // 4. เริ่มคำถามแรก
-    showQuestion();
 }
 
 function initializeQuiz() {
-    const startButton = document.getElementById('quiz-start-btn');
-    if (startButton) {
-        startButton.onclick = startQuiz;
+    // เตรียมหน้าเริ่มต้น Quiz
+    const quizArea = document.getElementById('quiz');
+    if (quizArea) {
+        document.getElementById('quiz-game-area').style.display = 'none';
+        document.getElementById('quiz-result-area').style.display = 'none';
+        document.getElementById('quiz-start-area').style.display = 'block';
+        loadLeaderboard(); // โหลด Leaderboard ตั้งแต่แรก
     }
-    loadLeaderboard();
 }
 
-
 // =================================================================
-// 7. INITIALIZATION (การเรียกใช้งานฟังก์ชันเมื่อโหลดหน้า)
+// 8. INITIALIZATION (การเรียกใช้งานฟังก์ชันเมื่อโหลดหน้า) - ปรับปรุง Footer
 // =================================================================
 
-// กำหนดให้ฟังก์ชันสามารถเรียกใช้ได้จาก HTML โดยตรง (Global Scope)
+function updateFooterText() {
+    const footerTextElement = document.getElementById('footer-text');
+    if (footerTextElement) {
+        footerTextElement.textContent = 'ติดต่อโฆษณาได้นะคะ';
+    }
+}
+
+// Global Scope Export - ทำให้ฟังก์ชันที่ถูกเรียกใช้ใน HTML (onclick) ทำงานได้
 window.handleLogin = handleLogin;
 window.handleRegister = handleRegister;
 window.handleLogout = handleLogout;
 window.calculatePersonalInfo = calculatePersonalInfo;
 window.calculateNumerology = calculateNumerology;
-window.showConverterSection = showConverterSection;
 window.convertCurrency = convertCurrency;
 window.convertUnit = convertUnit;
 window.convertBase = convertBase;
-window.startQuiz = startQuiz; // สำหรับปุ่มเริ่มเกมใหม่ในหน้า Quiz
+window.showConverterTab = showConverterTab;
+window.startQuiz = startQuiz;
+window.restartQuiz = restartQuiz;
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. โหลดปุ่ม Login/Logout เสมอ
     loadAuthButton();
+    
+    // 2. อัปเดตข้อความ Footer
+    updateFooterText();
 
-    // 2. เริ่มต้นฟังก์ชันตามหน้าที่ของแต่ละหน้า (โดยการตรวจหา Element หลัก)
-    if (document.getElementById('world-clock')) {
-        initializeWorldClock();
-    }
-    
-    if (document.getElementById('converter-suite')) {
-        initializeConverter();
-    }
-    
-    if (document.getElementById('quiz')) {
-        initializeQuiz();
+    // 3. เริ่มต้นฟังก์ชันตามหน้าที่ของแต่ละหน้า
+    if (document.getElementById('world-clock')) { 
+        initializeWorldClock(); 
+    } else if (document.getElementById('converter-suite')) { 
+        initializeConverter(); 
+    } else if (document.getElementById('quiz')) { 
+        initializeQuiz(); 
     }
 });
