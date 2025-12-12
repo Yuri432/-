@@ -3,68 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ayunum: ข้อมูลส่วนตัว, ทำนายชื่อ</title>
-    <meta name="description" content="Ayunum: เครื่องคำนวณอายุ ราศีตะวันตก/ตะวันออก (ปีนักษัตร) และทำนายชื่อตามหลักเลขศาสตร์">
+    <title>เครื่องมือสารพัดประโยชน์และ Quiz Game</title>
     <link rel="stylesheet" href="style.css">
-    </head>
+</head>
 <body>
-    <div class="container">
+
+    <header>
+        <h1>เครื่องมือคำนวณและเกมความรู้รอบตัว</h1>
+        <p>โดย: A.I. Assistant (Flash 2.5)</p>
+    </header>
+
+    <main class="container">
         
-        <nav style="margin-bottom: 30px; padding: 10px 10px; background-color: #ecf0f1; box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
-             display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-            
-            <div style="display: flex; flex-wrap: wrap; justify-content: center;">
-                <a href="index.html" style="margin: 0 5px; text-decoration: none; color: #34495e; font-weight: bold; padding: 8px 15px; border-radius: 6px; background-color: #f1c40f;">✨ ข้อมูลส่วนตัว/ทำนายชื่อ</a>
-                <a href="worldclock.html" style="margin: 0 5px; text-decoration: none; color: #34495e; font-weight: bold; padding: 8px 15px; border-radius: 6px;">🌍 นาฬิกาโลก</a>
-                <a href="timer.html" style="margin: 0 5px; text-decoration: none; color: #34495e; font-weight: bold; padding: 8px 15px; border-radius: 6px;">⏱️ ตั้งเวลา/เตือน</a>
+        <div id="personal-info" class="main-section">
+            <h2>🎂 ข้อมูลส่วนบุคคลและโหราศาสตร์เบื้องต้น</h2>
+            <div class="input-group">
+                <label for="birthdate-input">วันเดือนปีเกิด (ค.ศ. หรือ พ.ศ.):</label>
+                <input type="text" id="birthdate-input" placeholder="DD/MM/YYYY หรือ DD/MM/BBBB เช่น 13/02/2552">
+            </div>
+            <div class="input-group">
+                <label for="name-input">ชื่อ (ภาษาไทย):</label>
+                <input type="text" id="name-input" placeholder="ชื่อ">
+            </div>
+            <div class="input-group">
+                <label for="surname-input">นามสกุล (ภาษาไทย):</label>
+                <input type="text" id="surname-input" placeholder="นามสกุล">
             </div>
             
-            <div style="display: flex; align-items: center; margin-left: 20px;">
-                <span style="font-size: 0.8em; color: #7f8c8d; margin-right: 10px;">ติดตาม:</span>
-                <a href="https://www.tiktok.com/@ayu_9i?is_from_webapp=1&sender_device=pc" target="_blank" style="text-decoration: none; font-size: 1.5em; margin: 0 5px; color: #000; padding: 0;">
-                    <span title="TikTok">🎵</span>
-                </a>
-                <a href="https://www.youtube.com/channel/UCnhhMJrPVY3ILErkK5PClnQ" target="_blank" style="text-decoration: none; font-size: 1.5em; margin: 0 5px; color: #c00; padding: 0;">
-                    <span title="YouTube">▶️</span>
-                </a>
+            <div class="action-buttons-group">
+                <button onclick="calculatePersonalInfo()" class="action-btn">คำนวณอายุและราศี</button>
+                <button onclick="calculateNumerology()" class="action-btn secondary-btn">ทำนายชื่อ (เลขศาสตร์/ทักษา)</button>
             </div>
-        </nav>
-        <header>
-            <h1> Ayunum ยินต้อนรับ</h1>
-            <p class="description">+ คำสั่งคำนวณราศี, นักษัตร และทำนายชื่อ</p>
-        </header>
-        
-        <div class="card-section">
-            <h2>✨ ขั้นตอนที่ 1: คำนวณข้อมูลส่วนตัว (อายุ, นักษัตร, ราศี)</h2>
-            <p class="description">ป้อนวันเกิด (เช่น 13/02/2552):</p>
-            <div style="text-align: center; margin-bottom: 20px;">
-                <input type="text" id="birthdate-input" value="13/02/2552" placeholder="DD/MM/YYYY" style="padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
-                <button onclick="calculatePersonalInfo()">คำนวณ</button>
-            </div>
-            <div id="personal-result">
-                กรุณาป้อนวันเกิดของคุณเพื่อคำนวณ...
-            </div>
+            
+            <div id="personal-result" class="result-area">
+                </div>
+            
+            <div id="numerology-result" class="result-area" style="margin-top: 20px;">
+                </div>
         </div>
 
-        <div class="card-section">
-            <h2>🔮 ขั้นตอนที่ 2: ทำนายชื่อ-นามสกุล (ครบวงจร)</h2>
-            <p class="description" style="color:#e74c3c; font-weight:bold;">
-                ระบบจะใช้ "วันเกิด" จากส่วนด้านบนในการวิเคราะห์หลักโหราศาสตร์ (ทักษา)
-            </p>
-            <div style="text-align: center; margin-bottom: 20px;">
-                <input type="text" id="name-input" placeholder="ชื่อ (ภาษาไทย)" style="width: 200px; margin-right: 10px; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
-                <input type="text" id="surname-input" placeholder="นามสกุล (ภาษาไทย)" style="width: 200px; margin-right: 10px; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
+        <hr>
+
+        <div id="world-clock" class="main-section">
+            <h2>🌎 นาฬิกาโลก</h2>
+            <div id="time-difference" class="info-box"></div>
+            <div id="current-zodiac" class="info-box" style="margin-top: 10px;"></div>
+            <div id="clock-display-container">
+                </div>
+        </div>
+        
+        <hr>
+
+        <div id="timer" class="main-section">
+            <h2>⏱️ ตัวจับเวลาถอยหลัง</h2>
+            <div id="timer-display" class="timer-display">05:00</div>
+            
+            <div id="timer-input-container" class="input-timer">
+                <input type="number" id="timer-minutes" value="5" min="0" max="99" placeholder="นาที">
+                <input type="number" id="timer-seconds" value="0" min="0" max="59" placeholder="วินาที">
             </div>
             
-            <div style="text-align: center; margin-bottom: 20px;">
-                 <button onclick="calculateNumerology()">ทำนาย</button>
+            <div class="action-buttons-group">
+                <button id="start-button" onclick="startTimer()" class="action-btn">▶️ เริ่มจับเวลา</button>
+                <button id="pause-button" onclick="pauseTimer()" class="action-btn secondary-btn" style="display: none;">⏸️ หยุดชั่วคราว</button>
+                <button id="reset-button" onclick="resetTimer()" class="action-btn danger-btn">🔄 รีเซ็ต</button>
+            </div>
+            <audio id="alarm-sound" src="alarm.mp3" preload="auto"></audio>
+        </div>
+
+        <hr>
+
+        <div id="quiz" class="main-section">
+            <h2>🧠 เกมตอบคำถามความรู้รอบตัว (10 ข้อ)</h2>
+            
+            <div id="quiz-start-area">
+                <p>ทดสอบความรู้ของคุณ! มีคำถามทั้งหมด 10 ข้อ เวลาในการตอบจะขึ้นอยู่กับความยากง่ายของแต่ละข้อ</p>
+                <button id="quiz-start-btn" class="action-btn">▶️ เริ่มเกม</button>
+                <p id="quiz-score" style="margin-top: 15px; font-weight: bold;">คะแนน: 0 / 0</p>
             </div>
 
-            <div id="numerology-result">
-                กรุณาป้อนวันเกิด ชื่อ และนามสกุลของคุณเพื่อดูคำทำนาย...
+            <div id="quiz-game-area" style="display: none;">
+                <h4 id="quiz-timer" style="color: #3498db; margin-bottom: 20px;">⏳ เวลา: 45 วินาที (กลาง)</h4>
+                <div class="question-box">
+                    <h3 id="quiz-question">คำถามที่ 1</h3>
+                </div>
+                <div id="quiz-options" class="options-container">
+                    </div>
+            </div>
+
+            <div id="quiz-result-area" style="display: none;">
+                <div id="quiz-final-result" class="result-box"></div>
+            </div>
+            
+            <hr style="margin-top: 40px; border-color: #ecf0f1;">
+
+            <div id="quiz-leaderboard-area" style="display: none;">
+                <h3 style="color: #c0392b;">🏆 ตารางท็อปสกอร์ 10 อันดับ</h3>
+                <table id="leaderboard-table" class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>ชื่อผู้เล่น</th>
+                            <th>คะแนน (10 ข้อ)</th>
+                            <th>เวลาที่ใช้ (นาที:วิ)</th>
+                            <th>วันที่เล่น</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        </tbody>
+                </table>
+                <p style="font-size: 0.8em; color: #7f8c8d; text-align: center;">(คะแนนถูกบันทึกไว้เฉพาะในเบราว์เซอร์นี้)</p>
             </div>
         </div>
-    </div>
+        
+    </main>
+
+    <footer>
+        <p>&copy; 2025 AI Tools - Data is stored locally on your browser.</p>
+    </footer>
 
     <script src="script.js"></script>
 </body>
