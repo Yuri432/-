@@ -6,8 +6,7 @@
     <title>Ayunum: ข้อมูลส่วนตัว, ทำนายชื่อ</title>
     <meta name="description" content="Ayunum: เครื่องคำนวณอายุ ราศีตะวันตก/ตะวันออก (ปีนักษัตร) และทำนายชื่อตามหลักเลขศาสตร์">
     <link rel="stylesheet" href="style.css">
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script> 
-</head>
+    </head>
 <body>
     <div class="container">
         
@@ -37,9 +36,9 @@
         
         <div class="card-section">
             <h2>✨ ขั้นตอนที่ 1: คำนวณข้อมูลส่วนตัว (อายุ, นักษัตร, ราศี)</h2>
-            <p class="description">ป้อนวันเกิด (ค.ศ. หรือ พ.ศ.):</p>
+            <p class="description">ป้อนวันเกิด (เช่น 13/02/2552):</p>
             <div style="text-align: center; margin-bottom: 20px;">
-                <input type="text" id="birthdate-input" value="13/02/2552" placeholder="DD/MM/YYYY">
+                <input type="text" id="birthdate-input" value="13/02/2552" placeholder="DD/MM/YYYY" style="padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
                 <button onclick="calculatePersonalInfo()">คำนวณ</button>
             </div>
             <div id="personal-result">
@@ -57,8 +56,9 @@
                 <input type="text" id="surname-input" placeholder="นามสกุล (ภาษาไทย)" style="width: 200px; margin-right: 10px; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
             </div>
             
-
-           
+            <div style="text-align: center; margin-bottom: 20px;">
+                 <button onclick="calculateNumerology()">ทำนาย</button>
+            </div>
 
             <div id="numerology-result">
                 กรุณาป้อนวันเกิด ชื่อ และนามสกุลของคุณเพื่อดูคำทำนาย...
