@@ -12,8 +12,7 @@
         <h1>เครื่องมือคำนวณและเกมความรู้รอบตัว</h1>
         <nav>
             <a href="index.html">🎂 ข้อมูลส่วนบุคคล</a>
-            <a href="worldclock.html" class="active">🌎 นาฬิกาโลก</a>
-            <a href="timer.html">⏱️ ตัวจับเวลา</a>
+            <a href="worldclock.html" class="active">🌎 นาฬิกาโลก</a> <a href="timer.html">⏱️ ตัวจับเวลา</a>
             <a href="quiz.html">🧠 Quiz Game</a>
         </nav>
     </header>
@@ -22,10 +21,15 @@
         
         <div id="world-clock" class="main-section">
             <h2>🌎 นาฬิกาโลก</h2>
-            <div id="time-difference" class="info-box"></div>
-            <div id="current-zodiac" class="info-box" style="margin-top: 10px;"></div>
-            <div id="clock-display-container">
-                </div>
+            <div class="result-area" style="border-left: 5px solid #e74c3c; margin-top: 20px;">
+                <p style="font-size: 1.2em; color: #c0392b; font-weight: bold;">
+                    ⚠️ ฟีเจอร์นี้ถูกปิดใช้งานชั่วคราวเพื่อดำเนินการปรับปรุง
+                </p>
+                <p>ขออภัยในความไม่สะดวกครับ/ค่ะ</p>
+                <div id="time-difference" style="display: none;"></div>
+                <div id="current-zodiac" style="display: none;"></div>
+                <div id="clock-display-container" style="display: none;"></div>
+            </div>
         </div>
         
     </main>
