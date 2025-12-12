@@ -128,7 +128,6 @@ const requestedWorldClocks = [
     { name: "ไลบีเรีย (Monrovia)", timeZone: "Africa/Monrovia" },
     { name: "ลิเบีย (Tripoli)", timeZone: "Africa/Tripoli" },
     { name: "ลิกเตนสไตน์ (Vaduz)", timeZone: "Europe/Zurich" }, 
-    // เพิ่มประเทศไทยเพื่อให้ง่ายต่อการอ้างอิง
     { name: "ไทย (Bangkok)", timeZone: "Asia/Bangkok" } 
 ];
 const worldClocks = requestedWorldClocks.sort((a, b) => a.name.localeCompare(b.name));
@@ -194,27 +193,18 @@ const MAX_QUIZ_QUESTIONS = 10; // จำนวนคำถามสูงสุ�
 // 2. MESSAGE HANDLER (กล่องข้อความแจ้งเตือน)
 // =================================================================
 
-/**
- * แสดงกล่องข้อความแจ้งเตือนในตำแหน่งที่กำหนด
- * @param {string} type - 'success', 'error', 'warning'
- * @param {string} message - ข้อความที่ต้องการแสดง
- * @param {string} elementId - ID ของกล่องข้อความที่ต้องการอัปเดต
- */
 function displayMessage(type, message, elementId) {
     const box = document.getElementById(elementId);
     if (!box) return;
 
     box.style.display = 'block';
     
-    // ลบคลาสเดิมทั้งหมด
     box.classList.remove('message-success', 'message-error', 'message-warning', 'message-area');
 
     if (elementId === 'login-message' || elementId === 'register-message') {
-        // สำหรับ Auth Page
         box.classList.add('message-area');
         box.innerHTML = `<p style="color: ${type === 'success' ? '#2ecc71' : '#e74c3c'};">${message}</p>`; 
     } else {
-        // สำหรับหน้าอื่น ๆ
         box.classList.add('message-box', `message-${type}`);
         box.innerHTML = `<p>${message}</p>`;
     }
@@ -402,11 +392,6 @@ function calculateZodiacSign(birthdate) {
     return zodiac;
 }
 
-/**
- * คำนวณปีนักษัตรจากปี ค.ศ. (ตามสูตรสากล)
- * @param {number} year - ปีคริสต์ศักราช (เช่น 2025)
- * @returns {string} - ชื่อปีนักษัตร
- */
 function calculateZodiacYear(year) {
     const zodiacs = [
         'ชวด (หนู)', 'ฉลู (วัว)', 'ขาล (เสือ)', 'เถาะ (กระต่าย)', 
@@ -657,7 +642,7 @@ function showConverterTab(tabName) {
 
 function updateWorldClocks() {
     const container = document.getElementById('world-clock-container');
-    if (!container) return;
+    if (!container) return; 
     
     container.innerHTML = '';
     
@@ -686,11 +671,10 @@ function updateWorldClocks() {
 
             let localTime, localDate;
             try {
-                // toLocaleTimeString/DateString อาจเกิด Error หาก TimeZone ไม่ถูกต้อง
                 localTime = now.toLocaleTimeString('th-TH', timeOptions);
                 localDate = now.toLocaleDateString('th-TH', dateOptions);
             } catch (e) {
-                localTime = 'Error';
+                localTime = 'Error: TimeZone';
                 localDate = 'Error';
             }
 
@@ -715,7 +699,9 @@ function updateWorldClocks() {
 function initializeWorldClock() {
     const container = document.getElementById('world-clock');
     if (container && document.getElementById('world-clock-container')) { 
-        updateWorldClocks();
+        // รันครั้งแรกทันที
+        updateWorldClocks(); 
+        // รันซ้ำทุกวินาที
         clockInterval = setInterval(updateWorldClocks, 1000); 
     }
 }
@@ -876,10 +862,16 @@ function loadLeaderboard() {
 function initializeQuiz() {
     const quizArea = document.getElementById('quiz');
     if (quizArea) {
-        document.getElementById('quiz-game-area').style.display = 'none';
-        document.getElementById('quiz-result-area').style.display = 'none';
-        document.getElementById('quiz-start-area').style.display = 'block';
-        loadLeaderboard();
+        // ต้องมีพื้นที่เหล่านี้ใน quiz.html
+        if (document.getElementById('quiz-game-area') && document.getElementById('quiz-result-area') && document.getElementById('quiz-start-area')) {
+             document.getElementById('quiz-game-area').style.display = 'none';
+             document.getElementById('quiz-result-area').style.display = 'none';
+             document.getElementById('quiz-start-area').style.display = 'block';
+             document.getElementById('quiz-timer').textContent = `⏰ เหลือเวลา: ${TIME_LIMIT} วินาที`;
+             loadLeaderboard();
+        } else {
+            console.error("Missing required quiz HTML elements (quiz-start-area, quiz-game-area, quiz-result-area)");
+        }
     }
 }
 
@@ -890,7 +882,7 @@ function initializeQuiz() {
 function updateFooterText() {
     const footerTextElement = document.getElementById('footer-text');
     if (footerTextElement) {
-        footerTextElement.textContent = '© 2025 MyToolbox Project. All rights reserved.'; // รีเซ็ต Footer ให้เป็นข้อความมาตรฐาน
+        footerTextElement.textContent = '© 2025 MyToolbox Project. All rights reserved.'; 
     }
 }
 
