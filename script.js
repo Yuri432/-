@@ -1,4 +1,4 @@
-// script.js - ฉบับสมบูรณ์ (รวมทุกฟังก์ชัน)
+// script.js - ฉบับสมบูรณ์ (รวมทุกฟังก์ชันและปีนักษัตร)
 
 // =================================================================
 // 1. DATA (ข้อมูลหลัก)
@@ -35,7 +35,6 @@ const worldClocks = requestedWorldClocks.sort((a, b) => a.name.localeCompare(b.n
 let clockInterval; 
 
 // ข้อมูลสำหรับ Personal Info: Numerology (เลขศาสตร์)
-// ข้อมูลการให้ค่าตัวเลขตามหลักเลขศาสตร์สำหรับอักขระไทย (จำลอง)
 const numerologyMap = {
     'ก': 1, 'ด': 1, 'ถ': 1, 'ท': 1, 'ภ': 1, 'ฤ': 1,
     'ข': 2, 'ช': 2, 'บ': 2, 'ป': 2, 'ง': 2, 'เ': 2,
@@ -83,7 +82,7 @@ const originalQuizQuestions = [
     { question: "สนามบินที่วุ่นวายที่สุดในโลก (วัดจากผู้โดยสาร) คือที่ไหน?", options: ["ปักกิ่ง", "แอตแลนตา", "ลอนดอน ฮีทโธรว์", "ดูไบ"], answer: "แอตแลนตา" },
     { question: "สิ่งมีชีวิตที่ถูกเรียกว่า 'ราชาแห่งสัตว์' คืออะไร?", options: ["เสือ", "หมี", "สิงโต", "จระเข้"], answer: "สิงโต" }
 ];
-let quizQuestions = []; // Array ที่ใช้เก็บ 10 ข้อที่ถูกสุ่มมาในแต่ละรอบ
+let quizQuestions = []; 
 let currentQuestionIndex = 0;
 let score = 0;
 let quizTimer;
@@ -91,14 +90,14 @@ let startTime;
 const TIME_LIMIT = 60; // 60 วินาที
 
 // =================================================================
-// 2. MESSAGE HANDLER (กล่องข้อความแจ้งเตือน) - ปรับปรุง
+// 2. MESSAGE HANDLER (กล่องข้อความแจ้งเตือน)
 // =================================================================
 
 /**
  * แสดงกล่องข้อความแจ้งเตือนในตำแหน่งที่กำหนด
  * @param {string} type - 'success', 'error', 'warning'
  * @param {string} message - ข้อความที่ต้องการแสดง
- * @param {string} elementId - ID ของกล่องข้อความที่ต้องการอัปเดต (เช่น 'login-message', 'main-message-box')
+ * @param {string} elementId - ID ของกล่องข้อความที่ต้องการอัปเดต
  */
 function displayMessage(type, message, elementId) {
     const box = document.getElementById(elementId);
@@ -110,18 +109,18 @@ function displayMessage(type, message, elementId) {
     box.classList.remove('message-success', 'message-error', 'message-warning', 'message-area');
 
     if (elementId === 'login-message' || elementId === 'register-message') {
-        // ใช้ message-area สำหรับ Auth Page (ใช้สี Text-color ที่กำหนดใน CSS)
+        // สำหรับ Auth Page
         box.classList.add('message-area');
         box.innerHTML = `<p style="color: ${type === 'success' ? '#2ecc71' : '#e74c3c'};">${message}</p>`; 
     } else {
-        // ใช้ Message Box style สำหรับหน้าอื่น ๆ (กล่องสีเต็ม)
+        // สำหรับหน้าอื่น ๆ
         box.classList.add('message-box', `message-${type}`);
         box.innerHTML = `<p>${message}</p>`;
     }
 }
 
 // =================================================================
-// 3. AUTHENTICATION FUNCTIONS (Login, Register, Logout) - ปรับปรุงการใช้ Message
+// 3. AUTHENTICATION FUNCTIONS (Login, Register, Logout)
 // =================================================================
 
 function handleLogin() {
@@ -189,7 +188,6 @@ function handleRegister() {
 function handleLogout(event) {
     event.preventDefault();
     localStorage.removeItem('loggedInUser');
-    // ใช้ Alert เพราะ Logout อาจเกิดบนหน้าใดก็ได้
     alert('ออกจากระบบสำเร็จ'); 
     window.location.href = 'login.html';
 }
@@ -198,7 +196,6 @@ function loadAuthButton() {
     const nav = document.querySelector('header nav');
     const isLoggedIn = localStorage.getItem('loggedInUser');
 
-    // ลบปุ่มเดิมออกก่อน (ถ้ามี)
     let existingButton = document.getElementById('auth-button');
     if (existingButton) {
         existingButton.remove();
@@ -211,22 +208,20 @@ function loadAuthButton() {
         authButton.href = '#';
         authButton.textContent = '➡️ Log Out';
         authButton.onclick = handleLogout;
-        authButton.style.backgroundColor = '#e74c3c'; // สีแดง
+        authButton.style.backgroundColor = '#e74c3c'; 
     } else {
-        // ไม่แสดงปุ่มบนหน้า Login/Register เพื่อป้องกันการซ้ำซ้อน
         if (window.location.pathname.includes('login.html') || window.location.pathname.includes('register.html')) {
             return;
         }
         authButton.href = 'login.html';
         authButton.textContent = '✅ Log In';
-        authButton.style.backgroundColor = '#1abc9c'; // สีเขียว
+        authButton.style.backgroundColor = '#1abc9c'; 
     }
 
     if (nav) {
         nav.appendChild(authButton);
     }
     
-    // อัปเดตข้อความต้อนรับ
     const welcomeMessage = document.getElementById('welcome-message');
     if (welcomeMessage) {
         welcomeMessage.innerHTML = isLoggedIn 
@@ -236,7 +231,7 @@ function loadAuthButton() {
 }
 
 // =================================================================
-// 4. PERSONAL INFO & NUMEROLOGY FUNCTIONS - ปรับปรุงการใช้ Message
+// 4. PERSONAL INFO & NUMEROLOGY FUNCTIONS (เพิ่มปีนักษัตร)
 // =================================================================
 
 function parseBirthdate(dateString) {
@@ -247,6 +242,7 @@ function parseBirthdate(dateString) {
     let month = parseInt(parts[1], 10);
     let year = parseInt(parts[2], 10);
 
+    // แปลง พ.ศ. ให้เป็น ค.ศ. หากปีมากกว่า 2500
     if (year > 2500) {
         year -= 543;
     }
@@ -258,6 +254,7 @@ function parseBirthdate(dateString) {
 
     const date = new Date(year, month - 1, day);
 
+    // ตรวจสอบความถูกต้องของวัน (เช่น 30 ก.พ. จะถูกแปลงเป็น 1 มี.ค.)
     if (date.getDate() !== day || date.getMonth() !== month - 1 || date.getFullYear() !== year) {
         return null;
     }
@@ -266,7 +263,7 @@ function parseBirthdate(dateString) {
 }
 
 function calculateZodiacSign(birthdate) {
-    const birthMonth = birthdate.getMonth(); // 0-11
+    const birthMonth = birthdate.getMonth(); 
     const birthDay = birthdate.getDate();
 
     const zodiacSigns = [
@@ -300,12 +297,34 @@ function calculateZodiacSign(birthdate) {
         }
     }
     
-    // Special handling for the Jan/Dec wrap-around
     if (birthMonth === 11 && birthDay >= 22) { zodiac = "ธนู (Sagittarius)"; }
     if (birthMonth === 0 && birthDay < 20) { zodiac = "มังกร (Capricorn)"; }
 
     return zodiac;
 }
+
+/**
+ * คำนวณปีนักษัตรจากปี ค.ศ. (ตามสูตรสากล)
+ * @param {number} year - ปีคริสต์ศักราช (เช่น 2025)
+ * @returns {string} - ชื่อปีนักษัตร
+ */
+function calculateZodiacYear(year) {
+    const zodiacs = [
+        'ชวด (หนู)', 'ฉลู (วัว)', 'ขาล (เสือ)', 'เถาะ (กระต่าย)', 
+        'มะโรง (งูใหญ่)', 'มะเส็ง (งูเล็ก)', 'มะเมีย (ม้า)', 'มะแม (แพะ)', 
+        'วอก (ลิง)', 'ระกา (ไก่)', 'จอ (หมา)', 'กุน (หมู)'
+    ];
+
+    // ใช้สูตร (Year - 3) mod 12 เพื่อให้ปีนักษัตรเริ่มต้นที่ ชวด (หนู) เมื่อเศษเหลือเป็น 0
+    let remainder = (year - 3) % 12;
+
+    if (remainder < 0) {
+        remainder += 12;
+    }
+
+    return zodiacs[remainder];
+}
+
 
 function calculatePersonalInfo() {
     const dateString = document.getElementById('birthdate-input').value.trim();
@@ -342,6 +361,7 @@ function calculatePersonalInfo() {
     }
 
     const zodiac = calculateZodiacSign(birthdate);
+    const zodiacYear = calculateZodiacYear(birthYear); // ใช้ปี ค.ศ. ที่แปลงแล้ว
 
     let nextBirthday = new Date(now.getFullYear(), birthMonth, birthDay);
     if (nextBirthday < now) {
@@ -357,6 +377,7 @@ function calculatePersonalInfo() {
         <h3>🎉 ผลการคำนวณข้อมูลวันเกิด</h3>
         <p><strong>วันเกิด (ค.ศ.):</strong> ${birthdateAD} (${birthdateBE} พ.ศ.)</p>
         <p><strong>อายุ:</strong> **${age}** ปี ${months} เดือน ${days} วัน</p>
+        <p><strong>ปีนักษัตร:</strong> 🐉 **${zodiacYear}**</p>
         <p><strong>ราศี (ตะวันตก):</strong> 🌟 **${zodiac}**</p>
         <p style="color: #27ae60;">เหลืออีก **${diffDays}** วัน จนกว่าจะถึงวันเกิดครั้งหน้าของคุณ!</p>
     `;
@@ -386,7 +407,6 @@ function calculateNumerology() {
         return;
     }
     
-    // ซ่อนกล่องข้อความเมื่อสำเร็จ
     document.getElementById('main-message-box').style.display = 'none';
 
     let nameTotal = calculateNameValue(name);
@@ -513,21 +533,17 @@ function convertBase() {
 }
 
 function initializeConverter() {
-    // กำหนดให้แท็บแรกเป็น Current (ตัวอย่าง: Currency)
     showConverterTab('currency'); 
 }
 
 function showConverterTab(tabName) {
-    // ซ่อนเนื้อหาทั้งหมด
     document.querySelectorAll('.converter-content').forEach(content => {
         content.style.display = 'none';
     });
-    // แสดงเนื้อหาที่เลือก
     document.getElementById(`${tabName}-converter`).style.display = 'block';
 
-    // อัปเดตปุ่ม
     document.querySelectorAll('.converter-tabs button').forEach(button => {
-        button.style.backgroundColor = ''; // ลบสีเดิม
+        button.style.backgroundColor = ''; 
         button.style.color = 'var(--text-color)';
     });
 
@@ -575,9 +591,8 @@ function updateWorldClocks() {
             const localTime = now.toLocaleTimeString('th-TH', timeOptions);
             const localDate = now.toLocaleDateString('th-TH', dateOptions);
 
-            // Determine if it's night time (for styling)
             const hour = parseInt(localTime.substring(0, 2), 10);
-            const isNight = hour < 6 || hour >= 18; // Before 6 AM or after 6 PM
+            const isNight = hour < 6 || hour >= 18; 
 
             const row = document.createElement('div');
             row.className = `clock-row ${isNight ? 'night-mode' : ''}`;
@@ -598,7 +613,6 @@ function initializeWorldClock() {
     const container = document.getElementById('world-clock');
     if (container) {
         updateWorldClocks();
-        // อัปเดตทุกวินาที
         clockInterval = setInterval(updateWorldClocks, 1000); 
     }
 }
@@ -616,7 +630,6 @@ function shuffleArray(array) {
 }
 
 function startQuiz() {
-    // 1. สุ่ม 10 คำถามจากชุดคำถามทั้งหมด
     quizQuestions = shuffleArray([...originalQuizQuestions]).slice(0, 10);
     currentQuestionIndex = 0;
     score = 0;
@@ -624,7 +637,6 @@ function startQuiz() {
     document.getElementById('quiz-start-area').style.display = 'none';
     document.getElementById('quiz-game-area').style.display = 'block';
     
-    // เริ่มนับเวลา
     clearInterval(quizTimer);
     startTime = Date.now();
     quizTimer = setInterval(updateTimer, 1000);
@@ -657,7 +669,6 @@ function displayQuestion() {
     const optionsContainer = document.getElementById('quiz-options');
     optionsContainer.innerHTML = '';
     
-    // สุ่มตัวเลือก
     const shuffledOptions = shuffleArray([...questionData.options]);
 
     shuffledOptions.forEach(option => {
@@ -673,26 +684,23 @@ function displayQuestion() {
 }
 
 function checkAnswer(selectedOption, correctAnswer, button) {
-    // ปิดการคลิกตัวเลือกอื่น ๆ ทันที
     document.querySelectorAll('.quiz-option-btn').forEach(btn => btn.disabled = true);
     
     if (selectedOption === correctAnswer) {
         score++;
-        button.style.backgroundColor = 'var(--secondary-color)'; // Green
+        button.style.backgroundColor = 'var(--secondary-color)'; 
         button.style.color = 'white';
     } else {
-        button.style.backgroundColor = 'var(--error-color)'; // Red
+        button.style.backgroundColor = 'var(--error-color)'; 
         button.style.color = 'white';
         
-        // เน้นคำตอบที่ถูกต้อง
         document.querySelectorAll('.quiz-option-btn').forEach(btn => {
             if (btn.textContent === correctAnswer) {
-                btn.style.backgroundColor = 'var(--warning-color)'; // Yellow/Orange
+                btn.style.backgroundColor = 'var(--warning-color)'; 
             }
         });
     }
 
-    // ไปสู่คำถามถัดไปหลังจากดีเลย์
     setTimeout(() => {
         currentQuestionIndex++;
         displayQuestion();
@@ -703,10 +711,8 @@ function endQuiz(reason = 'จบคำถามทั้งหมด') {
     clearInterval(quizTimer);
     const finalTime = Math.floor((Date.now() - startTime) / 1000);
 
-    // 1. บันทึกคะแนน
     saveScore(score, finalTime);
     
-    // 2. แสดงผลลัพธ์
     document.getElementById('quiz-game-area').style.display = 'none';
     const resultArea = document.getElementById('quiz-result-area');
     resultArea.style.display = 'block';
@@ -718,14 +724,12 @@ function endQuiz(reason = 'จบคำถามทั้งหมด') {
     
     resultArea.innerHTML = message;
 
-    // 3. อัปเดต Leaderboard
     loadLeaderboard();
 }
 
 function restartQuiz() {
     document.getElementById('quiz-result-area').style.display = 'none';
     document.getElementById('quiz-start-area').style.display = 'block';
-    // Clear timer display
     document.getElementById('quiz-timer').textContent = `⏰ เหลือเวลา: ${TIME_LIMIT} วินาที`;
 }
 
@@ -735,7 +739,6 @@ function saveScore(finalScore, finalTime) {
     
     leaderboard.push({ name: playerName, score: finalScore, time: finalTime, date: new Date().toLocaleDateString('th-TH') });
     
-    // เรียงลำดับ: คะแนนมาก่อน, เวลาน้อยตามมา
     leaderboard.sort((a, b) => {
         if (b.score !== a.score) {
             return b.score - a.score;
@@ -743,7 +746,6 @@ function saveScore(finalScore, finalTime) {
         return a.time - b.time;
     });
     
-    // เก็บแค่ 10 อันดับแรก
     leaderboard = leaderboard.slice(0, 10);
     
     localStorage.setItem('quizLeaderboard', JSON.stringify(leaderboard));
@@ -767,18 +769,17 @@ function loadLeaderboard() {
 }
 
 function initializeQuiz() {
-    // เตรียมหน้าเริ่มต้น Quiz
     const quizArea = document.getElementById('quiz');
     if (quizArea) {
         document.getElementById('quiz-game-area').style.display = 'none';
         document.getElementById('quiz-result-area').style.display = 'none';
         document.getElementById('quiz-start-area').style.display = 'block';
-        loadLeaderboard(); // โหลด Leaderboard ตั้งแต่แรก
+        loadLeaderboard();
     }
 }
 
 // =================================================================
-// 8. INITIALIZATION (การเรียกใช้งานฟังก์ชันเมื่อโหลดหน้า) - ปรับปรุง Footer
+// 8. INITIALIZATION (การเรียกใช้งานฟังก์ชันเมื่อโหลดหน้า)
 // =================================================================
 
 function updateFooterText() {
@@ -788,7 +789,7 @@ function updateFooterText() {
     }
 }
 
-// Global Scope Export - ทำให้ฟังก์ชันที่ถูกเรียกใช้ใน HTML (onclick) ทำงานได้
+// Global Scope Export
 window.handleLogin = handleLogin;
 window.handleRegister = handleRegister;
 window.handleLogout = handleLogout;
@@ -802,7 +803,7 @@ window.startQuiz = startQuiz;
 window.restartQuiz = restartQuiz;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. โหลดปุ่ม Login/Logout เสมอ
+    // 1. โหลดปุ่ม Login/Logout
     loadAuthButton();
     
     // 2. อัปเดตข้อความ Footer
