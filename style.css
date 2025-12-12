@@ -226,7 +226,7 @@ select {
 }
 
 .clock.night-mode h2 {
-    color: #f1c40f; /* สีทองสำหรับชื่อประเทศตอนกลางคืน */
+    color: #f1c40f; 
     border-bottom: 1px solid #34495e;
 }
 
@@ -262,6 +262,41 @@ select {
     flex-grow: 1;
     max-width: 180px;
 }
+
+/* สไตล์สำหรับกล่องวิธีทำโดยละเอียด */
+.conversion-tutorial-box {
+    margin-top: 25px;
+    padding: 15px;
+    background-color: #f8f9fa; /* สีพื้นหลังอ่อน */
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+}
+
+.conversion-tutorial-box h4 {
+    color: #2c3e50;
+    font-size: 1.1em;
+    border-bottom: 1px dashed #ced4da;
+    padding-bottom: 5px;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.conversion-tutorial-box p {
+    font-family: 'Courier New', monospace; /* ใช้ฟอนต์ monospace เพื่อให้ตัวเลขจัดเรียงสวยงาม */
+    font-size: 0.95em;
+    margin: 5px 0;
+    padding: 2px 0;
+}
+
+/* เน้นผลลัพธ์สรุป */
+.result-summary {
+    background-color: #e8f5e9;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #c8e6c9;
+    margin-top: 15px;
+}
+
 
 /* ============================================== */
 /* 7. QUIZ GAME STYLES */
@@ -342,59 +377,31 @@ footer {
 }
 
 /* ============================================== */
-/* 9. ALERT BOX STYLES (Inline/Static Alerts) */
+/* 9. MODAL/POP-UP STYLES */
 /* ============================================== */
 
-/* ใช้สำหรับกล่องแจ้งเตือนที่เป็นส่วนหนึ่งของเนื้อหา */
-.info-alert {
-    padding: 15px 20px;
-    margin-bottom: 25px;
-    border: 1px solid #3498db;
-    background-color: #f0f8ff;
-    color: #2980b9;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-}
-
-.info-alert h3 {
-    margin-top: 0;
-    font-size: 1.2em;
-    color: #3498db;
-    border-bottom: 1px dashed #3498db;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
-}
-
-/* ============================================== */
-/* 10. MODAL/POP-UP STYLES (Based on User's image) */
-/* ============================================== */
-
-/* Overlay ที่จะบังหน้าจอทั้งหมด */
 .site-modal {
-    display: none; /* เริ่มต้นถูกซ่อนไว้ */
+    display: none; 
     position: fixed; 
-    z-index: 1000; /* ให้อยู่เหนือทุกองค์ประกอบ */
+    z-index: 1000; 
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.7); /* พื้นหลังทึบแสง */
+    background-color: rgba(0, 0, 0, 0.7); 
     padding-top: 50px;
-    
-    /* Center content vertically and horizontally */
     align-items: center;
     justify-content: center;
 }
 
-/* กล่องเนื้อหา Modal */
 .modal-content-box {
     background-color: #fefefe;
-    margin: auto; /* จัดกึ่งกลางแนวตั้งและแนวนอน */
+    margin: auto; 
     padding: 20px;
     border-radius: 12px;
     width: 90%; 
-    max-width: 600px; /* จำกัดขนาดให้ดูเป็น pop-up */
+    max-width: 600px; 
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     position: relative;
     animation: fadeIn 0.3s;
@@ -405,10 +412,9 @@ footer {
     to {opacity: 1; transform: translateY(0);}
 }
 
-/* หัวข้อ modal ให้ดูโดดเด่น */
 .modal-content-box h2 {
     text-align: center;
-    color: #c0392b; /* ใช้สีแดงเด่นตามภาพตัวอย่าง */
+    color: #c0392b; 
     font-size: 1.5em;
     margin-top: 0;
     border-bottom: 2px solid #e74c3c;
@@ -416,7 +422,6 @@ footer {
     margin-bottom: 20px;
 }
 
-/* ปุ่มปิด (X) */
 .close-btn {
     color: #aaa;
     float: right;
@@ -434,7 +439,6 @@ footer {
     cursor: pointer;
 }
 
-/* รูปแบบเนื้อหาภายใน modal ให้ดูเป็นระเบียบ (คล้าย info-box) */
 .modal-message-body {
     padding: 15px;
     margin-bottom: 15px;
