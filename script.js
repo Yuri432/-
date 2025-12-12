@@ -1,5 +1,16 @@
+// ==============================================
+// GLOBAL / INITIALIZATION
+// ==============================================
+
+const baseNameMap = {
+    10: 'Decimal', 2: 'Binary', 16: 'Hexadecimal'
+};
+
 document.addEventListener('DOMContentLoaded', () => {
-    // โหลดฟังก์ชันตามหน้าปัจจุบัน
+    // 1. ตรวจสอบสถานะการล็อกอินและแสดงปุ่มที่เกี่ยวข้อง
+    updateLoginStatus();
+
+    // 2. โหลดฟังก์ชันเริ่มต้นตามหน้าปัจจุบัน
     if (document.getElementById('personal-info')) {
         // initializePersonalInfo(); // ไม่มีฟังก์ชันเริ่มต้นที่จำเป็น
     } else if (document.getElementById('world-clock')) {
@@ -9,12 +20,126 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (document.getElementById('quiz')) {
         initializeQuiz();
     }
+
+    // 3. ตรวจสอบว่าหน้าปัจจุบันเป็นหน้าหลักที่ต้องป้องกันหรือไม่
+    // (โค้ดป้องกันอยู่ในไฟล์ HTML แต่เราใส่ Logic เพื่อตั้งค่าเริ่มต้นใน JS)
+    
+    // ตั้งค่าผู้ใช้เริ่มต้นสำหรับ demo (ถ้ายังไม่มี)
+    if (!localStorage.getItem('users')) {
+        localStorage.setItem('users', JSON.stringify({
+            'testuser': '123456',
+            'demo': 'password'
+        }));
+    }
 });
 
 
 // ==============================================
-// 1. PERSONAL INFO & NUMEROLOGY FUNCTIONS 
-// (ไม่แสดงซ้ำ)
+// A. LOGIN & AUTHENTICATION FUNCTIONS (Simulated)
+// ==============================================
+
+function handleRegister() {
+    const username = document.getElementById('reg-username').value.trim();
+    const password = document.getElementById('reg-password').value;
+    const confirmPassword = document.getElementById('reg-confirm-password').value;
+    const message = document.getElementById('register-message');
+    
+    const users = JSON.parse(localStorage.getItem('users')) || {};
+    
+    message.textContent = '';
+    message.style.color = 'red';
+
+    if (!username || !password || !confirmPassword) {
+        message.textContent = 'กรุณากรอกข้อมูลให้ครบทุกช่อง';
+        return;
+    }
+    if (users[username]) {
+        message.textContent = 'ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว';
+        return;
+    }
+    if (password.length < 6) {
+        message.textContent = 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร';
+        return;
+    }
+    if (password !== confirmPassword) {
+        message.textContent = 'รหัสผ่านที่ยืนยันไม่ตรงกัน';
+        return;
+    }
+
+    users[username] = password;
+    localStorage.setItem('users', JSON.stringify(users));
+    
+    message.style.color = 'green';
+    message.textContent = '✅ สร้างบัญชีสำเร็จ! กำลังนำไปหน้าล็อกอิน...';
+    
+    setTimeout(() => {
+        window.location.href = 'login.html';
+    }, 1500);
+}
+
+function handleLogin() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const message = document.getElementById('login-message');
+    
+    const users = JSON.parse(localStorage.getItem('users')) || {};
+    
+    message.textContent = '';
+    
+    if (users[username] && users[username] === password) {
+        localStorage.setItem('loggedInUser', username); 
+        message.style.color = 'green';
+        message.textContent = '✅ ล็อกอินสำเร็จ! กำลังเข้าสู่เว็บไซต์...';
+        
+        setTimeout(() => {
+            // นำไปหน้าหลัก
+            window.location.href = 'index.html'; 
+        }, 1000);
+        
+    } else {
+        message.style.color = 'red';
+        message.textContent = 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
+    }
+}
+
+function handleLogout() {
+    localStorage.removeItem('loggedInUser');
+    alert('ออกจากระบบสำเร็จ');
+    window.location.href = 'login.html'; 
+}
+
+function updateLoginStatus() {
+    const user = localStorage.getItem('loggedInUser');
+    const headerNav = document.querySelector('header nav');
+
+    if (!headerNav) return;
+
+    // ลบปุ่มเดิมออกก่อน
+    document.getElementById('logout-btn')?.remove();
+    document.getElementById('login-link')?.remove();
+    
+    // ตรวจสอบสถานะการล็อกอิน
+    if (user) {
+        // ล็อกอินแล้ว: แสดงปุ่ม Log Out
+        const logoutButton = document.createElement('a');
+        logoutButton.href = '#';
+        logoutButton.textContent = `👋 ${user} | ออกจากระบบ`;
+        logoutButton.id = 'logout-btn';
+        logoutButton.onclick = handleLogout;
+        headerNav.appendChild(logoutButton);
+    } else if (!window.location.pathname.includes('login.html') && !window.location.pathname.includes('register.html')) {
+        // ยังไม่ได้ล็อกอิน และไม่ได้อยู่ที่หน้า login/register: แสดงปุ่ม Log In
+        const loginLink = document.createElement('a');
+        loginLink.href = 'login.html';
+        loginLink.textContent = '🔒 เข้าสู่ระบบ';
+        loginLink.id = 'login-link';
+        headerNav.appendChild(loginLink);
+    }
+}
+
+
+// ==============================================
+// B. PERSONAL INFO & NUMEROLOGY FUNCTIONS 
 // ==============================================
 
 function getZodiacSign(day, month) {
@@ -158,8 +283,7 @@ function calculateNumerology() {
 
 
 // ==============================================
-// 2. WORLD CLOCK FUNCTIONS 
-// (ไม่แสดงซ้ำ)
+// C. WORLD CLOCK FUNCTIONS 
 // ==============================================
 
 const worldClocks = [
@@ -278,7 +402,7 @@ function updateAllClocks() {
 
 
 // ==============================================
-// 3. CONVERTER SUITE FUNCTIONS 
+// D. CONVERTER SUITE FUNCTIONS 
 // ==============================================
 
 const currencyRates = {
@@ -435,7 +559,7 @@ function convertBase() {
         
         if (targetBase !== 10) {
             if (currentDecimal === 0) {
-                 tutorialHTML += '<p>0 / ' + targetBase + ' ได้เศษ 0</p>';
+                 tutorialHTML += '<p>0 &divide; ' + targetBase + ' ได้เศษ 0</p>';
             }
             while (currentDecimal > 0) {
                 const remainder = currentDecimal % targetBase;
@@ -455,7 +579,6 @@ function convertBase() {
             }
 
             if (remainderHistory.length === 0 && decimalValue !== 0) {
-                // Should not happen, but for safety
                 finalResultReverse.push('0');
             } else if (decimalValue === 0) {
                  finalResultReverse.push('0');
@@ -495,8 +618,7 @@ function convertBase() {
 
 
 // ==============================================
-// 4. QUIZ GAME FUNCTIONS & LEADERBOARD 
-// (ไม่แสดงซ้ำ)
+// E. QUIZ GAME FUNCTIONS & LEADERBOARD 
 // ==============================================
 
 const quizQuestions = [
