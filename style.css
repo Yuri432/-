@@ -1,519 +1,395 @@
-/* style.css - ฉบับสมบูรณ์และปรับปรุงล่าสุด */
+/* style.css */
 
 :root {
-    --primary-color: #007bff; /* สีน้ำเงินหลัก */
-    --secondary-color: #28a745; /* สีเขียวสำหรับสำเร็จ */
-    --warning-color: #ffc107; /* สีเหลืองสำหรับคำเตือน */
-    --background-color: #f8f9fa; /* พื้นหลังสีขาวนวล */
-    --card-background: #ffffff;
-    --text-color: #343a40;
-    --error-color: #dc3545; /* สีแดงสำหรับข้อผิดพลาด */
-    --border-color: #ced4da;
-    --shadow-color: rgba(0, 0, 0, 0.08);
+    --primary-color: #2c3e50; /* Navy Blue - สำหรับ Header, Active buttons */
+    --secondary-color: #3498db; /* Bright Blue - สำหรับ Action/Correct answers */
+    --background-color: #ecf0f1; /* Light Gray/Off-White */
+    --card-background: #ffffff; /* White */
+    --text-color: #34495e; /* Dark Gray */
+    --border-color: #bdc3c7; /* Gray Border */
+    --error-color: #e74c3c; /* Red */
+    --success-color: #2ecc71; /* Green */
+    --warning-color: #f39c12; /* Orange */
 }
 
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--text-color);
+    font-family: 'Tahoma', sans-serif;
 }
 
 body {
     background-color: var(--background-color);
+    color: var(--text-color);
     line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 /* --- Header & Navigation --- */
 header {
     background-color: var(--primary-color);
-    padding: 15px 30px;
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+header .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 8px var(--shadow-color);
 }
 
-header .logo {
-    font-size: 1.8em;
-    font-weight: bold;
+header h1 {
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+header h1 a {
     color: white;
+    text-decoration: none;
 }
 
 header nav a {
     color: white;
     text-decoration: none;
-    margin-left: 20px;
-    padding: 8px 15px;
+    padding: 0.5rem 1rem;
+    margin-left: 0.5rem;
     border-radius: 5px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 header nav a:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: #34495e;
+}
+
+header nav a.active {
+    background-color: var(--secondary-color);
 }
 
 #auth-button {
-    background-color: var(--secondary-color);
+    background-color: var(--success-color); /* ถูกกำหนดใน JS */
+    color: white !important;
     font-weight: bold;
-    margin-left: 30px !important;
 }
 
-#auth-button:hover {
-    background-color: #218838 !important;
+/* --- Main Content & Typography --- */
+main {
+    flex-grow: 1;
+    padding: 2rem 0;
 }
 
-/* --- Main Layout & Containers --- */
-.container {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 0 20px;
-}
-
-.hero-section {
-    background-color: var(--card-background);
-    padding: 30px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 8px var(--shadow-color);
-    text-align: center;
-}
-
-.hero-section h1 {
+main h2 {
     color: var(--primary-color);
-    margin-bottom: 10px;
+    border-bottom: 3px solid var(--secondary-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
 }
 
+main h3 {
+    color: var(--secondary-color);
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+}
+
+/* --- Tool Cards --- */
 .tool-card {
     background-color: var(--card-background);
-    padding: 25px;
+    padding: 2rem;
+    margin-bottom: 2rem;
     border-radius: 8px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px var(--shadow-color);
-}
-
-.tool-card h2 {
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    color: var(--primary-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 /* --- Forms & Inputs --- */
 .input-group {
-    margin-bottom: 15px;
+    margin-bottom: 1rem;
 }
 
 .input-group label {
     display: block;
     font-weight: bold;
-    margin-bottom: 5px;
+    margin-bottom: 0.3rem;
+    color: var(--text-color);
 }
 
 .input-group input[type="text"],
 .input-group input[type="password"],
-.conversion-form input[type="number"],
-.conversion-form input[type="text"],
-.conversion-form select {
+.input-group select,
+.input-group input[type="number"] {
     width: 100%;
     padding: 10px;
     border: 1px solid var(--border-color);
-    border-radius: 5px;
-    margin-top: 5px;
-    font-size: 1em;
+    border-radius: 4px;
+    font-size: 1rem;
 }
 
-.tool-card button, .action-btn {
-    background-color: var(--primary-color);
-    color: white;
+.action-btn {
+    display: inline-block;
     padding: 10px 20px;
+    background-color: var(--secondary-color);
+    color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 1em;
+    font-size: 1rem;
     font-weight: bold;
     transition: background-color 0.3s;
-    margin-top: 10px;
-    display: inline-block;
+    margin-top: 1rem;
 }
 
-.tool-card button:hover, .action-btn:hover {
-    background-color: #0056b3;
+.action-btn:hover {
+    background-color: #2980b9;
 }
 
-/* --- Result & Info Boxes (ปรับปรุงให้ดูมีมิติ) --- */
-.result-box {
-    margin-top: 20px;
-    padding: 15px;
-    border-radius: 5px;
-    background-color: #e9f5ff; 
-    border: 1px solid #cce5ff;
-    border-left: 5px solid var(--primary-color);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-
-.info-banner {
-    padding: 10px 15px;
-    background-color: #d4edda;
-    color: #155724;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    border: 1px solid #c3e6cb;
-}
-
-/* --- New: Message Boxes (แจ้งเตือน) --- */
+/* --- Message Boxes --- */
 .message-box {
-    margin-top: 15px;
-    margin-bottom: 20px;
-    padding: 12px 15px;
-    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 1rem;
+    border-radius: 4px;
     font-weight: bold;
-    color: white !important;
+    display: none; /* Controlled by JS */
 }
-.message-error {
-    background-color: var(--error-color);
-    border: 1px solid #bd2130;
-}
+
 .message-success {
-    background-color: var(--secondary-color);
-    border: 1px solid #1e7e34;
-}
-.message-warning {
-    background-color: var(--warning-color);
-    border: 1px solid #d39e00;
-}
-/* ให้ข้อความภายในกล่องใช้สี white */
-.message-box p {
-    color: white !important; 
-    margin: 0;
-}
-/* สำหรับ Auth Page */
-.message-area {
-    margin-top: 10px;
-    font-weight: bold;
-}
-.message-area p {
-    color: inherit !important;
+    background-color: #d4edda;
+    color: var(--success-color);
+    border: 1px solid var(--success-color);
 }
 
-/* --- Auth Pages --- */
-.auth-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 70vh;
+.message-error {
+    background-color: #f8d7da;
+    color: var(--error-color);
+    border: 1px solid var(--error-color);
 }
 
-.auth-box {
-    width: 100%;
-    max-width: 400px;
-    background-color: var(--card-background);
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 8px 16px var(--shadow-color);
-}
-
-.auth-box h2 {
+.message-area { /* สำหรับ login/register */
+    padding: 10px;
+    margin-bottom: 1rem;
     text-align: center;
-    color: var(--primary-color);
-    margin-bottom: 25px;
 }
 
-.auth-box button {
-    width: 100%;
-    margin-top: 20px;
-}
-
-.switch-auth {
-    text-align: center;
-    margin-top: 15px;
-    font-size: 0.9em;
-}
-
-.switch-auth a {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: bold;
-}
-
-/* --- Converter Page Styles --- */
+/* --- Converter Styles (converter.html) --- */
 .converter-tabs {
     display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--border-color);
 }
 
 .converter-tabs button {
-    background-color: var(--border-color);
-    color: var(--text-color);
     padding: 10px 15px;
     border: none;
-    border-radius: 5px 5px 0 0;
+    background: transparent;
     cursor: pointer;
-    font-weight: normal;
-    transition: background-color 0.3s;
-    margin-top: 0;
+    font-size: 1rem;
+    font-weight: bold;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+    border-bottom: 3px solid transparent;
 }
 
 .converter-tabs button:hover {
-    background-color: #b0b5b9;
+    background-color: #f2f2f2;
 }
 
-.converter-tabs button[style*="background-color: var(--primary-color)"],
-.converter-tabs button[style*="background-color: rgb(0, 123, 255)"] {
-    background-color: var(--primary-color) !important;
+.converter-tabs button.active {
+    background-color: var(--primary-color);
     color: white;
-    font-weight: bold;
+    border-color: var(--primary-color);
 }
 
-.conversion-form {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.conversion-form input, 
-.conversion-form select {
-    flex-grow: 1;
-    min-width: 120px;
-}
-
-.conversion-form button {
-    margin-top: 0;
-    min-width: 100px;
-}
-
-.conversion-form span {
-    white-space: nowrap;
+.conversion-result {
+    margin-top: 1.5rem;
+    padding: 15px;
+    border: 1px dashed var(--secondary-color);
+    border-radius: 5px;
+    background-color: #f9f9f9;
 }
 
 .conversion-tutorial-box {
     margin-top: 15px;
     padding: 10px;
-    background-color: #f1f8e9; /* Light green/yellow */
-    border: 1px solid #dce775;
-    border-radius: 5px;
+    background-color: #e8f4fd;
+    border-left: 5px solid var(--secondary-color);
+    border-radius: 3px;
+    font-size: 0.9em;
 }
 
-.conversion-tutorial-box h4 {
-    color: #689f38;
-    margin-bottom: 5px;
-}
-
-/* --- World Clock Styles --- */
+/* --- World Clock Styles (worldclock.html) --- */
 .clock-table {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    overflow: hidden;
-}
-
-.clock-table-header, .clock-row {
     display: grid;
-    grid-template-columns: 2fr 1fr 1.5fr;
-    padding: 12px 15px;
-    align-items: center;
-    border-bottom: 1px solid #f0f0f0;
+    grid-template-columns: 1fr; /* Default: Single column */
+    gap: 10px;
+    margin-top: 1.5rem;
 }
 
 .clock-table-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    font-weight: bold;
+    padding: 10px;
     background-color: var(--primary-color);
     color: white;
-    font-weight: bold;
-}
-
-.clock-table-header div {
-    color: white !important;
+    border-radius: 5px 5px 0 0;
+    font-size: 1.1em;
 }
 
 .clock-row {
-    background-color: var(--card-background);
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+    align-items: center;
     transition: background-color 0.3s;
 }
 
 .clock-row:nth-child(even) {
-    background-color: #f7f9fb;
+    background-color: #f8f8f8;
 }
 
 .clock-row:hover {
-    background-color: #e8f3fb;
+    background-color: #f0f0f0;
 }
 
 .clock-row .time {
-    font-size: 1.2em;
     font-weight: bold;
     color: var(--secondary-color);
-}
-
-.clock-row .date-display {
-    font-size: 0.9em;
-    color: #6e7e89;
+    font-size: 1.1em;
 }
 
 .clock-row.night-mode {
-    background-color: #34495e; /* Darker background for night */
-    color: #ecf0f1;
-}
-
-.clock-row.night-mode .clock-name,
-.clock-row.night-mode .date-display {
-    color: #ecf0f1;
+    background-color: #3b3f46; /* Dark background for night */
+    color: #ecf0f1; /* Light text */
 }
 
 .clock-row.night-mode .time {
-    color: #f1c40f; /* Yellowish time for contrast */
+    color: #ffcc00; /* Yellow time */
 }
 
-/* --- Quiz Game Styles --- */
-.quiz-card {
-    text-align: center;
+.clock-row.night-mode:nth-child(even) {
+    background-color: #44474e; 
 }
 
-#quiz-start-area {
-    padding: 20px;
+
+/* Responsive World Clock */
+@media (min-width: 768px) {
+    .clock-table {
+        grid-template-columns: repeat(2, 1fr); /* Two columns on larger screens */
+    }
+    .clock-table-header {
+        grid-template-columns: 2fr 1fr 1fr;
+        grid-column: 1 / span 2; /* Span across both columns */
+    }
 }
 
-#quiz-start-btn {
-    padding: 12px 30px;
-    font-size: 1.2em;
-    margin-top: 30px;
-    background-color: var(--secondary-color);
-}
 
-#quiz-start-btn:hover {
-    background-color: #218838;
-}
-
+/* --- Quiz Styles (quiz.html) --- */
 .quiz-status {
     display: flex;
     justify-content: space-between;
-    padding: 10px 0;
-    margin-bottom: 20px;
-    border-bottom: 1px dashed var(--border-color);
+    padding: 10px;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+    margin-bottom: 1.5rem;
     font-weight: bold;
+    color: var(--primary-color);
 }
 
-#quiz-question {
-    font-size: 1.3em;
-    margin-bottom: 25px;
+.quiz-question-text {
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 5px;
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
     color: var(--text-color);
 }
 
 .quiz-options-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 15px;
-    max-width: 600px;
-    margin: 0 auto;
 }
 
 .quiz-option-btn {
     padding: 15px;
-    border: 2px solid var(--primary-color);
-    background-color: var(--card-background);
-    color: var(--primary-color);
-    font-weight: bold;
-    font-size: 1em;
-    cursor: pointer;
+    border: 2px solid var(--secondary-color);
+    background-color: white;
+    color: var(--text-color);
     border-radius: 8px;
-    transition: background-color 0.2s, color 0.2s;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background-color 0.2s, transform 0.1s;
+    text-align: left;
 }
 
 .quiz-option-btn:hover:not(:disabled) {
-    background-color: var(--primary-color);
-    color: white;
+    background-color: #e0f0ff;
+    border-color: #2980b9;
 }
 
 .quiz-option-btn:disabled {
     cursor: not-allowed;
-    opacity: 0.8;
+    opacity: 0.7;
+}
+
+.quiz-result-box {
+    text-align: center;
+    padding: 30px;
+    background-color: #f0fff0;
+    border: 2px solid var(--success-color);
+    border-radius: 8px;
 }
 
 /* Leaderboard */
-.leaderboard-table {
+.leaderboard-table table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 15px;
-    text-align: left;
+    margin-top: 1rem;
 }
 
 .leaderboard-table th, .leaderboard-table td {
-    padding: 12px 15px;
-    border: 1px solid var(--border-color);
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .leaderboard-table th {
-    background-color: #f39c12; /* Orange header */
+    background-color: var(--primary-color);
     color: white;
-    font-weight: bold;
+    font-size: 1.1em;
 }
 
 .leaderboard-table tr:nth-child(even) {
     background-color: #f9f9f9;
 }
 
-
-/* --- Footer --- */
-footer {
-    text-align: center;
-    padding: 15px;
-    background-color: var(--primary-color);
-    color: white;
-    margin-top: 30px;
-}
-
-footer p {
-    color: white;
+.tip-box {
+    padding: 10px;
+    margin-top: 1.5rem;
+    background-color: #fffacd;
+    border-left: 5px solid var(--warning-color);
+    border-radius: 3px;
+    font-style: italic;
     font-size: 0.9em;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        padding: 10px 15px;
-    }
-    header nav {
-        margin-top: 10px;
-    }
-    header nav a {
-        margin-left: 10px;
-        display: block;
-        text-align: center;
-    }
-    #auth-button {
-        margin-top: 10px !important;
-        margin-left: 0 !important;
-    }
-
-    .converter-tabs {
-        flex-direction: column;
-    }
-    .converter-tabs button {
-        border-radius: 5px;
-        margin-bottom: 5px;
-    }
-
-    .conversion-form {
-        flex-direction: column;
-    }
-    .conversion-form input, .conversion-form select, .conversion-form button {
-        width: 100%;
-        min-width: unset;
-    }
-
-    .clock-table-header, .clock-row {
-        grid-template-columns: 1.5fr 1fr 1fr;
-        font-size: 0.9em;
-    }
-
-    .quiz-options-container {
-        grid-template-columns: 1fr;
-    }
+/* --- Footer --- */
+footer {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: auto;
 }
