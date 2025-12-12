@@ -17,7 +17,7 @@ body {
 header {
     background-color: #3498db;
     color: white;
-    padding: 20px 0;
+    padding: 20px 0 0; /* ลด padding ด้านล่างเพื่อรองรับ nav */
     text-align: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -28,11 +28,43 @@ header h1 {
 }
 
 header p {
-    margin: 5px 0 0;
+    margin: 5px 0 15px; /* เพิ่ม margin ด้านล่าง h1 */
     font-size: 0.9em;
     opacity: 0.9;
 }
 
+/* --- Navigation Bar Styles --- */
+nav {
+    display: flex;
+    justify-content: center;
+    background-color: #2980b9; /* สีเข้มขึ้น */
+    padding: 10px 0;
+    border-top: 1px solid #3498db;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border-radius: 4px 4px 0 0;
+    transition: background-color 0.3s;
+    font-weight: bold;
+    font-size: 0.95em;
+}
+
+nav a:hover {
+    background-color: #34495e;
+}
+
+nav a.active {
+    background-color: white;
+    color: #2c3e50; /* สีเข้มเพื่อเน้นหน้าปัจจุบัน */
+    cursor: default;
+    pointer-events: none; /* ป้องกันการคลิกซ้ำ */
+}
+
+/* --- Main Sections --- (เหมือนเดิม) */
 .main-section {
     background-color: white;
     padding: 30px;
@@ -54,7 +86,7 @@ hr {
     margin: 30px 0;
 }
 
-/* --- Form and Inputs --- */
+/* --- Form and Inputs (เหมือนเดิม) --- */
 .input-group {
     margin-bottom: 15px;
 }
@@ -121,7 +153,7 @@ hr {
     background-color: #c0392b;
 }
 
-/* --- Result Areas --- */
+/* --- Result Areas (เหมือนเดิม) --- */
 .result-area {
     margin-top: 25px;
     padding: 15px;
@@ -138,7 +170,7 @@ hr {
     border: 1px solid #ddd;
 }
 
-/* --- World Clock Styles --- */
+/* --- World Clock Styles (เหมือนเดิม) --- */
 #clock-display-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -193,7 +225,7 @@ hr {
     color: #16a085;
 }
 
-/* --- Timer Styles --- */
+/* --- Timer Styles (เหมือนเดิม) --- */
 .timer-display {
     font-size: 4em;
     text-align: center;
@@ -214,7 +246,7 @@ hr {
     text-align: center;
 }
 
-/* --- Quiz Game Styles --- */
+/* --- Quiz Game Styles (เหมือนเดิม) --- */
 .question-box {
     background-color: #f9f9f9;
     border: 1px solid #ddd;
@@ -256,7 +288,7 @@ hr {
     opacity: 0.8;
 }
 
-/* --- Leaderboard Styles --- */
+/* --- Leaderboard Styles (เหมือนเดิม) --- */
 
 .leaderboard-table {
     width: 100%;
@@ -299,7 +331,7 @@ hr {
     color: white;
 }
 
-/* --- Footer Styles (แก้ไขเพิ่มลิงก์) --- */
+/* --- Footer Styles (เหมือนเดิม) --- */
 footer {
     text-align: center;
     padding: 15px 0;
@@ -330,10 +362,25 @@ footer {
     text-decoration: underline;
 }
 
-/* --- Responsive Adjustments --- */
+/* --- Responsive Adjustments (เหมือนเดิม) --- */
 @media (max-width: 600px) {
     header h1 {
         font-size: 1.5em;
+    }
+    nav {
+        flex-wrap: wrap;
+        padding: 5px 0;
+    }
+    nav a {
+        padding: 8px 10px;
+        margin: 5px 5px;
+        font-size: 0.9em;
+        flex-grow: 1;
+        text-align: center;
+        border-radius: 4px;
+    }
+    nav a.active {
+        border-radius: 4px;
     }
     .main-section {
         padding: 20px;
