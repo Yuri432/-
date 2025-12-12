@@ -2,149 +2,87 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>หน้าหลัก | เครื่องมือคำนวณ</title>
-    <style>
-        body { font-family: Tahoma, sans-serif; margin: 20px; }
-        .container { max-width: 800px; margin: auto; }
-        .result-box { border: 1px solid #ccc; padding: 15px; margin-top: 20px; background-color: #f9f9f9; }
-        .result-box p { margin: 5px 0; }
-        label { display: block; margin-top: 10px; }
-        input[type="date"], input[type="text"] { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; }
-        button { padding: 10px 15px; margin-top: 10px; cursor: pointer; background-color: #007bff; color: white; border: none; }
-    </style>
-</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Game | เครื่องมือคำนวณ</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script>
+        if (!localStorage.getItem('loggedInUser') && !window.location.pathname.includes('login.html') && !window.location.pathname.includes('register.html')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+    </head>
 <body>
 
-<div class="container">
-    <h1># เครื่องมือคำนวณและเกมความรู้รอบตัว</h1>
-    <p>
-        [🎂 ข้อมูลส่วนบุคคล]
-        [🌎 นาฬิกาโลก]
-        [🔄 เครื่องมือแปลงค่า]
-        [🧠 Quiz Game]
-    </p>
+    <header>
+        <h1>เครื่องมือคำนวณและเกมความรู้รอบตัว</h1>
+        <nav>
+            <a href="index.html">🎂 ข้อมูลส่วนบุคคล</a>
+            <a href="worldclock.html">🌎 นาฬิกาโลก</a>
+            <a href="converter.html">🔄 เครื่องมือแปลงค่า</a>
+            <a href="quiz.html" class="active">🧠 Quiz Game</a>
+            </nav>
+    </header>
 
-    <hr>
-
-    <h2>## 🎂 ข้อมูลส่วนบุคคลและโหราศาสตร์เบื้องต้น</h2>
-
-    <p>กรุณากรอกข้อมูลวันเดือนปีเกิดเพื่อเริ่มคำนวณอายุและราศี/ปีนักษัตร</p>
-
-    <label for="birthDate">วันเดือนปีเกิด (ค.ศ. เท่านั้น, หรือแก้ไข JavaScript เพื่อรองรับ พ.ศ.):</label>
-    <input type="date" id="birthDate" required>
-    
-    <label for="thaiName">ชื่อ (ภาษาไทย):</label>
-    <input type="text" id="thaiName" placeholder="ชื่อ">
-    
-    <label for="thaiLastName">นามสกุล (ภาษาไทย):</label>
-    <input type="text" id="thaiLastName" placeholder="นามสกุล">
-    
-    <button onclick="calculateData()">คำนวณอายุ, ราศี, และปีนักษัตร</button>
-    <div id="result" class="result-box" style="display:none;">
-        <h3>ผลการคำนวณ:</h3>
-        <p><strong>ชื่อ-นามสกุล:</strong> <span id="displayFullName"></span></p>
-        <p><strong>วันเกิด:</strong> <span id="displayBirthDate"></span></p>
-        <p><strong>อายุ:</strong> <span id="displayAge"></span> ปี</p>
-        <p><strong>ราศีสากล:</strong> <span id="displayZodiac"></span></p>
-        <p><strong>ปีนักษัตร:</strong> <span id="displayThaiZodiac"></span></p>
-    </div>
-
-</div>
-
-<script>
-    // ------------------------------------------------------------------
-    // ฟังก์ชันหลักในการคำนวณ
-    // ------------------------------------------------------------------
-    function calculateData() {
-        const birthDateInput = document.getElementById('birthDate').value;
-        const thaiName = document.getElementById('thaiName').value;
-        const thaiLastName = document.getElementById('thaiLastName').value;
+    <main class="container">
         
-        if (!birthDateInput) {
-            alert("กรุณากรอกวันเดือนปีเกิด!");
-            return;
-        }
+        <div id="quiz" class="main-section">
+            <h2>🧠 เกมตอบคำถามความรู้รอบตัว</h2>
+            
+            <div id="quiz-start-area" style="text-align: center;">
+                <p>ทดสอบความรู้ของคุณกับคำถามหลากหลายประเภท!</p>
+                <button id="quiz-start-btn" class="action-btn" style="padding: 15px 30px; font-size: 1.2em;">
+                    ▶️ เริ่มเกม
+                </button>
+            </div>
 
-        const birthDate = new Date(birthDateInput);
-        const today = new Date();
+            <div id="quiz-game-area" style="display: none;">
+                <div class="info-box" style="display: flex; justify-content: space-between; font-weight: bold;">
+                    <span id="quiz-score">คะแนน: 0 / 0</span>
+                    <span id="quiz-timer">⏳ เวลา: -- วินาที</span>
+                </div>
+                
+                <div class="question-box">
+                    <h3 id="quiz-question">คำถามที่ 1: ...</h3>
+                    <div id="quiz-options" class="options-container">
+                        </div>
+                </div>
+            </div>
+
+            <div id="quiz-result-area" class="result-area" style="display: none; text-align: center;">
+                <div id="quiz-final-result">
+                    </div>
+            </div>
+            
+            <div id="quiz-leaderboard-area" style="margin-top: 30px;">
+                <h3>🏆 ตารางสถิติผู้ทำคะแนนสูงสุด (Top 10)</h3>
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>ลำดับ</th>
+                            <th>ชื่อผู้เล่น</th>
+                            <th>คะแนน</th>
+                            <th>เวลา</th>
+                            <th>วันที่</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
         
-        // ดึงค่าปี ค.ศ. (Century Era)
-        const birthYearCE = birthDate.getFullYear();
-        
-        // 1. คำนวณอายุ
-        const age = today.getFullYear() - birthYearCE - 
-                    (today.getMonth() < birthDate.getMonth() || 
-                    (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate()) ? 1 : 0);
+    </main>
 
-        // 2. คำนวณราศีสากล
-        const zodiacSign = getZodiacSign(birthDate.getMonth() + 1, birthDate.getDate());
-        
-        // 3. คำนวณปีนักษัตร (เพิ่มใหม่)
-        const thaiZodiac = calculateThaiZodiac(birthYearCE);
+    <footer>
+        <div class="footer-links">
+            <p>ติดตามช่องทางต่างๆ:</p>
+            <a href="https://www.youtube.com/channel/UCnhhMJrPVY3ILErkK5PClnQ" target="_blank">📺 ช่อง YouTube (YU RI)</a>
+            <a href="https://www.tiktok.com/@ayu_9i?is_from_webapp=1&sender_device=pc" target="_blank">🎵 TikTok (@ayu_9i)</a>
+        </div>
+        <p>&copy; 2025 AI Tools - Data is stored locally on your browser.</p>
+    </footer>
 
-        // แสดงผลลัพธ์
-        document.getElementById('displayFullName').textContent = `${thaiName} ${thaiLastName}`;
-        document.getElementById('displayBirthDate').textContent = birthDateInput;
-        document.getElementById('displayAge').textContent = age;
-        document.getElementById('displayZodiac').textContent = zodiacSign;
-        document.getElementById('displayThaiZodiac').textContent = thaiZodiac;
-        
-        document.getElementById('result').style.display = 'block';
-    }
-
-
-    // ------------------------------------------------------------------
-    // ฟังก์ชันคำนวณปีนักษัตร (Thai/Chinese Zodiac)
-    // ------------------------------------------------------------------
-    function calculateThaiZodiac(yearCE) {
-        // อ้างอิงปีชวด (หนู) ด้วยปี 1900 หรือใช้สูตร (Year - 4) % 12
-        
-        const zodiacs = [
-            'ชวด (หนู)', 'ฉลู (วัว)', 'ขาล (เสือ)', 'เถาะ (กระต่าย)', 
-            'มะโรง (งูใหญ่)', 'มะเส็ง (งูเล็ก)', 'มะเมีย (ม้า)', 'มะแม (แพะ)', 
-            'วอก (ลิง)', 'ระกา (ไก่)', 'จอ (สุนัข)', 'กุน (หมู)'
-        ];
-
-        // คำนวณลำดับนักษัตร (ผลลัพธ์ 0-11)
-        // สูตร: (ปี ค.ศ. - 4) modulo 12
-        let index = (yearCE - 4) % 12;
-
-        // ปรับ index ให้เป็นบวกเสมอ
-        if (index < 0) {
-            index += 12;
-        }
-
-        return zodiacs[index];
-    }
-    
-    // ------------------------------------------------------------------
-    // ฟังก์ชันคำนวณราศีสากล (Western Zodiac)
-    // ------------------------------------------------------------------
-    function getZodiacSign(month, day) {
-        if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) return "ราศีกุมภ์ (Aquarius)";
-        if ((month === 2 && day >= 19) || (month === 3 && day <= 20)) return "ราศีมีน (Pisces)";
-        if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) return "ราศีเมษ (Aries)";
-        if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) return "ราศีพฤษภ (Taurus)";
-        if ((month === 5 && day >= 21) || (month === 6 && day <= 20)) return "ราศีเมถุน (Gemini)";
-        if ((month === 6 && day >= 21) || (month === 7 && day <= 22)) return "ราศีกรกฎ (Cancer)";
-        if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) return "ราศีสิงห์ (Leo)";
-        if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) return "ราศีกันย์ (Virgo)";
-        if ((month === 9 && day >= 23) || (month === 10 && day <= 22)) return "ราศีตุลย์ (Libra)";
-        if ((month === 10 && day >= 23) || (month === 11 && day <= 21)) return "ราศีพิจิก (Scorpio)";
-        if ((month === 11 && day >= 22) || (month === 12 && day <= 21)) return "ราศีธนู (Sagittarius)";
-        if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) return "ราศีมังกร (Capricorn)";
-        return "ไม่ทราบราศี";
-    }
-
-</script>
-
-<hr>
-<p>
-    ติดตามช่องทางต่างๆ: <br>
-    [📺 ช่อง YouTube (YU RI)] <br>
-    [🎵 TikTok (@ayu_9i)]
-</p>
-<p>© 2025 AI Tools - Data is stored locally on your browser.</p>
-
+    <script src="script.js"></script>
 </body>
 </html>
