@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สร้างบัญชี | เครื่องมือคำนวณ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main class="container" style="max-width: 450px; margin-top: 100px;">
+        <div id="register-area" class="main-section">
+            <h2 style="text-align: center; border-bottom: none;">📝 สร้างบัญชีใหม่</h2>
+            
+            <div class="input-group">
+                <label for="reg-username">ชื่อผู้ใช้ (Username):</label>
+                <input type="text" id="reg-username" placeholder="ต้องไม่ซ้ำใคร">
+            </div>
+            
+            <div class="input-group">
+                <label for="reg-password">รหัสผ่าน (Password):</label>
+                <input type="password" id="reg-password">
+            </div>
+            
+            <div class="input-group">
+                <label for="reg-confirm-password">ยืนยันรหัสผ่าน:</label>
+                <input type="password" id="reg-confirm-password">
+            </div>
+            
+            <p id="register-message" style="color: red; text-align: center; font-weight: bold;"></p>
+            
+            <button onclick="handleRegister()" class="action-btn" style="width: 100%;">ลงทะเบียน</button>
+            <p style="text-align: center; margin-top: 15px; font-size: 0.9em;">
+                <a href="login.html">กลับไปหน้าล็อกอิน</a>
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 AI Tools - Data is stored locally on your browser.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
