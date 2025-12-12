@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Game | เครื่องมือคำนวณ</title>
+    <title>หน้าหลัก | เครื่องมือคำนวณ</title>
     <link rel="stylesheet" href="style.css">
     
     <script>
@@ -17,59 +17,41 @@
     <header>
         <h1>เครื่องมือคำนวณและเกมความรู้รอบตัว</h1>
         <nav>
-            <a href="index.html">🎂 ข้อมูลส่วนบุคคล</a>
+            <a href="index.html" class="active">🎂 ข้อมูลส่วนบุคคล</a>
             <a href="worldclock.html">🌎 นาฬิกาโลก</a>
             <a href="converter.html">🔄 เครื่องมือแปลงค่า</a>
-            <a href="quiz.html" class="active">🧠 Quiz Game</a>
+            <a href="quiz.html">🧠 Quiz Game</a>
             </nav>
     </header>
 
     <main class="container">
         
-        <div id="quiz" class="main-section">
-            <h2>🧠 เกมตอบคำถามความรู้รอบตัว</h2>
-            
-            <div id="quiz-start-area" style="text-align: center;">
-                <p>ทดสอบความรู้ของคุณกับคำถามหลากหลายประเภท!</p>
-                <button id="quiz-start-btn" class="action-btn" style="padding: 15px 30px; font-size: 1.2em;">
-                    ▶️ เริ่มเกม
-                </button>
+        <div id="personal-info" class="main-section">
+            <h2>🎂 ข้อมูลส่วนบุคคลและโหราศาสตร์เบื้องต้น</h2>
+            <p>กรุณากรอกข้อมูลวันเดือนปีเกิดเพื่อเริ่มคำนวณอายุและราศี</p>
+            <div class="input-group">
+                <label for="birthdate-input">วันเดือนปีเกิด (ค.ศ. หรือ พ.ศ.):</label>
+                <input type="text" id="birthdate-input" placeholder="DD/MM/YYYY หรือ DD/MM/BBBB เช่น 13/02/2552">
             </div>
-
-            <div id="quiz-game-area" style="display: none;">
-                <div class="info-box" style="display: flex; justify-content: space-between; font-weight: bold;">
-                    <span id="quiz-score">คะแนน: 0 / 0</span>
-                    <span id="quiz-timer">⏳ เวลา: -- วินาที</span>
-                </div>
-                
-                <div class="question-box">
-                    <h3 id="quiz-question">คำถามที่ 1: ...</h3>
-                    <div id="quiz-options" class="options-container">
-                        </div>
-                </div>
+            <div class="input-group">
+                <label for="name-input">ชื่อ (ภาษาไทย):</label>
+                <input type="text" id="name-input" placeholder="ชื่อ">
             </div>
-
-            <div id="quiz-result-area" class="result-area" style="display: none; text-align: center;">
-                <div id="quiz-final-result">
-                    </div>
+            <div class="input-group">
+                <label for="surname-input">นามสกุล (ภาษาไทย):</label>
+                <input type="text" id="surname-input" placeholder="นามสกุล">
             </div>
             
-            <div id="quiz-leaderboard-area" style="margin-top: 30px;">
-                <h3>🏆 ตารางสถิติผู้ทำคะแนนสูงสุด (Top 10)</h3>
-                <table class="leaderboard-table">
-                    <thead>
-                        <tr>
-                            <th>ลำดับ</th>
-                            <th>ชื่อผู้เล่น</th>
-                            <th>คะแนน</th>
-                            <th>เวลา</th>
-                            <th>วันที่</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leaderboard-body">
-                        </tbody>
-                </table>
+            <div class="action-buttons-group">
+                <button onclick="calculatePersonalInfo()" class="action-btn">คำนวณอายุและราศี</button>
+                <button onclick="calculateNumerology()" class="action-btn secondary-btn">ทำนายชื่อ (เลขศาสตร์/ทักษา)</button>
             </div>
+            
+            <div id="personal-result" class="result-area">
+                </div>
+            
+            <div id="numerology-result" class="result-area" style="margin-top: 20px;">
+                </div>
         </div>
         
     </main>
