@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>หน้าหลัก | เครื่องมือคำนวณ</title>
     <link rel="stylesheet" href="style.css">
-</head>
+    
+    <script>
+        if (!localStorage.getItem('loggedInUser') && !window.location.pathname.includes('login.html') && !window.location.pathname.includes('register.html')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+    </head>
 <body>
 
     <header>
@@ -13,51 +19,10 @@
         <nav>
             <a href="index.html" class="active">🎂 ข้อมูลส่วนบุคคล</a>
             <a href="worldclock.html">🌎 นาฬิกาโลก</a>
-            <a href="converter.html">🔄 เครื่องมือแปลงค่า</a> <a href="quiz.html">🧠 Quiz Game</a>
+            <a href="converter.html">🔄 เครื่องมือแปลงค่า</a>
+            <a href="quiz.html">🧠 Quiz Game</a>
         </nav>
     </header>
-
-    <main class="container">
-        
-        <div id="personal-info" class="main-section">
-            <h2>🎂 ข้อมูลส่วนบุคคลและโหราศาสตร์เบื้องต้น</h2>
-            <p>กรุณากรอกข้อมูลวันเดือนปีเกิดเพื่อเริ่มคำนวณอายุและราศี</p>
-            <div class="input-group">
-                <label for="birthdate-input">วันเดือนปีเกิด (ค.ศ. หรือ พ.ศ.):</label>
-                <input type="text" id="birthdate-input" placeholder="DD/MM/YYYY หรือ DD/MM/BBBB เช่น 13/02/2552">
-            </div>
-            <div class="input-group">
-                <label for="name-input">ชื่อ (ภาษาไทย):</label>
-                <input type="text" id="name-input" placeholder="ชื่อ">
-            </div>
-            <div class="input-group">
-                <label for="surname-input">นามสกุล (ภาษาไทย):</label>
-                <input type="text" id="surname-input" placeholder="นามสกุล">
-            </div>
-            
-            <div class="action-buttons-group">
-                <button onclick="calculatePersonalInfo()" class="action-btn">คำนวณอายุและราศี</button>
-                <button onclick="calculateNumerology()" class="action-btn secondary-btn">ทำนายชื่อ (เลขศาสตร์/ทักษา)</button>
-            </div>
-            
-            <div id="personal-result" class="result-area">
-                </div>
-            
-            <div id="numerology-result" class="result-area" style="margin-top: 20px;">
-                </div>
-        </div>
-        
-    </main>
-
-    <footer>
-        <div class="footer-links">
-            <p>ติดตามช่องทางต่างๆ:</p>
-            <a href="https://www.youtube.com/channel/UCnhhMJrPVY3ILErkK5PClnQ" target="_blank">📺 ช่อง YouTube (YU RI)</a>
-            <a href="https://www.tiktok.com/@ayu_9i?is_from_webapp=1&sender_device=pc" target="_blank">🎵 TikTok (@ayu_9i)</a>
-        </div>
-        <p>&copy; 2025 AI Tools - Data is stored locally on your browser.</p>
-    </footer>
-
     <script src="script.js"></script>
 </body>
 </html>
