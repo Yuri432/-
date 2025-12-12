@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เครื่องมือแปลงค่า | เครื่องมือคำนวณ</title>
     <link rel="stylesheet" href="style.css">
-</head>
+
+    <script>
+        if (!localStorage.getItem('loggedInUser') && !window.location.pathname.includes('login.html') && !window.location.pathname.includes('register.html')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+    </head>
 <body>
 
     <div id="legacy-modal" class="site-modal">
@@ -29,7 +35,7 @@
             <a href="worldclock.html">🌎 นาฬิกาโลก</a>
             <a href="converter.html" class="active">🔄 เครื่องมือแปลงค่า</a>
             <a href="quiz.html">🧠 Quiz Game</a>
-        </nav>
+            </nav>
     </header>
 
     <main class="container">
